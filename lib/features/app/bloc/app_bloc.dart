@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/services/storage_service/storage_service.dart';
 
+export 'package:home_app/services/storage_service/storage_service.dart';
+
 part 'app_event.dart';
 part 'app_state.dart';
 
