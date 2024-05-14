@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/services/storage_service/storage_service.dart';
 import 'package:kiwi/kiwi.dart';
 
 const bool _useMock = true;
@@ -6,12 +7,12 @@ const bool _useMock = true;
 class DependencyInjection extends StatelessWidget {
   final Widget child;
 
+  KiwiContainer get _container => KiwiContainer();
+
   const DependencyInjection({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final container = KiwiContainer();
-
     // try {
     //   container.registerInstance<DownloadFileRepository>(_useMock
     //       ? MockDownloadFileRepository(mockDelay: _mockDelay)
@@ -20,10 +21,20 @@ class DependencyInjection extends StatelessWidget {
     //   debugPrint(e.toString());
     // }
 
+    _addInstance<StorageService>(LocalStorage(), SafeStorage());
+
     return DependencyInjectorInheritance(
-      container: container,
+      container: _container,
       child: child,
     );
+  }
+
+  void _addInstance<T>(T mock, T live) {
+    try {
+      _container.registerInstance<T>(_useMock ? mock : live);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
 
