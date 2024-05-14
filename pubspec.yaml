@@ -30,6 +30,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  bloc: ^8.1.4
+  equatable: ^2.0.5
+  flutter_bloc: ^8.1.5
+  flutter_secure_storage: ^9.1.1
   http: ^1.2.1
   kiwi: ^5.0.0
 
