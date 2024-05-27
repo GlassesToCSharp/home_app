@@ -5,6 +5,8 @@ abstract class BaseState<T> extends Equatable {
   final T? data;
   final String? error;
 
+  bool get hasError => error?.isNotEmpty == true;
+
   @override
   List<Object?> get props => [
         loading,
