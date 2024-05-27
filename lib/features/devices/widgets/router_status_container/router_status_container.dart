@@ -4,8 +4,9 @@ import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 class RouterStatusContainer extends StatefulWidget {
-  final bool isScanning;
-  const RouterStatusContainer({required this.isScanning});
+  final DevicesBloc devicesBloc;
+
+  const RouterStatusContainer({required this.devicesBloc});
 
   @override
   State<RouterStatusContainer> createState() => _RouterStatusContainerState();
@@ -21,7 +22,7 @@ class _RouterStatusContainerState extends BlocState<
 
   @override
   RouterStatusContainerBloc createBloc(KiwiContainer di) {
-    return RouterStatusContainerBloc();
+    return RouterStatusContainerBloc(devicesBloc: widget.devicesBloc);
   }
 
   @override
@@ -54,8 +55,7 @@ class _RouterStatusContainerState extends BlocState<
     } else {
       routerName = state.data?.routerName ?? "";
       routerIpAddress = state.data?.ipAddress ?? "";
-      scanStatus =
-          widget.isScanning || widget.isScanning ? "Scanning" : "Scan complete";
+      scanStatus = state.loading ? "Scanning" : "Scan complete";
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,10 +83,13 @@ class _RouterStatusContainerState extends BlocState<
             const Text("Status:"),
             const Expanded(child: SizedBox()),
             if (state.loading) ...[
-              const SizedBox(
-                height: 16,
-                width: 16,
-                child: CircularProgressIndicator(),
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(),
+                ),
               )
             ],
             Text(scanStatus),

@@ -26,6 +26,9 @@ abstract class BaseState<T> extends Equatable {
   const BaseState.loading({T? data})
       : this._(loading: true, data: data, error: null);
 
+  const BaseState.idle({T? data})
+      : this._(loading: false, data: data, error: null);
+
   const BaseState.data({required T data})
       : this._(loading: false, data: data, error: null);
 
