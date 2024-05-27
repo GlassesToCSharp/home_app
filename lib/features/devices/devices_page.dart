@@ -20,7 +20,7 @@ class _DevicesPageState
 
   @override
   DevicesBloc createBloc(KiwiContainer di) {
-    return DevicesBloc();
+    return DevicesBloc(repository: di.resolve<NodeDeviceRepository>());
   }
 
   @override
