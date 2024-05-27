@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:home_app/features/devices/bloc/devices_bloc.dart';
+import 'package:home_app/models/bloc_state.dart';
 
 class DevicesPage extends StatefulWidget {
   const DevicesPage();
@@ -8,22 +10,18 @@ class DevicesPage extends StatefulWidget {
   State<DevicesPage> createState() => _DevicesPageState();
 }
 
-class _DevicesPageState extends State<DevicesPage> {
-  final _mockListDevices = <_Device>[
-    const _Device("Device 1", "192.168.1.23"),
-    const _Device("Device 2", "192.168.1.45"),
-    const _Device("Device 3", "192.168.1.67"),
-    const _Device("Device 4", "192.168.1.89"),
-    const _Device("Device 5", "192.168.1.101"),
-    const _Device("Device 1", "192.168.1.23"),
-    const _Device("Device 2", "192.168.1.45"),
-    const _Device("Device 3", "192.168.1.67"),
-    const _Device("Device 4", "192.168.1.89"),
-    const _Device("Device 5", "192.168.1.101"),
-  ];
+class _DevicesPageState
+    extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
+  @override
+  DevicesBloc createBloc(KiwiContainer di) {
+    return DevicesBloc();
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildState(BuildContext context, DevicesState state) {
+    final routerName = state.data!.routerName;
+    final devices = state.data!.devices;
+    final deviceCount = state.data!.devices.length;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Network devices"),
@@ -33,7 +31,7 @@ class _DevicesPageState extends State<DevicesPage> {
         actions: [
           IconButton(
             icon: const Icon(FontAwesomeIcons.arrowsRotate),
-            onPressed: () {},
+            onPressed: state.loading ? null : () {}, // TODO: Add event
           ),
         ],
       ),
@@ -42,12 +40,12 @@ class _DevicesPageState extends State<DevicesPage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _mockListDevices.length,
+              itemCount: deviceCount,
               itemBuilder: (_, index) {
-                if (index >= _mockListDevices.length) {
+                if (index >= deviceCount) {
                   return const SizedBox();
                 }
-                final device = _mockListDevices[index];
+                final device = devices[index];
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -85,29 +83,31 @@ class _DevicesPageState extends State<DevicesPage> {
                 ),
               ],
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("WiFi Connection:"),
-                    Expanded(child: SizedBox()),
-                    Text("ROUTER NAME"),
+                    const Text("WiFi Connection:"),
+                    const Expanded(child: SizedBox()),
+                    Text(routerName),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Status:"),
-                    Expanded(child: SizedBox()),
-                    SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(),
-                    ),
-                    Text("Scanning..."),
+                    const Text("Status:"),
+                    const Expanded(child: SizedBox()),
+                    if (state.loading) ...[
+                      const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(),
+                      )
+                    ],
+                    Text(state.loading ? "Scanning..." : "Scan complete"),
                   ],
                 ),
               ],
@@ -117,11 +117,4 @@ class _DevicesPageState extends State<DevicesPage> {
       ),
     );
   }
-}
-
-class _Device {
-  final String name;
-  final String ipAddress;
-
-  const _Device(this.name, this.ipAddress);
 }
