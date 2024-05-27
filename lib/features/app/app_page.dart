@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/app/bloc/app_bloc.dart';
+import 'package:home_app/features/devices/devices_page.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
@@ -24,10 +25,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
         icon: Icon(FontAwesomeIcons.gear), label: "Settings"),
   ];
   static const _pages = [
-    Text(
-      'Index 0: Devices',
-      style: optionStyle,
-    ),
+    DevicesPage(),
     Text(
       'Index 1: Presets',
       style: optionStyle,
