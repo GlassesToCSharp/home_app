@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:home_app/features/devices/models/devices_data.dart';
+import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/models/base_state.dart';
 
 part 'devices_event.dart';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
+import 'package:home_app/features/devices/widgets/router_status_container/router_status_container.dart';
 import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/widgets/central_error_display.dart';
+import 'package:home_app/widgets/central_loading_indicator.dart';
 
 class DevicesPage extends StatefulWidget {
   const DevicesPage();
@@ -22,9 +25,49 @@ class _DevicesPageState
 
   @override
   Widget buildState(BuildContext context, DevicesState state) {
-    final routerName = state.data!.routerName;
-    final devices = state.data!.devices;
-    final deviceCount = state.data!.devices.length;
+    Widget body = const SizedBox();
+    if (state.hasError) {
+      body =
+          CentralErrorDisplay(message: state.error!, onRetry: _scanForDevices);
+    } else if (state.loading) {
+      body = const CentralLoadingIndicator();
+    } else if (!state.hasData) {
+      body = CentralErrorDisplay(
+          message: "No devices found", onRetry: _scanForDevices);
+    } else {
+      final devices = state.data!;
+      final deviceCount = state.data!.length;
+      body = ListView.builder(
+        itemCount: deviceCount,
+        itemBuilder: (_, index) {
+          if (index >= deviceCount) {
+            return const SizedBox();
+          }
+          final device = devices[index];
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    device.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(device.ipAddress),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Network devices"),
@@ -34,8 +77,7 @@ class _DevicesPageState
         actions: [
           IconButton(
             icon: const Icon(FontAwesomeIcons.arrowsRotate),
-            onPressed:
-                state.loading ? null : () => bloc.add(const ScanForDevices()),
+            onPressed: state.loading ? null : _scanForDevices,
           ),
         ],
       ),
@@ -43,82 +85,15 @@ class _DevicesPageState
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: deviceCount,
-              itemBuilder: (_, index) {
-                if (index >= deviceCount) {
-                  return const SizedBox();
-                }
-                final device = devices[index];
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          device.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(device.ipAddress),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            child: body,
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("WiFi Connection:"),
-                    const Expanded(child: SizedBox()),
-                    Text(routerName),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Status:"),
-                    const Expanded(child: SizedBox()),
-                    if (state.loading) ...[
-                      const SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: CircularProgressIndicator(),
-                      )
-                    ],
-                    Text(state.loading ? "Scanning..." : "Scan complete"),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          RouterStatusContainer(isScanning: state.loading),
         ],
       ),
     );
+  }
+
+  void _scanForDevices() {
+    bloc.add(const ScanForDevices());
   }
 }

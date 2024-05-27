@@ -5,6 +5,7 @@ abstract class BaseState<T> extends Equatable {
   final T? data;
   final String? error;
 
+  bool get hasData => data != null;
   bool get hasError => error?.isNotEmpty == true;
 
   @override
