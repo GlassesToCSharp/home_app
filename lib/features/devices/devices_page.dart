@@ -15,6 +15,11 @@ class _DevicesPageState extends State<DevicesPage> {
     const _Device("Device 3", "192.168.1.67"),
     const _Device("Device 4", "192.168.1.89"),
     const _Device("Device 5", "192.168.1.101"),
+    const _Device("Device 1", "192.168.1.23"),
+    const _Device("Device 2", "192.168.1.45"),
+    const _Device("Device 3", "192.168.1.67"),
+    const _Device("Device 4", "192.168.1.89"),
+    const _Device("Device 5", "192.168.1.101"),
   ];
 
   @override
@@ -22,55 +27,19 @@ class _DevicesPageState extends State<DevicesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Network devices"),
-        elevation: 0,
-        actions: const [Icon(FontAwesomeIcons.arrowsRotate)],
+        backgroundColor: Theme.of(context).cardColor,
+        scrolledUnderElevation: 8,
+        shadowColor: Colors.grey,
+        actions: [
+          IconButton(
+            icon: const Icon(FontAwesomeIcons.arrowsRotate),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  // offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("WiFi Connection:"),
-                    Expanded(child: SizedBox()),
-                    Text("ROUTER NAME"),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Status:"),
-                    Expanded(child: SizedBox()),
-                    SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(),
-                    ),
-                    Text("Scanning..."),
-                  ],
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: _mockListDevices.length,
@@ -100,6 +69,48 @@ class _DevicesPageState extends State<DevicesPage> {
                   ),
                 );
               },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                ),
+              ],
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("WiFi Connection:"),
+                    Expanded(child: SizedBox()),
+                    Text("ROUTER NAME"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Status:"),
+                    Expanded(child: SizedBox()),
+                    SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(),
+                    ),
+                    Text("Scanning..."),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
