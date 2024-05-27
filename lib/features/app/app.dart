@@ -11,7 +11,13 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Home App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(),
+        progressIndicatorTheme: Theme.of(context).progressIndicatorTheme,
+        elevatedButtonTheme: Theme.of(context).elevatedButtonTheme,
+        scaffoldBackgroundColor: Colors.grey[100],
+        bottomNavigationBarTheme: Theme.of(context)
+            .bottomNavigationBarTheme
+            .copyWith(backgroundColor: Colors.grey[300]),
       ),
       home: const DependencyInjection(
         child: AppPage(),
