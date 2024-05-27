@@ -13,6 +13,9 @@ class DevicesPage extends StatefulWidget {
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
   @override
+  DevicesEvent? get initialEvent => const ScanForDevices();
+
+  @override
   DevicesBloc createBloc(KiwiContainer di) {
     return DevicesBloc();
   }
@@ -31,7 +34,8 @@ class _DevicesPageState
         actions: [
           IconButton(
             icon: const Icon(FontAwesomeIcons.arrowsRotate),
-            onPressed: state.loading ? null : () {}, // TODO: Add event
+            onPressed:
+                state.loading ? null : () => bloc.add(const ScanForDevices()),
           ),
         ],
       ),

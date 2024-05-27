@@ -8,8 +8,17 @@ part 'devices_state.dart';
 
 class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
   DevicesBloc() : super(const DevicesState.loading()) {
-    on<DevicesEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ScanForDevices>(_handleScanForDevicesEvent);
+  }
+
+  Future<void> _handleScanForDevicesEvent(
+      ScanForDevices event, Emitter<DevicesState> emit) async {
+    emit(const DevicesState.loading());
+
+    try {
+      // TODO: Scan for devices
+    } catch (e) {
+      emit(DevicesState.error(e.toString(), data: state.data));
+    }
   }
 }
