@@ -7,3 +7,7 @@ abstract class AppEvent {
 class LoadAppSettings extends AppEvent {
   const LoadAppSettings();
 }
+
+class LoadApp extends AppEvent {
+  const LoadApp();
+}

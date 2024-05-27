@@ -39,6 +39,9 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
   int _selectedIndex = 0;
 
   @override
+  AppEvent? get initialEvent => const LoadApp();
+
+  @override
   AppBloc createBloc(KiwiContainer di) {
     return AppBloc(storageService: di.resolve<StorageService>());
   }

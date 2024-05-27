@@ -11,7 +11,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final StorageService storageService;
 
   AppBloc({required this.storageService}) : super(const AppState.loading()) {
+    on<LoadApp>(_handleLoadAppEvent);
     on<LoadAppSettings>(_handleLoadAppSettingsEvent);
+  }
+
+  Future<void> _handleLoadAppEvent(
+      LoadApp event, Emitter<AppState> emit) async {
+    emit(const AppState.loading());
+
+    // TODO: Check the device is on WiFi and is connected to a network.
+    // For now, return success.
+    emit(const AppState.data(true));
   }
 
   Future<void> _handleLoadAppSettingsEvent(
