@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/app/bloc/app_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
 
@@ -10,6 +11,33 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const _navigationItems = [
+    BottomNavigationBarItem(
+        icon: Icon(FontAwesomeIcons.satelliteDish), label: "Devices"),
+    BottomNavigationBarItem(
+        icon: Icon(FontAwesomeIcons.folderTree), label: "Presets"),
+    BottomNavigationBarItem(
+        icon: Icon(FontAwesomeIcons.gear), label: "Settings"),
+  ];
+  static const _pages = [
+    Text(
+      'Index 0: Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 1: Business',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 2: School',
+      style: optionStyle,
+    ),
+  ];
+
+  int _selectedIndex = 0;
+
   @override
   AppBloc createBloc(KiwiContainer di) {
     return AppBloc(storageService: di.resolve<StorageService>());
@@ -21,8 +49,21 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // TODO: If we have data, then we should go straight to the main app. If we
-    // do not have data, we need to begin the scanning process.
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: _pages.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: _onTap,
+        currentIndex: _selectedIndex,
+        items: _navigationItems,
+      ),
+    );
+  }
+
+  void _onTap(int newIndex) {
+    setState(() {
+      _selectedIndex = newIndex;
+    });
   }
 }

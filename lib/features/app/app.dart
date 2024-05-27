@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:home_app/features/home/home_page.dart';
+import 'package:home_app/features/app/app_page.dart';
+import 'package:home_app/services/injection/dependency_injection.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -12,7 +13,9 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: "AAHAHHAAHHHH"),
+      home: const DependencyInjection(
+        child: AppPage(),
+      ),
     );
   }
 }
