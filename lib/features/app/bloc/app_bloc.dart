@@ -1,38 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:home_app/models/base_state.dart';
-import 'package:home_app/services/storage_service/storage_service.dart';
+import 'package:home_app/services/connectivity_service/connectivity_service.dart';
 
-export 'package:home_app/services/storage_service/storage_service.dart';
+export 'package:home_app/services/connectivity_service/connectivity_service.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  final StorageService storageService;
+  final ConnectivityService connectivityService;
 
-  AppBloc({required this.storageService}) : super(const AppState.loading()) {
+  AppBloc({required this.connectivityService})
+      : super(const AppState.loading()) {
     on<LoadApp>(_handleLoadAppEvent);
-    on<LoadAppSettings>(_handleLoadAppSettingsEvent);
   }
 
   Future<void> _handleLoadAppEvent(
       LoadApp event, Emitter<AppState> emit) async {
     emit(const AppState.loading());
 
-    // TODO: Check the device is on WiFi and is connected to a network.
-    // For now, return success.
-    emit(const AppState.data(true));
-  }
-
-  Future<void> _handleLoadAppSettingsEvent(
-      LoadAppSettings event, Emitter<AppState> emit) async {
-    emit(const AppState.loading());
-
+    // Wait for a very short time to show user responsiveness.
+    await Future.delayed(const Duration(milliseconds: 500));
     try {
-      final hasData = await storageService.hasData();
-      emit(AppState.data(hasData));
+      final isWifiConnected =
+          await connectivityService.isConnectedToLocalNetwork();
+      if (isWifiConnected) {
+        emit(AppState.data(isWifiConnected));
+        return;
+      }
+      throw "Device is not connected to WiFi.";
     } catch (e) {
-      emit(AppState.error(e.toString()));
+      emit(AppState.error(e.toString(), data: false));
     }
   }
 }

@@ -43,7 +43,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
 
   @override
   AppBloc createBloc(KiwiContainer di) {
-    return AppBloc(storageService: di.resolve<StorageService>());
+    return AppBloc(connectivityService: di.resolve<ConnectivityService>());
   }
 
   @override
