@@ -23,15 +23,15 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
   ];
   static const _pages = [
     Text(
-      'Index 0: Home',
+      'Index 0: Devices',
       style: optionStyle,
     ),
     Text(
-      'Index 1: Business',
+      'Index 1: Presets',
       style: optionStyle,
     ),
     Text(
-      'Index 2: School',
+      'Index 2: Settings',
       style: optionStyle,
     ),
   ];
