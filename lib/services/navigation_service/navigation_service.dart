@@ -6,7 +6,8 @@ class NavigationService {
       GlobalKey<NavigatorState>();
 
   static Future<T?> navigateTo<T>(BaseNavigator navigator) {
-    return navigatorKey.currentState!.pushNamed<T>("", arguments: navigator);
+    return navigatorKey.currentState!
+        .pushNamed<T>(navigator.getRouteName(), arguments: navigator);
   }
 
   static void pop() {
