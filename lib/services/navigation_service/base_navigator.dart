@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-abstract class BaseNavigatorModel {
-  const BaseNavigatorModel();
+abstract class BaseNavigator {
+  const BaseNavigator();
 
   String getRouteName();
   Widget build();
