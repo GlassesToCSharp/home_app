@@ -43,9 +43,9 @@ class DependencyInjection extends StatelessWidget {
 
 class DependencyInjectorInheritance extends InheritedWidget {
   final KiwiContainer container;
-  final Widget child;
 
-  DependencyInjectorInheritance({required this.container, required this.child})
+  const DependencyInjectorInheritance(
+      {required this.container, required Widget child})
       : super(child: child);
 
   static DependencyInjectorInheritance? of(BuildContext context) {
