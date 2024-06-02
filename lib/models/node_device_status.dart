@@ -7,9 +7,9 @@ export 'package:home_app/models/node_device_motor.dart';
 // TODO: JsonSerialiazable
 class NodeDeviceStatus extends Equatable {
   final String name;
-  final bool power;
-  final Color ledColor;
-  final NodeDeviceMotor motor;
+  final bool? power;
+  final Color? ledColor;
+  final NodeDeviceMotor? motor;
 
   @override
   List<Object?> get props => [name, power, ledColor, motor];
