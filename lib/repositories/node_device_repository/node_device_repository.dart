@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:home_app/models/node_device_status.dart';
+import 'package:home_app/services/requests/http_service.dart';
 
-// TODO: Add Mock and Live repositories
+part 'live_node_device_repository.dart';
+part 'mock_node_device_repository.dart';
 
 abstract class NodeDeviceRepository {
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress);
