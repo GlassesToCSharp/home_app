@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
+import 'package:home_app/features/devices/device/device_navigator.dart';
 import 'package:home_app/features/devices/widgets/router_status_container/router_status_container.dart';
 import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
@@ -20,7 +22,10 @@ class _DevicesPageState
 
   @override
   DevicesBloc createBloc(KiwiContainer di) {
-    return DevicesBloc(repository: di.resolve<NodeDeviceRepository>());
+    return DevicesBloc(
+      repository: di.resolve<NodeDeviceRepository>(),
+      connectivityService: di.resolve<ConnectivityService>(),
+    );
   }
 
   @override
@@ -31,11 +36,11 @@ class _DevicesPageState
           CentralErrorDisplay(message: state.error!, onRetry: _scanForDevices);
     } else if (state.loading) {
       body = const CentralLoadingIndicator();
-    } else if (!state.enableScan) {
-      // TODO: update this so that it doesn't show as an error.
-      body = CentralErrorDisplay(
-          message: "This is not an error. Scanning for router in progress.",
-          onRetry: () {});
+      // } else if (!state.enableScan) {
+      //   // TODO: update this so that it doesn't show as an error.
+      //   body = CentralErrorDisplay(
+      //       message: "This is not an error. Scanning for router in progress.",
+      //       onRetry: () {});
     } else if (!state.hasData) {
       body = CentralErrorDisplay(
           message: "No devices found", onRetry: _scanForDevices);
@@ -50,22 +55,26 @@ class _DevicesPageState
           }
           final device = devices[index];
           return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    device.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(device.ipAddress),
-                ],
+            child: GestureDetector(
+              onTap: () =>
+                  NavigationService.navigateTo(DeviceNavigator(device: device)),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      device.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(device.ipAddress),
+                  ],
+                ),
               ),
             ),
           );
@@ -93,9 +102,9 @@ class _DevicesPageState
           Expanded(
             child: body,
           ),
-          RouterStatusContainer(
-            devicesBloc: bloc,
-          ),
+          // RouterStatusContainer(
+          //   devicesBloc: bloc,
+          // ),
         ],
       ),
     );
