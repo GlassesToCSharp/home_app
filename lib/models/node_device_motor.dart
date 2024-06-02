@@ -14,4 +14,17 @@ class NodeDeviceMotor extends Equatable {
     required this.position,
     required this.acceleration,
   });
+
+  // For testing purposes.
+  NodeDeviceMotor copyWith({
+    int? speed,
+    int? position,
+    int? acceleration,
+  }) {
+    return NodeDeviceMotor(
+      speed: speed ?? this.speed,
+      position: position ?? this.position,
+      acceleration: acceleration ?? this.acceleration,
+    );
+  }
 }

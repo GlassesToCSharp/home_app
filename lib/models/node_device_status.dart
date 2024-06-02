@@ -20,4 +20,19 @@ class NodeDeviceStatus extends Equatable {
     required this.ledColor,
     required this.motor,
   });
+
+  // For testing purposes.
+  NodeDeviceStatus copyWith({
+    String? name,
+    bool? power,
+    Color? ledColor,
+    NodeDeviceMotor? motor,
+  }) {
+    return NodeDeviceStatus(
+      name: name ?? this.name,
+      power: power ?? this.power,
+      ledColor: ledColor ?? this.ledColor,
+      motor: motor ?? this.motor,
+    );
+  }
 }
