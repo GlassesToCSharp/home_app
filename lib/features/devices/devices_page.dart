@@ -21,6 +21,9 @@ class _DevicesPageState
   DevicesEvent? get initialEvent => const EnableScan(false);
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   DevicesBloc createBloc(KiwiContainer di) {
     return DevicesBloc(
       repository: di.resolve<NodeDeviceRepository>(),

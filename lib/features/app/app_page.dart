@@ -26,20 +26,32 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
   ];
   static const _pages = [
     DevicesPage(),
-    Text(
-      'Index 1: Presets',
-      style: optionStyle,
+    Center(
+      child: Text(
+        'Index 1: Presets',
+        style: optionStyle,
+      ),
     ),
-    Text(
-      'Index 2: Settings',
-      style: optionStyle,
+    Center(
+      child: Text(
+        'Index 2: Settings',
+        style: optionStyle,
+      ),
     ),
   ];
 
   int _selectedIndex = 0;
+  late PageController _pageController;
 
   @override
   AppEvent? get initialEvent => const LoadApp();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController = PageController(initialPage: _selectedIndex);
+  }
 
   @override
   AppBloc createBloc(KiwiContainer di) {
@@ -60,8 +72,9 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     }
 
     return Scaffold(
-      body: Center(
-        child: _pages.elementAt(_selectedIndex),
+      body: PageView(
+        controller: _pageController,
+        children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onTap,
@@ -71,9 +84,16 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     );
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void _onTap(int newIndex) {
     setState(() {
       _selectedIndex = newIndex;
+      _pageController.jumpToPage(_selectedIndex);
     });
   }
 }
