@@ -3,15 +3,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class HttpService {
-  static const baseUrl = "192.168.1.15:3000";
+  static Future<JsonObject> post({
+    required String endpoint,
+    required Map<String, dynamic> body,
+    Map<String, dynamic>? parameters,
+  }) async {
+    final fullUrl = Uri.http("", endpoint, parameters);
+
+    http.Response res = await http.post(fullUrl, body: body);
+    if (res.statusCode < 200 || res.statusCode > 299) {
+      throw "${res.statusCode} : ${res.body}";
+    }
+
+    return JsonObject.fromResponse(res);
+  }
 
   static Future<JsonObject> get({
     required String endpoint,
     Map<String, dynamic>? parameters,
   }) async {
-    assert(baseUrl.isNotEmpty);
-
-    final fullUrl = Uri.http(baseUrl, endpoint, parameters);
+    final fullUrl = Uri.http("", endpoint, parameters);
 
     http.Response res = await http.get(fullUrl);
     if (res.statusCode < 200 || res.statusCode > 299) {

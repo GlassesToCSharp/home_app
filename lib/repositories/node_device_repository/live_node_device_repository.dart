@@ -3,15 +3,18 @@ part of 'node_device_repository.dart';
 class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
-    // TODO: implement NodeDeviceStatus
-    throw UnimplementedError();
-    //return HttpService.get(endpoint: _createUrl(ipAddress, "status")).then((value) => null)
+    return HttpService.get(endpoint: _createUrl(ipAddress, ["status"]))
+        .then((value) => NodeDeviceStatus.fromJson(value.toMap()));
   }
 
   @override
   Future<void> setDeviceName(String ipAddress, String newName) {
-    // TODO: implement setDeviceName
-    throw UnimplementedError();
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["name"]),
+      body: {
+        "name": newName,
+      },
+    );
   }
 
   @override
@@ -22,29 +25,45 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
 
   @override
   Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
-    // TODO: implement setMotorAcceleration
-    throw UnimplementedError();
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["motor", "acceleration"]),
+      body: {
+        "acceleration": acceleration,
+      },
+    );
   }
 
   @override
   Future<void> setMotorPosition(String ipAddress, int position) {
-    // TODO: implement setMotorPosition
-    throw UnimplementedError();
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["motor", "position"]),
+      body: {
+        "position": position,
+      },
+    );
   }
 
   @override
   Future<void> setMotorSpeed(String ipAddress, int speed) {
-    // TODO: implement setMotorSpeed
-    throw UnimplementedError();
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["motor", "speed"]),
+      body: {
+        "speed": speed,
+      },
+    );
   }
 
   @override
   Future<void> setPowerState(String ipAddress, bool enable) {
-    // TODO: implement setPowerState
-    throw UnimplementedError();
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["power"]),
+      body: {
+        "state": enable,
+      },
+    );
   }
 
-  String _createUrl(String ipAddress, String endpoint) {
-    return [ipAddress, endpoint].join("/");
+  String _createUrl(String ipAddress, List<String> path) {
+    return [ipAddress, ...path].join("/");
   }
 }
