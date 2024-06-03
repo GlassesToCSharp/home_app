@@ -7,9 +7,13 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
     final device = NodeDeviceStatus(
       name: "DUMMY ${Random().nextInt(1000)}",
-      ledColor: Color.fromRGBO(Random().nextInt(256), Random().nextInt(256),
-          Random().nextInt(256), 1),
+      ledColor: NodeDeviceLedColor(
+        red: Random().nextInt(256),
+        green: Random().nextInt(256),
+        blue: Random().nextInt(256),
+      ),
       power: Random().nextBool(),
+      neonBrightness: Random().nextInt(256),
       motor: NodeDeviceMotor(
         acceleration: Random().nextInt(1024),
         position: Random().nextInt(1024),
@@ -35,7 +39,8 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
   Future<void> setLedColor(String ipAddress, Color color) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(ledColor: color);
+    final device = _deviceList[ipAddress]!
+        .copyWith(ledColor: NodeDeviceLedColor.fromColor(color));
     _deviceList[ipAddress] = device;
     return Future.value(null);
   }
