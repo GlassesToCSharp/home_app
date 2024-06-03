@@ -21,7 +21,7 @@ class LiveConnectivityService extends ConnectivityService {
     final devices = <Device>[];
     for (final host in hosts) {
       if (host.internetAddress.type == InternetAddressType.IPv4) {
-        devices.add(Device(name: "", ipAddress: host.internetAddress.address));
+        devices.add(Device(ipAddress: host.internetAddress.address));
       }
     }
     return devices;

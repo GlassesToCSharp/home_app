@@ -13,7 +13,6 @@ class MockConnectivityService extends ConnectivityService with MockRepository {
     return generateData(
       5,
       (count, generator) => Device(
-        name: "",
         ipAddress: "$subnet.${generator.nextInt(256)}",
       ),
     );

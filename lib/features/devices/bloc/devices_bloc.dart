@@ -48,10 +48,10 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
       for (final host in hosts) {
         try {
           final deviceSatus = await repository.getDeviceStatus(host.ipAddress);
-          devices
-              .add(Device(name: deviceSatus.name, ipAddress: host.ipAddress));
+          devices.add(
+              Device(nodeDeviceStatus: deviceSatus, ipAddress: host.ipAddress));
         } catch (_) {
-          // Ignore errors.
+          // Ignore errors, and don't add device to list.
           continue;
         }
       }
