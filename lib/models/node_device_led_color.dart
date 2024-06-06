@@ -33,6 +33,14 @@ class NodeDeviceLedColor extends Equatable {
     );
   }
 
+  Color toColor() {
+    return Color.fromRGBO(red, green, blue, 1.0);
+  }
+
+  String toHexString() {
+    return "#${toColor().value.toRadixString(16).padLeft(6, "0")}";
+  }
+
   // For testing purposes.
   NodeDeviceLedColor copyWith({
     int? red,
