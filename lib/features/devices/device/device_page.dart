@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
