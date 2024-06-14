@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
@@ -25,13 +26,7 @@ class _DevicePageState extends State<DevicePage> {
   Widget build(BuildContext context) {
     final items = [
       // Title - Device name
-      ListTile(
-        title: const Text("Name"),
-        trailing: Text(widget.device.name),
-        onTap: () {
-          // TODO: Display edit box for device name.
-        },
-      ),
+      NameTile(device: widget.device),
       // Power state
       if (widget.device.nodeDeviceStatus!.power != null) ...[
         Row(

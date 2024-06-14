@@ -21,6 +21,7 @@ class App extends StatelessWidget {
         bottomNavigationBarTheme: Theme.of(context)
             .bottomNavigationBarTheme
             .copyWith(backgroundColor: Colors.grey[300]),
+        dialogBackgroundColor: Colors.grey[100],
       ),
       home: const DependencyInjection(
         child: AppPage(),

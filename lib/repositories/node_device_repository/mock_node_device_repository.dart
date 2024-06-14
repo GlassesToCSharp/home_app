@@ -1,6 +1,7 @@
 part of 'node_device_repository.dart';
 
-class MockNodeDeviceRepository extends NodeDeviceRepository {
+class MockNodeDeviceRepository extends NodeDeviceRepository
+    with MockRepository {
   static final _deviceList = <String, NodeDeviceStatus>{};
 
   @override
@@ -23,7 +24,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
 
     _deviceList[ipAddress] = device;
 
-    return Future.value(device);
+    return returnDelayed(device);
   }
 
   @override
@@ -32,7 +33,8 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
 
     final device = _deviceList[ipAddress]!.copyWith(name: newName);
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+
+    return returnDelayed(null);
   }
 
   @override
@@ -42,7 +44,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
     final device = _deviceList[ipAddress]!
         .copyWith(ledColor: NodeDeviceLedColor.fromColor(color));
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+    return returnDelayed(null);
   }
 
   @override
@@ -54,7 +56,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
             .motor!
             .copyWith(acceleration: acceleration));
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+    return returnDelayed(null);
   }
 
   @override
@@ -64,7 +66,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
     final device = _deviceList[ipAddress]!.copyWith(
         motor: _deviceList[ipAddress]!.motor!.copyWith(position: position));
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+    return returnDelayed(null);
   }
 
   @override
@@ -74,7 +76,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
     final device = _deviceList[ipAddress]!
         .copyWith(motor: _deviceList[ipAddress]!.motor!.copyWith(speed: speed));
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+    return returnDelayed(null);
   }
 
   @override
@@ -83,7 +85,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository {
 
     final device = _deviceList[ipAddress]!.copyWith(power: enable);
     _deviceList[ipAddress] = device;
-    return Future.value(null);
+    return returnDelayed(null);
   }
 
   void _checkIpAddressExists(String ipAddress) {

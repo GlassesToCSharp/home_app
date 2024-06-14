@@ -13,7 +13,7 @@ mixin MockRepository {
       data.add(instancing(i, gen));
     }
 
-    return Future.delayed(mockDelay, () => Future.value(data));
+    return returnDelayed(data);
   }
 
   Future<T> returnDelayed<T>(T result) {
