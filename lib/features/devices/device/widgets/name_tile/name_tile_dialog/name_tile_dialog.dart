@@ -33,16 +33,19 @@ class _NameTileDialogState extends BlocState<NameTileDialog, NameTileDialogBloc,
   }
 
   @override
-  Widget buildState(BuildContext context, NameTileDialogState state) {
-    if (state.hasError) {
+  void onStateChange(context, NameTileDialogState newState) {
+    if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), state.error!);
+          ScaffoldMessenger.of(context), newState.error!);
     }
 
-    if (state.hasData && state.data == true) {
+    if (newState.hasData && newState.data == true) {
       Navigator.pop<String>(context, _textEditingController.text);
     }
+  }
 
+  @override
+  Widget buildState(BuildContext context, NameTileDialogState state) {
     return AlertDialog(
       title: const Text("New device name"),
       content: TextField(

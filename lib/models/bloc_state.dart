@@ -30,9 +30,13 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
       }
     }
 
-    return BlocBuilder<B, S>(
+    return BlocListener<B, S>(
+      listener: onStateChange,
       bloc: _bloc,
-      builder: buildState,
+      child: BlocBuilder<B, S>(
+        bloc: _bloc,
+        builder: buildState,
+      ),
     );
   }
 
@@ -43,6 +47,8 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
   }
 
   B createBloc(KiwiContainer di);
+
+  void onStateChange(context, S newState) {}
 
   Widget buildState(BuildContext context, S state);
 

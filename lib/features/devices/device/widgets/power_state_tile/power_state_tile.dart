@@ -27,12 +27,15 @@ class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
   }
 
   @override
-  Widget buildState(BuildContext context, PowerStateTileState state) {
-    if (state.hasError) {
+  void onStateChange(context, PowerStateTileState newState) {
+    if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), state.error!);
+          ScaffoldMessenger.of(context), newState.error!);
     }
+  }
 
+  @override
+  Widget buildState(BuildContext context, PowerStateTileState state) {
     return SwitchListTile(
       title: const Text("Power"),
       activeColor: Colors.grey[100],
