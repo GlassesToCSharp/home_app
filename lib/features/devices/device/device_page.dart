@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
+import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
@@ -28,28 +29,7 @@ class _DevicePageState extends State<DevicePage> {
       // Title - Device name
       NameTile(device: widget.device),
       // Power state
-      if (widget.device.nodeDeviceStatus!.power != null) ...[
-        Row(
-          children: [
-            Expanded(
-              child: SwitchListTile(
-                title: const Text("Power"),
-                activeColor: Colors.grey[100],
-                activeTrackColor: Theme.of(context).primaryColor,
-                inactiveThumbColor: Colors.grey[700],
-                inactiveTrackColor: Colors.grey[350],
-                value: _switchValue,
-                onChanged: (newValue) {
-                  setState(() {
-                    _switchValue = newValue;
-                  });
-                  // TODO: Update power state of the device
-                },
-              ),
-            )
-          ],
-        )
-      ],
+      PowerStateTile(device: widget.device),
       // Motor control
       if (widget.device.nodeDeviceStatus!.motor != null) ...[
         ListTile(
