@@ -15,14 +15,6 @@ class DevicePage extends StatefulWidget {
 }
 
 class _DevicePageState extends State<DevicePage> {
-  bool _switchValue = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _switchValue = widget.device.nodeDeviceStatus!.power ?? false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final items = [
