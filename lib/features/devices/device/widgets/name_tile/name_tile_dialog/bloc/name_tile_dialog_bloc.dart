@@ -11,12 +11,10 @@ part 'name_tile_dialog_state.dart';
 class NameTileDialogBloc
     extends Bloc<NameTileDialogEvent, NameTileDialogState> {
   final String deviceIpAddress;
-  final String initialName;
   final NodeDeviceRepository repository;
 
   NameTileDialogBloc({
     required this.deviceIpAddress,
-    required this.initialName,
     required this.repository,
   }) : super(const NameTileDialogState.data(false)) {
     on<NewName>(_handleNewNameEvent);

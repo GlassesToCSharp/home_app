@@ -28,7 +28,6 @@ class _NameTileDialogState extends BlocState<NameTileDialog, NameTileDialogBloc,
   NameTileDialogBloc createBloc(KiwiContainer di) {
     return NameTileDialogBloc(
       deviceIpAddress: widget.deviceIpAddress,
-      initialName: widget.deviceName,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }
