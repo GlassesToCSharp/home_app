@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
+import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
@@ -85,23 +86,7 @@ class _DevicePageState extends State<DevicePage> {
         )
       ],
       // Neon Brightness
-      if (widget.device.nodeDeviceStatus!.neonBrightness != null) ...[
-        Row(
-          children: [
-            Expanded(
-              child: ListTile(
-                title: const Text("Neon Brightness"),
-                trailing: Text(
-                  widget.device.nodeDeviceStatus!.neonBrightness!.toString(),
-                ),
-                onTap: () {
-                  // TODO: Navigate to the Brightness Handling dialog
-                },
-              ),
-            ),
-          ],
-        )
-      ]
+      NeonBrightnessTile(device: widget.device),
     ];
 
     return Scaffold(

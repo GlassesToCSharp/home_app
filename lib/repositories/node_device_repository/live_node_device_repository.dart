@@ -24,6 +24,16 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
+  Future<void> setNeonBrightness(String ipAddress, int brightness) {
+    return HttpService.post(
+      endpoint: _createUrl(ipAddress, ["neon-brightness"]),
+      body: {
+        "neon-brightness": brightness,
+      },
+    );
+  }
+
+  @override
   Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
     return HttpService.post(
       endpoint: _createUrl(ipAddress, ["motor", "acceleration"]),

@@ -48,6 +48,15 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
+  Future<void> setNeonBrightness(String ipAddress, int brightness) {
+    _checkIpAddressExists(ipAddress);
+
+    final device = _deviceList[ipAddress]!.copyWith(neonBrightness: brightness);
+    _deviceList[ipAddress] = device;
+    return returnDelayed(null);
+  }
+
+  @override
   Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
     _checkIpAddressExists(ipAddress);
 
