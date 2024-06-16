@@ -46,7 +46,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
     }
 
     if (newState.hasData && newState.data == true) {
-      Navigator.pop<int>(context, _brightness.toInt());
+      Navigator.pop<double>(context, _brightness);
     }
   }
 
@@ -54,16 +54,28 @@ class _NeonBrightnessTileDialogState extends BlocState<
   Widget buildState(BuildContext context, NeonBrightnessTileDialogState state) {
     return AlertDialog(
       title: const Text("New neon brightness"),
-      content: Slider(
-        autofocus: true,
-        value: _brightness,
-        min: 0,
-        max: 255,
-        onChanged: (newValue) {
-          setState(() {
-            _brightness = newValue;
-          });
-        },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Text("New brightness:"),
+              const Expanded(child: SizedBox()),
+              Text("${_brightness.toInt()}%"),
+            ],
+          ),
+          Slider(
+            autofocus: true,
+            value: _brightness,
+            min: 0,
+            max: 100,
+            onChanged: (newValue) {
+              setState(() {
+                _brightness = newValue;
+              });
+            },
+          ),
+        ],
       ),
       actions: state.loading
           ? [const CircularProgressIndicator()]

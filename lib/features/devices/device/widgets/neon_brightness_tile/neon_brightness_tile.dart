@@ -29,17 +29,22 @@ class _NeonBrightnessTileState extends State<NeonBrightnessTile> {
       onTap: widget.device.nodeDeviceStatus?.neonBrightness == null
           ? null
           : () async {
-              final newBrightness = await showDialog<int>(
+              final newBrightnessPercent = await showDialog<double>(
                 context: context,
                 barrierDismissible: false,
                 builder: (_) {
                   return NeonBrightnessTileDialog(
-                    brightness: _brightness,
+                    brightness: _convert8BitToPercent(_brightness),
                     deviceIpAddress: widget.device.ipAddress,
                   );
                 },
               );
-              if (newBrightness != null && newBrightness != _brightness) {
+              if (newBrightnessPercent == null) {
+                return;
+              }
+
+              final newBrightness = _convertPercentTo8Bit(newBrightnessPercent);
+              if (newBrightness != _brightness) {
                 setState(() {
                   _brightness = newBrightness;
                 });
@@ -50,5 +55,9 @@ class _NeonBrightnessTileState extends State<NeonBrightnessTile> {
 
   int _convert8BitToPercent(int value) {
     return (value / 255 * 100).toInt();
+  }
+
+  int _convertPercentTo8Bit(double percent) {
+    return (percent * 255 / 100).toInt();
   }
 }
