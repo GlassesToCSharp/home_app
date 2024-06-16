@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/features/devices/device/widgets/motor_control_tile/motor_control_tile.dart';
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
@@ -24,37 +25,7 @@ class _DevicePageState extends State<DevicePage> {
       // Power state
       PowerStateTile(device: widget.device),
       // Motor control
-      if (widget.device.nodeDeviceStatus!.motor != null) ...[
-        ListTile(
-          onTap: () {
-            // TODO: Navigate to the Motor Handling page
-          },
-          title: const Text("Motor"),
-          trailing: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: {
-              "Acceleration":
-                  widget.device.nodeDeviceStatus!.motor!.acceleration,
-              "Speed": widget.device.nodeDeviceStatus!.motor!.speed,
-              "Position": widget.device.nodeDeviceStatus!.motor!.position
-            }
-                .entries
-                .toList()
-                .map(
-                  (entry) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(entry.key),
-                      const SizedBox(width: 5),
-                      Text(entry.value.toString()),
-                    ],
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-      ],
+      MotorControlTile(device: widget.device),
       // LED colour
       if (widget.device.nodeDeviceStatus!.ledColor != null) ...[
         Row(
