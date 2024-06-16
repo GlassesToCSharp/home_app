@@ -18,7 +18,8 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setLedColor(String ipAddress, Color color) {
+  Future<void> setLedColor(
+      String ipAddress, int red, int green, int blue, int opacity) {
     // TODO: implement setLedColor
     throw UnimplementedError();
   }

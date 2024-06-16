@@ -1,0 +1,35 @@
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:home_app/models/base_state.dart';
+import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+
+export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+
+part 'led_color_tile_dialog_event.dart';
+part 'led_color_tile_dialog_state.dart';
+
+class LedColorTileDialogBloc
+    extends Bloc<LedColorTileDialogEvent, LedColorTileDialogState> {
+  final NodeDeviceRepository repository;
+  final String deviceIpAddress;
+
+  LedColorTileDialogBloc({
+    required this.repository,
+    required this.deviceIpAddress,
+  }) : super(const LedColorTileDialogState.data(false)) {
+    on<NewColor>(_handleNewColorEvent);
+  }
+
+  Future<void> _handleNewColorEvent(
+      NewColor event, Emitter<LedColorTileDialogState> emit) async {
+    emit(const LedColorTileDialogState.loading());
+
+    try {
+      await repository.setLedColor(
+          deviceIpAddress, event.red, event.green, event.blue, event.opacity);
+      emit(const LedColorTileDialogState.data(true));
+    } catch (e) {
+      emit(LedColorTileDialogState.error(e.toString(), data: false));
+    }
+  }
+}

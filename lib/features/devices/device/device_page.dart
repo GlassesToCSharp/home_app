@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile.dart';
 import 'package:home_app/features/devices/device/widgets/motor_control_tile/motor_control_tile.dart';
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
-import 'package:home_app/features/devices/models/device.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -27,35 +27,7 @@ class _DevicePageState extends State<DevicePage> {
       // Motor control
       MotorControlTile(device: widget.device),
       // LED colour
-      if (widget.device.nodeDeviceStatus!.ledColor != null) ...[
-        Row(
-          children: [
-            Expanded(
-              child: ListTile(
-                title: const Text("LED Colour"),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.device.nodeDeviceStatus!.ledColor!.toHexString(),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 20,
-                      height: 20,
-                      color:
-                          widget.device.nodeDeviceStatus!.ledColor!.toColor(),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // TODO: Navigate to the Color Handling page/dialog
-                },
-              ),
-            ),
-          ],
-        )
-      ],
+      LedColorTile(device: widget.device),
       // Neon Brightness
       NeonBrightnessTile(device: widget.device),
     ];

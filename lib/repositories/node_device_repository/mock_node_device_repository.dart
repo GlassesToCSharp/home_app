@@ -12,6 +12,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
         red: Random().nextInt(256),
         green: Random().nextInt(256),
         blue: Random().nextInt(256),
+        opacity: Random().nextInt(256),
       ),
       power: Random().nextBool(),
       neonBrightness: Random().nextInt(256),
@@ -38,11 +39,13 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setLedColor(String ipAddress, Color color) {
+  Future<void> setLedColor(
+      String ipAddress, int red, int green, int blue, int opacity) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!
-        .copyWith(ledColor: NodeDeviceLedColor.fromColor(color));
+    final device = _deviceList[ipAddress]!.copyWith(
+        ledColor: NodeDeviceLedColor(
+            red: red, green: green, blue: blue, opacity: opacity));
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }

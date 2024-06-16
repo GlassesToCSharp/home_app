@@ -11,4 +11,5 @@ NodeDeviceLedColor _$NodeDeviceLedColorFromJson(Map<String, dynamic> json) =>
       red: (json['red'] as num).toInt(),
       green: (json['green'] as num).toInt(),
       blue: (json['blue'] as num).toInt(),
+      opacity: (json['opacity'] as num).toInt(),
     );

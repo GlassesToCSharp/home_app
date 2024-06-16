@@ -12,14 +12,16 @@ class NodeDeviceLedColor extends Equatable {
   final int red;
   final int green;
   final int blue;
+  final int opacity;
 
   @override
-  List<Object?> get props => [red, green, blue];
+  List<Object?> get props => [red, green, blue, opacity];
 
   const NodeDeviceLedColor({
     required this.red,
     required this.green,
     required this.blue,
+    required this.opacity,
   });
 
   factory NodeDeviceLedColor.fromJson(Map<String, dynamic> json) =>
@@ -30,11 +32,12 @@ class NodeDeviceLedColor extends Equatable {
       red: color.red,
       green: color.green,
       blue: color.blue,
+      opacity: (color.opacity * 100).toInt(),
     );
   }
 
   Color toColor() {
-    return Color.fromRGBO(red, green, blue, 1.0);
+    return Color.fromRGBO(red, green, blue, opacity / 100);
   }
 
   String toHexString() {
@@ -42,15 +45,12 @@ class NodeDeviceLedColor extends Equatable {
   }
 
   // For testing purposes.
-  NodeDeviceLedColor copyWith({
-    int? red,
-    int? green,
-    int? blue,
-  }) {
+  NodeDeviceLedColor copyWith({int? red, int? green, int? blue, int? opacity}) {
     return NodeDeviceLedColor(
       red: red ?? this.red,
       green: green ?? this.green,
       blue: blue ?? this.blue,
+      opacity: opacity ?? this.opacity,
     );
   }
 }
