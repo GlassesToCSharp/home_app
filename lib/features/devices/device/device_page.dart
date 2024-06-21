@@ -38,7 +38,7 @@ class _DevicePageState extends State<DevicePage> with DeviceHelper {
       // Power state
       PowerStateTile(devices: widget.devices),
       // Motor control
-      MotorControlTile(device: motorDevice ?? firstDevice),
+      MotorControlTile(devices: widget.devices),
       // LED colour
       LedColorTile(device: ledDevice ?? firstDevice),
       // Neon Brightness

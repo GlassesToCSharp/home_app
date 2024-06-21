@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/motor_control_tile/motor_control_tile_dialog/motor_control_tile_dialog.dart';
+import 'package:home_app/features/devices/mixins/device_helper.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
 class MotorControlTile extends StatefulWidget {
-  final Device device;
+  final Set<Device> devices;
 
-  const MotorControlTile({required this.device});
+  const MotorControlTile({required this.devices});
 
   @override
   State<MotorControlTile> createState() => _MotorControlTileState();
 }
 
-class _MotorControlTileState extends State<MotorControlTile> {
+class _MotorControlTileState extends State<MotorControlTile> with DeviceHelper {
+  bool get _hasMotorControl =>
+      firstWhere<Device>(
+          widget.devices, (device) => device.nodeDeviceStatus?.motor != null) !=
+      null;
+  Device get _firstDevice => widget.devices.first;
   NodeDeviceMotor _motor =
       const NodeDeviceMotor(speed: 0, position: 0, acceleration: 0);
 
@@ -21,8 +27,8 @@ class _MotorControlTileState extends State<MotorControlTile> {
   void initState() {
     super.initState();
 
-    if (widget.device.nodeDeviceStatus?.motor != null) {
-      _motor = widget.device.nodeDeviceStatus?.motor as NodeDeviceMotor;
+    if (_hasMotorControl) {
+      _motor = _firstDevice.nodeDeviceStatus!.motor!;
     }
   }
 
@@ -52,16 +58,17 @@ class _MotorControlTileState extends State<MotorControlTile> {
             )
             .toList(),
       ),
-      onTap: widget.device.nodeDeviceStatus?.motor == null
-          ? null
-          : () async {
+      onTap: _hasMotorControl
+          ? () async {
               final newMotorValues = await showDialog<NodeDeviceMotor>(
                 context: context,
                 barrierDismissible: false,
                 builder: (_) {
                   return MotorControlTileDialog(
                     motorValues: _motor,
-                    deviceIpAddress: widget.device.ipAddress,
+                    ipAddresses: widget.devices
+                        .map((device) => device.ipAddress)
+                        .toList(),
                   );
                 },
               );
@@ -70,7 +77,8 @@ class _MotorControlTileState extends State<MotorControlTile> {
                   _motor = newMotorValues;
                 });
               }
-            },
+            }
+          : null,
     );
   }
 }

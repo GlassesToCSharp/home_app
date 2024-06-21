@@ -12,10 +12,10 @@ part 'motor_control_tile_dialog_state.dart';
 class MotorControlTileDialogBloc
     extends Bloc<MotorControlTileDialogEvent, MotorControlTileDialogState> {
   final NodeDeviceRepository repository;
-  final String ipAddress;
+  final List<String> ipAddresses;
 
   MotorControlTileDialogBloc(
-      {required this.repository, required this.ipAddress})
+      {required this.repository, required this.ipAddresses})
       : super(const MotorControlTileDialogState.data(false)) {
     on<NewConfiguration>(_handleNewConfigurationEvent);
   }
@@ -26,11 +26,13 @@ class MotorControlTileDialogBloc
 
     try {
       // Do these sequentially, as the device won't be able to do these simultaneously.
-      await repository.setMotorAcceleration(
-          ipAddress, event.newConfiguration.acceleration);
-      await repository.setMotorSpeed(ipAddress, event.newConfiguration.speed);
-      await repository.setMotorPosition(
-          ipAddress, event.newConfiguration.position);
+      for (var ipAddress in ipAddresses) {
+        await repository.setMotorAcceleration(
+            ipAddress, event.newConfiguration.acceleration);
+        await repository.setMotorSpeed(ipAddress, event.newConfiguration.speed);
+        await repository.setMotorPosition(
+            ipAddress, event.newConfiguration.position);
+      }
       emit(const MotorControlTileDialogState.data(true));
     } catch (e) {
       emit(MotorControlTileDialogState.error(e.toString(), data: false));

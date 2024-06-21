@@ -17,9 +17,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
       power: Random().nextBool(),
       neonBrightness: Random().nextInt(256),
       motor: NodeDeviceMotor(
-        acceleration: Random().nextInt(1024),
-        position: Random().nextInt(1024),
-        speed: Random().nextInt(1024),
+        acceleration: Random().nextInt(1000),
+        position: Random().nextInt(1000),
+        speed: Random().nextInt(1000),
       ),
     );
 

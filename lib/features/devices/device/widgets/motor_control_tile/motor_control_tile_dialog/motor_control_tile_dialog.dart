@@ -8,11 +8,11 @@ export 'package:home_app/models/node_device_motor.dart';
 
 class MotorControlTileDialog extends StatefulWidget {
   final NodeDeviceMotor motorValues;
-  final String deviceIpAddress;
+  final List<String> ipAddresses;
 
   const MotorControlTileDialog({
     required this.motorValues,
-    required this.deviceIpAddress,
+    required this.ipAddresses,
   });
 
   @override
@@ -40,7 +40,7 @@ class _MotorControlTileDialogState extends BlocState<
   @override
   MotorControlTileDialogBloc createBloc(KiwiContainer di) {
     return MotorControlTileDialogBloc(
-      ipAddress: widget.deviceIpAddress,
+      ipAddresses: widget.ipAddresses,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }
