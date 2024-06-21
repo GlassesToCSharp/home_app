@@ -3,14 +3,16 @@ part of 'node_device_repository.dart';
 class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
-    return HttpService.get(endpoint: _createUrl(ipAddress, ["status"]))
+    return HttpService.get(
+            hostIpUrl: ipAddress, endpoint: _createUrl(["status"]))
         .then((value) => NodeDeviceStatus.fromJson(value.toMap()));
   }
 
   @override
   Future<void> setDeviceName(String ipAddress, String newName) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["name"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["name"]),
       body: {
         "name": newName,
       },
@@ -27,7 +29,8 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<void> setNeonBrightness(String ipAddress, int brightness) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["neon-brightness"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["neon-brightness"]),
       body: {
         "neon-brightness": brightness,
       },
@@ -37,7 +40,8 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["motor", "acceleration"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["motor", "acceleration"]),
       body: {
         "acceleration": acceleration,
       },
@@ -47,7 +51,8 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<void> setMotorPosition(String ipAddress, int position) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["motor", "position"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["motor", "position"]),
       body: {
         "position": position,
       },
@@ -57,7 +62,8 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<void> setMotorSpeed(String ipAddress, int speed) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["motor", "speed"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["motor", "speed"]),
       body: {
         "speed": speed,
       },
@@ -67,14 +73,15 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<void> setPowerState(String ipAddress, bool enable) {
     return HttpService.post(
-      endpoint: _createUrl(ipAddress, ["power"]),
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["power"]),
       body: {
         "state": enable,
       },
     );
   }
 
-  String _createUrl(String ipAddress, List<String> path) {
-    return [ipAddress, ...path].join("/");
+  String _createUrl(List<String> path) {
+    return path.join("/");
   }
 }

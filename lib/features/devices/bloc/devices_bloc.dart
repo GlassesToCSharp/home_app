@@ -25,7 +25,7 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
     emit(const DevicesState.loading());
 
     try {
-      final hosts = await connectivityService.scanForDevices('192.168.0');
+      final hosts = await connectivityService.scanForDevices('192.168.1');
 
       // For each device, check whether it is the NodeMCU that we want. If it
       // is, add it to the list to return.
