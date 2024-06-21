@@ -11,11 +11,11 @@ part 'led_color_tile_dialog_state.dart';
 class LedColorTileDialogBloc
     extends Bloc<LedColorTileDialogEvent, LedColorTileDialogState> {
   final NodeDeviceRepository repository;
-  final String deviceIpAddress;
+  final List<String> ipAddresses;
 
   LedColorTileDialogBloc({
     required this.repository,
-    required this.deviceIpAddress,
+    required this.ipAddresses,
   }) : super(const LedColorTileDialogState.data(false)) {
     on<NewColor>(_handleNewColorEvent);
   }
@@ -25,8 +25,10 @@ class LedColorTileDialogBloc
     emit(const LedColorTileDialogState.loading());
 
     try {
-      await repository.setLedColor(
-          deviceIpAddress, event.red, event.green, event.blue, event.opacity);
+      for (var ipAddress in ipAddresses) {
+        await repository.setLedColor(
+            ipAddress, event.red, event.green, event.blue, event.opacity);
+      }
       emit(const LedColorTileDialogState.data(true));
     } catch (e) {
       emit(LedColorTileDialogState.error(e.toString(), data: false));
