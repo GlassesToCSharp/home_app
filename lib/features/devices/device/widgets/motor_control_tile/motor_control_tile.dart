@@ -19,7 +19,8 @@ class _MotorControlTileState extends State<MotorControlTile> with DeviceHelper {
       firstWhere<Device>(
           widget.devices, (device) => device.nodeDeviceStatus?.motor != null) !=
       null;
-  Device get _firstDevice => widget.devices.first;
+  Device get _firstNonNullDevice => firstWhere<Device>(
+      widget.devices, (device) => device.nodeDeviceStatus?.motor != null)!;
   NodeDeviceMotor _motor =
       const NodeDeviceMotor(speed: 0, position: 0, acceleration: 0);
 
@@ -28,7 +29,7 @@ class _MotorControlTileState extends State<MotorControlTile> with DeviceHelper {
     super.initState();
 
     if (_hasMotorControl) {
-      _motor = _firstDevice.nodeDeviceStatus!.motor!;
+      _motor = _firstNonNullDevice.nodeDeviceStatus!.motor!;
     }
   }
 
