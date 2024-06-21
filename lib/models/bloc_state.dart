@@ -24,9 +24,13 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
 
     if (_bloc == null) {
       _bloc = _createBloc();
-      final localInitialEvent = initialEvent;
-      if (localInitialEvent != null) {
-        bloc.add(localInitialEvent);
+
+      if (initialEvent != null) {
+        // A warning is shown saying not to use the null-check operator, rather
+        // to do a null-check using `if`. Even if we do a null-check as suggested,
+        // the warning stays. Therefore, ignore it.
+        //ignore: null_check_on_nullable_type_parameter
+        bloc.add(initialEvent!);
       }
     }
 
