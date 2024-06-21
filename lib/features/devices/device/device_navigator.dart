@@ -5,13 +5,13 @@ import 'package:home_app/services/navigation_service/base_navigator.dart';
 export 'package:home_app/features/devices/models/device.dart';
 
 class DeviceNavigator extends BaseNavigator {
-  final Device device;
+  final Set<Device> devices;
 
-  const DeviceNavigator({required this.device});
+  const DeviceNavigator({required this.devices});
 
   @override
   Widget build() {
-    return DevicePage(device: device);
+    return DevicePage(devices: devices);
   }
 
   @override

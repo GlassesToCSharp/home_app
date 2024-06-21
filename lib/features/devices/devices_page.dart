@@ -70,7 +70,8 @@ class _DevicesPageState
                     }
                   });
                 } else {
-                  NavigationService.navigateTo(DeviceNavigator(device: device));
+                  NavigationService.navigateTo(
+                      DeviceNavigator(devices: {device}));
                 }
               },
               onLongPress: _isBulkSelecting
@@ -137,9 +138,8 @@ class _DevicesPageState
       ),
       floatingActionButton: _isBulkSelecting
           ? FloatingActionButton.extended(
-              onPressed: () {
-                // TODO: Navigate to the Device page, passing the Set of devices
-              },
+              onPressed: () => NavigationService.navigateTo(
+                  DeviceNavigator(devices: _selectedDevices)),
               label: const Text("Bulk edit"),
             )
           : null,

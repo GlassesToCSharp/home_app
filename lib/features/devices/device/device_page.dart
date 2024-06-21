@@ -8,33 +8,55 @@ import 'package:home_app/features/devices/device/widgets/power_state_tile/power_
 export 'package:home_app/features/devices/models/device.dart';
 
 class DevicePage extends StatefulWidget {
-  final Device device;
+  final Set<Device> devices;
 
-  const DevicePage({required this.device});
+  const DevicePage({required this.devices});
 
   @override
   State<DevicePage> createState() => _DevicePageState();
 }
 
 class _DevicePageState extends State<DevicePage> {
+  Device get firstDevice => widget.devices.first;
+
+  Device? get powerDevice =>
+      _firstWhere((device) => device.nodeDeviceStatus!.power != null);
+  Device? get motorDevice =>
+      _firstWhere((device) => device.nodeDeviceStatus!.motor != null);
+  Device? get ledDevice =>
+      _firstWhere((device) => device.nodeDeviceStatus!.ledColor != null);
+  Device? get neonDevice =>
+      _firstWhere((device) => device.nodeDeviceStatus!.neonBrightness != null);
+
+  Device? _firstWhere(bool Function(Device) test) {
+    try {
+      return widget.devices.firstWhere(test);
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = [
-      // Title - Device name
-      NameTile(device: widget.device),
+      if (widget.devices.length == 1)
+        // Device name - only available for one device
+        NameTile(device: firstDevice),
       // Power state
-      PowerStateTile(device: widget.device),
+      PowerStateTile(device: powerDevice ?? firstDevice),
       // Motor control
-      MotorControlTile(device: widget.device),
+      MotorControlTile(device: motorDevice ?? firstDevice),
       // LED colour
-      LedColorTile(device: widget.device),
+      LedColorTile(device: ledDevice ?? firstDevice),
       // Neon Brightness
-      NeonBrightnessTile(device: widget.device),
+      NeonBrightnessTile(device: neonDevice ?? firstDevice),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.ipAddress),
+        title: widget.devices.length == 1
+            ? Text(firstDevice.ipAddress)
+            : Text("${widget.devices.length} devices"),
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
       ),
