@@ -11,11 +11,11 @@ part 'power_state_tile_state.dart';
 class PowerStateTileBloc
     extends Bloc<PowerStateTileEvent, PowerStateTileState> {
   final NodeDeviceRepository repository;
-  final String ipAddress;
+  final List<String> ipAddresses;
 
   PowerStateTileBloc({
     required this.repository,
-    required this.ipAddress,
+    required this.ipAddresses,
     required bool initialState,
   }) : super(PowerStateTileState.data(initialState)) {
     on<NewPowerState>(_handleNewStateEvent);
@@ -29,7 +29,9 @@ class PowerStateTileBloc
     emit(PowerStateTileState.loading(data: event.newState));
 
     try {
-      await repository.setPowerState(ipAddress, event.newState);
+      for (var ipAddress in ipAddresses) {
+        await repository.setPowerState(ipAddress, event.newState);
+      }
       emit(PowerStateTileState.data(event.newState));
     } catch (e) {
       emit(PowerStateTileState.error(e.toString(), data: initialState));

@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/bloc/power_state_tile_bloc.dart';
+import 'package:home_app/features/devices/mixins/device_helper.dart';
 import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 class PowerStateTile extends StatefulWidget {
-  final Device device;
+  final Set<Device> devices;
 
-  const PowerStateTile({required this.device});
+  const PowerStateTile({required this.devices});
 
   @override
   State<PowerStateTile> createState() => _PowerStateTileState();
 }
 
 class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
-    PowerStateTileEvent, PowerStateTileState> {
-  bool get _hasPowerState => widget.device.nodeDeviceStatus?.power != null;
+    PowerStateTileEvent, PowerStateTileState> with DeviceHelper {
+  bool get _hasPowerState =>
+      firstWhere<Device>(
+          widget.devices, (device) => device.nodeDeviceStatus?.power != null) !=
+      null;
+  Device get _firstDevice => widget.devices.first;
 
   @override
   PowerStateTileBloc createBloc(KiwiContainer di) {
     return PowerStateTileBloc(
       repository: di.resolve<NodeDeviceRepository>(),
-      ipAddress: widget.device.ipAddress,
-      initialState: widget.device.nodeDeviceStatus?.power ?? false,
+      ipAddresses: widget.devices.map((device) => device.ipAddress).toList(),
+      initialState:
+          _hasPowerState ? _firstDevice.nodeDeviceStatus!.power! : false,
     );
   }
 
@@ -43,7 +49,7 @@ class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
       inactiveThumbColor: Colors.grey[700],
       inactiveTrackColor: Colors.grey[350],
       value: _hasPowerState ? state.data! : false,
-      onChanged: _hasPowerState
+      onChanged: _hasPowerState && !state.loading
           ? (newValue) => bloc.add(NewPowerState(newValue))
           : null,
     );

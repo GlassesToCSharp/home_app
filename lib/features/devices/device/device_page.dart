@@ -4,6 +4,7 @@ import 'package:home_app/features/devices/device/widgets/motor_control_tile/moto
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
+import 'package:home_app/features/devices/mixins/device_helper.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -16,25 +17,17 @@ class DevicePage extends StatefulWidget {
   State<DevicePage> createState() => _DevicePageState();
 }
 
-class _DevicePageState extends State<DevicePage> {
+class _DevicePageState extends State<DevicePage> with DeviceHelper {
   Device get firstDevice => widget.devices.first;
 
-  Device? get powerDevice =>
-      _firstWhere((device) => device.nodeDeviceStatus!.power != null);
-  Device? get motorDevice =>
-      _firstWhere((device) => device.nodeDeviceStatus!.motor != null);
-  Device? get ledDevice =>
-      _firstWhere((device) => device.nodeDeviceStatus!.ledColor != null);
-  Device? get neonDevice =>
-      _firstWhere((device) => device.nodeDeviceStatus!.neonBrightness != null);
-
-  Device? _firstWhere(bool Function(Device) test) {
-    try {
-      return widget.devices.firstWhere(test);
-    } catch (e) {
-      return null;
-    }
-  }
+  Device? get powerDevice => firstWhere(
+      widget.devices, (device) => device.nodeDeviceStatus!.power != null);
+  Device? get motorDevice => firstWhere(
+      widget.devices, (device) => device.nodeDeviceStatus!.motor != null);
+  Device? get ledDevice => firstWhere(
+      widget.devices, (device) => device.nodeDeviceStatus!.ledColor != null);
+  Device? get neonDevice => firstWhere(widget.devices,
+      (device) => device.nodeDeviceStatus!.neonBrightness != null);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +36,7 @@ class _DevicePageState extends State<DevicePage> {
         // Device name - only available for one device
         NameTile(device: firstDevice),
       // Power state
-      PowerStateTile(device: powerDevice ?? firstDevice),
+      PowerStateTile(devices: widget.devices),
       // Motor control
       MotorControlTile(device: motorDevice ?? firstDevice),
       // LED colour
