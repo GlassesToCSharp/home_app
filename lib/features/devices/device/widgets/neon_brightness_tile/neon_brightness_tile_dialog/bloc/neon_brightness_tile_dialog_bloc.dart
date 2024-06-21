@@ -11,11 +11,11 @@ part 'neon_brightness_tile_dialog_state.dart';
 class NeonBrightnessTileDialogBloc
     extends Bloc<NeonBrightnessTileDialogEvent, NeonBrightnessTileDialogState> {
   final NodeDeviceRepository repository;
-  final String deviceIpAddress;
+  final List<String> ipAddresses;
 
   NeonBrightnessTileDialogBloc({
     required this.repository,
-    required this.deviceIpAddress,
+    required this.ipAddresses,
   }) : super(const NeonBrightnessTileDialogState.data(false)) {
     on<NewBrightness>(_handleNewBrightnessEvent);
   }
@@ -25,8 +25,9 @@ class NeonBrightnessTileDialogBloc
     emit(NeonBrightnessTileDialogState.loading(data: state.data));
 
     try {
-      await repository.setNeonBrightness(
-          deviceIpAddress, event.brightness.toInt());
+      for (var ipAddress in ipAddresses) {
+        await repository.setNeonBrightness(ipAddress, event.brightness.toInt());
+      }
       emit(const NeonBrightnessTileDialogState.data(true));
     } catch (e) {
       emit(NeonBrightnessTileDialogState.error(e.toString(), data: false));

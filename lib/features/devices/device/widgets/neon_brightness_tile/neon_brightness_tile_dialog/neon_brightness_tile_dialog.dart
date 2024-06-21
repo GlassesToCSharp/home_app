@@ -5,11 +5,11 @@ import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 class NeonBrightnessTileDialog extends StatefulWidget {
   final int brightness;
-  final String deviceIpAddress;
+  final List<String> ipAddresses;
 
   const NeonBrightnessTileDialog({
     required this.brightness,
-    required this.deviceIpAddress,
+    required this.ipAddresses,
   });
 
   @override
@@ -33,7 +33,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
   @override
   NeonBrightnessTileDialogBloc createBloc(KiwiContainer di) {
     return NeonBrightnessTileDialogBloc(
-      deviceIpAddress: widget.deviceIpAddress,
+      ipAddresses: widget.ipAddresses,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }

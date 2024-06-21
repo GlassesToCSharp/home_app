@@ -42,7 +42,7 @@ class _DevicePageState extends State<DevicePage> with DeviceHelper {
       // LED colour
       LedColorTile(devices: widget.devices),
       // Neon Brightness
-      NeonBrightnessTile(device: neonDevice ?? firstDevice),
+      NeonBrightnessTile(devices: widget.devices),
     ];
 
     return Scaffold(
