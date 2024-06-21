@@ -34,6 +34,7 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
     _red = widget.color.red;
     _green = widget.color.green;
     _blue = widget.color.blue;
+    _opacity = widget.color.opacity / 100;
   }
 
   @override

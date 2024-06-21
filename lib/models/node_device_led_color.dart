@@ -41,7 +41,7 @@ class NodeDeviceLedColor extends Equatable {
   }
 
   String toHexString() {
-    return "#${toColor().value.toRadixString(16).padLeft(6, "0")}";
+    return "#${toColor().value.toRadixString(16).padLeft(8, "0")}";
   }
 
   // For testing purposes.
