@@ -17,6 +17,9 @@ class DevicesPage extends StatefulWidget {
 
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
+  bool _isBulkSelecting = false;
+  final _selectedDevices = <Device>{};
+
   @override
   DevicesEvent? get initialEvent => const ScanForDevices();
 
@@ -54,14 +57,37 @@ class _DevicesPageState
           final device = devices[index];
           return Card(
             child: ListTile(
-              onTap: () =>
-                  NavigationService.navigateTo(DeviceNavigator(device: device)),
+              onTap: () {
+                if (_isBulkSelecting) {
+                  setState(() {
+                    if (_selectedDevices.contains(device)) {
+                      _selectedDevices.remove(device);
+                      if (_selectedDevices.isEmpty) {
+                        _isBulkSelecting = false;
+                      }
+                    } else {
+                      _selectedDevices.add(device);
+                    }
+                  });
+                } else {
+                  NavigationService.navigateTo(DeviceNavigator(device: device));
+                }
+              },
+              onLongPress: _isBulkSelecting
+                  ? null
+                  : () {
+                      setState(() {
+                        _isBulkSelecting = true;
+                        _selectedDevices.add(device);
+                      });
+                    },
               title: Text(device.name),
               titleTextStyle: Theme.of(context)
                   .textTheme
                   .bodyLarge!
                   .copyWith(fontWeight: FontWeight.bold),
               subtitle: Text(device.ipAddress),
+              selected: _selectedDevices.contains(device),
               // TODO: Add what features are available for each device
             ),
           );
@@ -71,16 +97,32 @@ class _DevicesPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Network devices"),
-        backgroundColor: Theme.of(context).cardColor,
+        title: _isBulkSelecting
+            ? Text("Selected ${_selectedDevices.length} device(s)")
+            : const Text("Network devices"),
+        backgroundColor: _isBulkSelecting
+            ? Theme.of(context).cardColor
+            : Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
-        actions: [
-          IconButton(
-            icon: const Icon(FontAwesomeIcons.arrowsRotate),
-            onPressed: state.loading ? null : _scanForDevices,
-          ),
-        ],
+        actions: _isBulkSelecting
+            ? [
+                IconButton(
+                  icon: const Icon(FontAwesomeIcons.xmark),
+                  onPressed: () {
+                    setState(() {
+                      _isBulkSelecting = false;
+                      _selectedDevices.clear();
+                    });
+                  },
+                ),
+              ]
+            : [
+                IconButton(
+                  icon: const Icon(FontAwesomeIcons.arrowsRotate),
+                  onPressed: state.loading ? null : _scanForDevices,
+                ),
+              ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,6 +135,14 @@ class _DevicesPageState
           // ),
         ],
       ),
+      floatingActionButton: _isBulkSelecting
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                // TODO: Navigate to the Device page, passing the Set of devices
+              },
+              label: const Text("Bulk edit"),
+            )
+          : null,
     );
   }
 
