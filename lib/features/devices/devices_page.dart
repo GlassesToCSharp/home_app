@@ -53,27 +53,16 @@ class _DevicesPageState
           }
           final device = devices[index];
           return Card(
-            child: GestureDetector(
+            child: ListTile(
               onTap: () =>
                   NavigationService.navigateTo(DeviceNavigator(device: device)),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      device.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(device.ipAddress),
-                  ],
-                ),
-              ),
+              title: Text(device.name),
+              titleTextStyle: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
+              subtitle: Text(device.ipAddress),
+              // TODO: Add what features are available for each device
             ),
           );
         },
