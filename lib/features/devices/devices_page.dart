@@ -18,7 +18,7 @@ class DevicesPage extends StatefulWidget {
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
   @override
-  DevicesEvent? get initialEvent => const EnableScan(false);
+  DevicesEvent? get initialEvent => const ScanForDevices();
 
   @override
   bool get wantKeepAlive => true;
@@ -39,11 +39,6 @@ class _DevicesPageState
           CentralErrorDisplay(message: state.error!, onRetry: _scanForDevices);
     } else if (state.loading) {
       body = const CentralLoadingIndicator();
-      // } else if (!state.enableScan) {
-      //   // TODO: update this so that it doesn't show as an error.
-      //   body = CentralErrorDisplay(
-      //       message: "This is not an error. Scanning for router in progress.",
-      //       onRetry: () {});
     } else if (!state.hasData) {
       body = CentralErrorDisplay(
           message: "No devices found", onRetry: _scanForDevices);
@@ -94,8 +89,7 @@ class _DevicesPageState
         actions: [
           IconButton(
             icon: const Icon(FontAwesomeIcons.arrowsRotate),
-            onPressed:
-                state.loading || !state.enableScan ? null : _scanForDevices,
+            onPressed: state.loading ? null : _scanForDevices,
           ),
         ],
       ),

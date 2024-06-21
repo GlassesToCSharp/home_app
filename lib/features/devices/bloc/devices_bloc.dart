@@ -17,22 +17,7 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
 
   DevicesBloc({required this.repository, required this.connectivityService})
       : super(const DevicesState.idle(data: <Device>[])) {
-    on<EnableScan>(_handleEnableScanEvent);
     on<ScanForDevices>(_handleScanForDevicesEvent);
-  }
-
-  Future<void> _handleEnableScanEvent(
-      EnableScan event, Emitter<DevicesState> emit) async {
-    if (state.hasError) {
-      emit(DevicesState.error(state.error!,
-          data: state.data, enableScan: event.enable));
-    } else if (state.hasData) {
-      emit(DevicesState.data(state.data!, enableScan: event.enable));
-    } else if (state.loading) {
-      emit(DevicesState.loading(data: state.data, enableScan: event.enable));
-    } else {
-      emit(DevicesState.idle(data: state.data, enableScan: event.enable));
-    }
   }
 
   Future<void> _handleScanForDevicesEvent(

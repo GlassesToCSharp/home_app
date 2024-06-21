@@ -38,7 +38,6 @@ class RouterStatusContainerBloc
         (change.currentState.hasData &&
             change.nextState.hasData &&
             change.currentState.data! != change.nextState.data!)) {
-      devicesBloc.add(const EnableScan(true));
       devicesBloc.add(const ScanForDevices());
     }
   }

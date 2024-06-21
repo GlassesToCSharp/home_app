@@ -7,12 +7,6 @@ abstract class DevicesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class EnableScan extends DevicesEvent {
-  final bool enable;
-
-  const EnableScan(this.enable);
-}
-
 class ScanForDevices extends DevicesEvent {
   const ScanForDevices();
 }
