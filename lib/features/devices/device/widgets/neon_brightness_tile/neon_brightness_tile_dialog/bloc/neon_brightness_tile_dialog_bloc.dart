@@ -25,9 +25,12 @@ class NeonBrightnessTileDialogBloc
     emit(NeonBrightnessTileDialogState.loading(data: state.data));
 
     try {
+      final futures = <Future>[];
       for (var ipAddress in ipAddresses) {
-        await repository.setNeonBrightness(ipAddress, event.brightness.toInt());
+        futures.add(
+            repository.setNeonBrightness(ipAddress, event.brightness.toInt()));
       }
+      await Future.wait(futures);
       emit(const NeonBrightnessTileDialogState.data(true));
     } catch (e) {
       emit(NeonBrightnessTileDialogState.error(e.toString(), data: false));

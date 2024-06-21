@@ -25,14 +25,22 @@ class MotorControlTileDialogBloc
     emit(const MotorControlTileDialogState.loading());
 
     try {
-      // Do these sequentially, as the device won't be able to do these simultaneously.
+      final futures = <Future>[];
       for (var ipAddress in ipAddresses) {
-        await repository.setMotorAcceleration(
-            ipAddress, event.newConfiguration.acceleration);
-        await repository.setMotorSpeed(ipAddress, event.newConfiguration.speed);
-        await repository.setMotorPosition(
-            ipAddress, event.newConfiguration.position);
+        final subFutures = <Future>[];
+        // Do these sequentially, as the device won't be able to do these
+        // simultaneously.
+        subFutures.add(repository.setMotorAcceleration(
+            ipAddress, event.newConfiguration.acceleration));
+        subFutures.add(
+            repository.setMotorSpeed(ipAddress, event.newConfiguration.speed));
+        subFutures.add(repository.setMotorPosition(
+            ipAddress, event.newConfiguration.position));
+
+        futures.add(Future.wait(subFutures));
       }
+
+      await Future.wait(futures);
       emit(const MotorControlTileDialogState.data(true));
     } catch (e) {
       emit(MotorControlTileDialogState.error(e.toString(), data: false));

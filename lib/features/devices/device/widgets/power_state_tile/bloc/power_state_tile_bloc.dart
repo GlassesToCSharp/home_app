@@ -29,9 +29,11 @@ class PowerStateTileBloc
     emit(PowerStateTileState.loading(data: event.newState));
 
     try {
+      final futures = <Future>[];
       for (var ipAddress in ipAddresses) {
-        await repository.setPowerState(ipAddress, event.newState);
+        futures.add(repository.setPowerState(ipAddress, event.newState));
       }
+      await Future.wait(futures);
       emit(PowerStateTileState.data(event.newState));
     } catch (e) {
       emit(PowerStateTileState.error(e.toString(), data: initialState));

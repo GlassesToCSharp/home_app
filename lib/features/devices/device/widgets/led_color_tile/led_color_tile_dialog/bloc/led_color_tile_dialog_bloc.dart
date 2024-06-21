@@ -25,10 +25,12 @@ class LedColorTileDialogBloc
     emit(const LedColorTileDialogState.loading());
 
     try {
+      final futures = <Future>[];
       for (var ipAddress in ipAddresses) {
-        await repository.setLedColor(
-            ipAddress, event.red, event.green, event.blue, event.opacity);
+        futures.add(repository.setLedColor(
+            ipAddress, event.red, event.green, event.blue, event.opacity));
       }
+      await Future.wait(futures);
       emit(const LedColorTileDialogState.data(true));
     } catch (e) {
       emit(LedColorTileDialogState.error(e.toString(), data: false));
