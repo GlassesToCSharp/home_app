@@ -4,7 +4,6 @@ import 'package:home_app/features/devices/device/widgets/motor_control_tile/moto
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
-import 'package:home_app/features/devices/mixins/device_helper.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -17,17 +16,8 @@ class DevicePage extends StatefulWidget {
   State<DevicePage> createState() => _DevicePageState();
 }
 
-class _DevicePageState extends State<DevicePage> with DeviceHelper {
+class _DevicePageState extends State<DevicePage> {
   Device get firstDevice => widget.devices.first;
-
-  Device? get powerDevice => firstWhere(
-      widget.devices, (device) => device.nodeDeviceStatus!.power != null);
-  Device? get motorDevice => firstWhere(
-      widget.devices, (device) => device.nodeDeviceStatus!.motor != null);
-  Device? get ledDevice => firstWhere(
-      widget.devices, (device) => device.nodeDeviceStatus!.ledColor != null);
-  Device? get neonDevice => firstWhere(widget.devices,
-      (device) => device.nodeDeviceStatus!.neonBrightness != null);
 
   @override
   Widget build(BuildContext context) {
