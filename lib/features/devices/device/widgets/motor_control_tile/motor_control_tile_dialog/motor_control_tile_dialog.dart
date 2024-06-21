@@ -27,6 +27,7 @@ class _MotorControlTileDialogState extends BlocState<
   int _position = 0;
   int _speed = 0;
   int _acceleration = 0;
+  bool _haveValuesChanged = false;
 
   @override
   void initState() {
@@ -77,6 +78,7 @@ class _MotorControlTileDialogState extends BlocState<
             onChange: (newValue) {
               setState(() {
                 _position = newValue;
+                _haveValuesChanged = true;
               });
             },
           ),
@@ -87,6 +89,7 @@ class _MotorControlTileDialogState extends BlocState<
             onChange: (newValue) {
               setState(() {
                 _speed = newValue;
+                _haveValuesChanged = true;
               });
             },
           ),
@@ -97,6 +100,7 @@ class _MotorControlTileDialogState extends BlocState<
             onChange: (newValue) {
               setState(() {
                 _acceleration = newValue;
+                _haveValuesChanged = true;
               });
             },
           ),
@@ -113,11 +117,13 @@ class _MotorControlTileDialogState extends BlocState<
 
               // Positive action
               TextButton(
-                onPressed: () => bloc.add(NewConfiguration(NodeDeviceMotor(
-                  speed: _speed,
-                  position: _position,
-                  acceleration: _acceleration,
-                ))),
+                onPressed: _haveValuesChanged
+                    ? () => bloc.add(NewConfiguration(NodeDeviceMotor(
+                          speed: _speed,
+                          position: _position,
+                          acceleration: _acceleration,
+                        )))
+                    : null,
                 child: const Text("Save"),
               ),
             ],

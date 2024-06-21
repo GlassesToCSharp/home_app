@@ -27,6 +27,8 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
   int _blue = 0;
   double _opacity = 1.0;
 
+  bool _haveValuesChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,7 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
                 _green = value.green;
                 _blue = value.blue;
                 _opacity = value.opacity;
+                _haveValuesChanged = true;
               });
             },
           ),
@@ -97,8 +100,10 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
 
               // Positive action
               TextButton(
-                onPressed: () => bloc.add(
-                    NewColor(_red, _green, _blue, (_opacity * 100).toInt())),
+                onPressed: _haveValuesChanged
+                    ? () => bloc.add(
+                        NewColor(_red, _green, _blue, (_opacity * 100).toInt()))
+                    : null,
                 child: const Text("Save"),
               ),
             ],

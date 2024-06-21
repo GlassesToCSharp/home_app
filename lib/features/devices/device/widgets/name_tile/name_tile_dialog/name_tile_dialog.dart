@@ -17,6 +17,7 @@ class NameTileDialog extends StatefulWidget {
 class _NameTileDialogState extends BlocState<NameTileDialog, NameTileDialogBloc,
     NameTileDialogEvent, NameTileDialogState> {
   final _textEditingController = TextEditingController();
+  bool _hasValueChanged = false;
 
   @override
   void initState() {
@@ -53,6 +54,11 @@ class _NameTileDialogState extends BlocState<NameTileDialog, NameTileDialogBloc,
         autofocus: true,
         controller: _textEditingController,
         maxLength: 19,
+        onChanged: (_) {
+          setState(() {
+            _hasValueChanged = true;
+          });
+        },
       ),
       actions: state.loading
           ? [const CircularProgressIndicator()]
@@ -65,7 +71,9 @@ class _NameTileDialogState extends BlocState<NameTileDialog, NameTileDialogBloc,
 
               // Positive action
               TextButton(
-                onPressed: () => bloc.add(NewName(_textEditingController.text)),
+                onPressed: _hasValueChanged
+                    ? () => bloc.add(NewName(_textEditingController.text))
+                    : null,
                 child: const Text("Save"),
               ),
             ],

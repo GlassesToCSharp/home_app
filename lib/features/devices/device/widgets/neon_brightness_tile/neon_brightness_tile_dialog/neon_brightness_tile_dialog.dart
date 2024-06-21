@@ -22,6 +22,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
     NeonBrightnessTileDialogEvent,
     NeonBrightnessTileDialogState> {
   double _brightness = 0;
+  bool _hasValueChanged = false;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
             onChanged: (newValue) {
               setState(() {
                 _brightness = newValue;
+                _hasValueChanged = true;
               });
             },
           ),
@@ -88,7 +90,9 @@ class _NeonBrightnessTileDialogState extends BlocState<
 
               // Positive action
               TextButton(
-                onPressed: () => bloc.add(NewBrightness(_brightness)),
+                onPressed: _hasValueChanged
+                    ? () => bloc.add(NewBrightness(_brightness))
+                    : null,
                 child: const Text("Save"),
               ),
             ],
