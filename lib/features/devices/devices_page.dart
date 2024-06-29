@@ -17,6 +17,8 @@ class DevicesPage extends StatefulWidget {
 
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
+  static const _iconSize = 16.0;
+
   bool _isBulkSelecting = false;
   final _selectedDevices = <Device>{};
 
@@ -55,6 +57,7 @@ class _DevicesPageState
             return const SizedBox();
           }
           final device = devices[index];
+          final deviceNode = device.nodeDeviceStatus;
           return Card(
             child: ListTile(
               onTap: () {
@@ -89,7 +92,48 @@ class _DevicesPageState
                   .copyWith(fontWeight: FontWeight.bold),
               subtitle: Text(device.ipAddress),
               selected: _selectedDevices.contains(device),
-              // TODO: Add what features are available for each device
+              // Show what features are available for each device
+              trailing: device.isNodeDevice
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (deviceNode!.hasPowerState)
+                              const Icon(
+                                FontAwesomeIcons.boltLightning,
+                                color: Colors.amber,
+                                size: _iconSize,
+                              ),
+                            if (deviceNode.hasNeonBrightnessState)
+                              const Icon(
+                                FontAwesomeIcons.solidLightbulb,
+                                color: Colors.amber,
+                                size: _iconSize,
+                              ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (deviceNode.hasLedColorState)
+                              const Icon(
+                                FontAwesomeIcons.palette,
+                                color: Colors.red,
+                                size: _iconSize,
+                              ),
+                            if (deviceNode.hasMotorState)
+                              const Icon(
+                                FontAwesomeIcons.gear,
+                                color: Colors.blueGrey,
+                                size: _iconSize,
+                              ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : null,
             ),
           );
         },

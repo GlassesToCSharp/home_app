@@ -72,7 +72,7 @@ class _MotorControlTileDialogState extends BlocState<
         mainAxisSize: MainAxisSize.min,
         children: [
           _Slider(
-            maximum: 1000,
+            maximum: 65535,
             title: "Position",
             value: _position,
             onChange: (newValue) {
@@ -83,7 +83,7 @@ class _MotorControlTileDialogState extends BlocState<
             },
           ),
           _Slider(
-            maximum: 1000,
+            maximum: 65535,
             title: "Speed",
             value: _speed,
             onChange: (newValue) {
@@ -94,7 +94,7 @@ class _MotorControlTileDialogState extends BlocState<
             },
           ),
           _Slider(
-            maximum: 1000,
+            maximum: 65535,
             title: "Acceleration",
             value: _acceleration,
             onChange: (newValue) {

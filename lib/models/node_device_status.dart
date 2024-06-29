@@ -23,6 +23,11 @@ class NodeDeviceStatus extends Equatable {
   @override
   List<Object?> get props => [name, power, neonBrightness, ledColor, motor];
 
+  bool get hasPowerState => power != null;
+  bool get hasNeonBrightnessState => neonBrightness != null;
+  bool get hasLedColorState => ledColor != null;
+  bool get hasMotorState => motor != null;
+
   const NodeDeviceStatus({
     required this.name,
     required this.power,
