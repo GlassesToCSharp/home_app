@@ -11,7 +11,7 @@ class HttpService {
   }) {
     final fullUrl = Uri.http(hostIpUrl, endpoint, parameters);
 
-    return http.post(fullUrl, body: body).then((res) {
+    return http.post(fullUrl, body: json.encode(body)).then((res) {
       if (res.statusCode < 200 || res.statusCode > 299) {
         throw "${res.statusCode} : ${res.body}";
       }
