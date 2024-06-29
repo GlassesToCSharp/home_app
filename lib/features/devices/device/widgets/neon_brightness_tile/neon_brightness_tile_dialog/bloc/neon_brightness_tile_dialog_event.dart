@@ -8,7 +8,7 @@ abstract class NeonBrightnessTileDialogEvent extends Equatable {
 }
 
 class NewBrightness extends NeonBrightnessTileDialogEvent {
-  final double brightness;
+  final int brightness;
 
   const NewBrightness(this.brightness);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/helpers.dart';
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile_dialog/bloc/neon_brightness_tile_dialog_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
@@ -69,6 +70,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
             autofocus: true,
             value: _brightness,
             min: 0,
+            divisions: 100,
             max: 100,
             onChanged: (newValue) {
               setState(() {
@@ -91,7 +93,8 @@ class _NeonBrightnessTileDialogState extends BlocState<
               // Positive action
               TextButton(
                 onPressed: _hasValueChanged
-                    ? () => bloc.add(NewBrightness(_brightness))
+                    ? () => bloc
+                        .add(NewBrightness(convertPercentTo8Bit(_brightness)))
                     : null,
                 child: const Text("Save"),
               ),

@@ -15,6 +15,7 @@ part 'node_device_status.g.dart';
 class NodeDeviceStatus extends Equatable {
   final String name;
   final bool? power;
+  @JsonKey(name: "neon")
   final int? neonBrightness;
   final NodeDeviceLedColor? ledColor;
   final NodeDeviceMotor? motor;

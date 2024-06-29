@@ -27,8 +27,7 @@ class NeonBrightnessTileDialogBloc
     try {
       final futures = <Future>[];
       for (var ipAddress in ipAddresses) {
-        futures.add(
-            repository.setNeonBrightness(ipAddress, event.brightness.toInt()));
+        futures.add(repository.setNeonBrightness(ipAddress, event.brightness));
       }
       await Future.wait(futures);
       emit(const NeonBrightnessTileDialogState.data(true));
