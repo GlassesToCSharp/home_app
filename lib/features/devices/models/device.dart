@@ -14,4 +14,8 @@ class Device extends Equatable {
   List<Object?> get props => [name, ipAddress, nodeDeviceStatus];
 
   const Device({required this.ipAddress, this.nodeDeviceStatus});
+
+  Device withDeviceStatus(NodeDeviceStatus status) {
+    return Device(ipAddress: ipAddress, nodeDeviceStatus: status);
+  }
 }
