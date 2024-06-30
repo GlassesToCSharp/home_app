@@ -9,7 +9,8 @@ class MockConnectivityService extends ConnectivityService with MockRepository {
   }
 
   @override
-  Future<List<Device>> scanForDevices(String subnet) {
+  Future<List<Device>> scanForDevices() {
+    const subnet = "192.168.1";
     return generateData(
       5,
       (count, generator) => Device(

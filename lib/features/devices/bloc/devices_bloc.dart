@@ -4,7 +4,6 @@ import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/connectivity_service/connectivity_service.dart';
-import 'package:network_tools/network_tools.dart';
 
 export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 export 'package:home_app/services/connectivity_service/connectivity_service.dart';
@@ -30,29 +29,30 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
       // is, add it to the list to return.
       final devices = <Device>[];
       final nodeDeviceStatus = <Future<NodeDeviceStatus>>[];
-      final mdnsDevices = await MdnsScannerService.instance.searchMdnsDevices();
+      final mdnsDevices = await connectivityService.scanForDevices();
       for (final mdnsDevice in mdnsDevices) {
-        final mdnsInfo = await mdnsDevice.mdnsInfo;
-        if (mdnsInfo == null) {
-          continue;
-        }
-        final mdnsName = mdnsInfo.getOnlyTheStartOfMdnsName();
-        // Do anything with the active host
-        if (mdnsName == "LocalNodeMCU4IoT") {
+        nodeDeviceStatus.add(Future(() async {
           try {
-            nodeDeviceStatus
-                .add(repository.getDeviceStatus(mdnsDevice.address));
-            devices.add(Device(ipAddress: "${mdnsDevice.address}:80"));
-          } catch (_) {
-            // Ignore errors, and don't add device to list.
-            continue;
+            return await repository.getDeviceStatus(mdnsDevice.ipAddress);
+          } catch (e) {
+            // If retrieving the device status fails, enter empty null device
+            // status.
+            return NodeDeviceStatus(
+                name: "[E] ${e.toString()}",
+                power: null,
+                neonBrightness: null,
+                ledColor: null,
+                motor: null);
           }
-        }
+        }));
+        devices.add(Device(ipAddress: mdnsDevice.ipAddress));
       }
+
       final statuses = await Future.wait(nodeDeviceStatus);
       for (int i = 0; i < statuses.length; i++) {
         devices[i] = devices[i].withDeviceStatus(statuses[i]);
       }
+
       emit(DevicesState.data(devices));
     } catch (e) {
       emit(DevicesState.error(e.toString(), data: state.data));

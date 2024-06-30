@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/mixins/mock_repository.dart';
-import 'package:lan_scanner/lan_scanner.dart';
+import 'package:network_tools/network_tools.dart';
 
 export 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -13,5 +11,5 @@ part 'mock_connectivity_service.dart';
 abstract class ConnectivityService {
   const ConnectivityService();
   Future<bool> isConnectedToLocalNetwork();
-  Future<List<Device>> scanForDevices(String subnet);
+  Future<List<Device>> scanForDevices();
 }
