@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:home_app/features/devices/models/device.dart';
+import 'package:home_app/features/presets/bloc/presets_bloc.dart';
 import 'package:home_app/features/presets/models/preset_actions.dart';
+import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/services/navigation_service/navigation_service.dart';
+import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -13,12 +16,13 @@ class PresetsPage extends StatefulWidget {
   State<PresetsPage> createState() => _PresetsPageState();
 }
 
-class _PresetsPageState extends State<PresetsPage> {
+class _PresetsPageState
+    extends BlocState<PresetsPage, PresetsBloc, PresetsEvent, PresetsState> {
   int _selectedIndex = -1;
 
   final _presetActions = <PresetActions>[
     PresetActions(
-        name: "Trinity",
+        name: "Open Trinity",
         newValues: NodeDeviceStatus(
             name: "",
             power: true,
@@ -29,10 +33,41 @@ class _PresetsPageState extends State<PresetsPage> {
               position: 1000,
               acceleration: 200,
             ))),
+    PresetActions(
+        name: "Close Trinity",
+        newValues: NodeDeviceStatus(
+            name: "",
+            power: false,
+            neonBrightness: 0,
+            ledColor: NodeDeviceLedColor.fromColor(Colors.black),
+            motor: const NodeDeviceMotor(
+              speed: 200,
+              position: 0,
+              acceleration: 200,
+            ))),
   ];
 
   @override
-  Widget build(BuildContext context) {
+  PresetsBloc createBloc(KiwiContainer di) {
+    return PresetsBloc(
+        devices: widget.devices,
+        repository: di.resolve<NodeDeviceRepository>());
+  }
+
+  @override
+  void onStateChange(context, PresetsState newState) {
+    super.onStateChange(context, newState);
+
+    if (newState.hasError) {
+      SnackBarPresenter.presentError(
+          ScaffoldMessenger.of(context), newState.error!);
+    } else if (newState.data == true) {
+      NavigationService.pop();
+    }
+  }
+
+  @override
+  Widget buildState(BuildContext context, PresetsState state) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Preset Actions"),
@@ -53,7 +88,7 @@ class _PresetsPageState extends State<PresetsPage> {
                 final presetAction = _presetActions[index];
                 return Card(
                   child: ListTile(
-                    onTap: widget.devices.isEmpty
+                    onTap: widget.devices.isEmpty || state.loading
                         ? null
                         : () {
                             setState(() {
@@ -79,10 +114,15 @@ class _PresetsPageState extends State<PresetsPage> {
       ),
       floatingActionButton: _selectedIndex >= 0
           ? FloatingActionButton.extended(
-              onPressed: () {
-                // TODO: Action the commands
-              },
-              label: const Text("Action"),
+              onPressed: state.loading
+                  ? null
+                  : () => bloc
+                      .add(Execute(_presetActions[_selectedIndex].newValues)),
+              label: state.loading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text("Action"),
             )
           : null,
     );
