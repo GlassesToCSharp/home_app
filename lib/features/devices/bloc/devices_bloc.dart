@@ -37,12 +37,6 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
           continue;
         }
         final mdnsName = mdnsInfo.getOnlyTheStartOfMdnsName();
-        print('''
-        Address: ${mdnsDevice.address}
-        Port: ${mdnsInfo.mdnsPort}
-        ServiceType: ${mdnsInfo.mdnsServiceType}
-        MdnsName: ${mdnsInfo.getOnlyTheStartOfMdnsName()}
-        ''');
         // Do anything with the active host
         if (mdnsName == "LocalNodeMCU4IoT") {
           try {

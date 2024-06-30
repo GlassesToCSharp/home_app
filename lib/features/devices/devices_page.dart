@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
 import 'package:home_app/features/devices/device/device_navigator.dart';
-// import 'package:home_app/features/devices/widgets/router_status_container/router_status_container.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
@@ -175,9 +174,6 @@ class _DevicesPageState
           Expanded(
             child: body,
           ),
-          // RouterStatusContainer(
-          //   devicesBloc: bloc,
-          // ),
         ],
       ),
       floatingActionButton: _isBulkSelecting
