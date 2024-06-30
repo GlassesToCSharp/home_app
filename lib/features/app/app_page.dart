@@ -27,7 +27,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
   ];
   static const _pages = [
     DevicesPage(),
-    PresetsPage(devices: []),
+    PresetsPage(devices: {}),
     Center(
       child: Text(
         'Index 2: Settings',

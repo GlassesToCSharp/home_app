@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/features/presets/models/preset_actions.dart';
 
+export 'package:home_app/features/devices/models/device.dart';
+
 class PresetsPage extends StatefulWidget {
-  final List<Device> devices;
+  final Set<Device> devices;
 
   const PresetsPage({required this.devices});
 
