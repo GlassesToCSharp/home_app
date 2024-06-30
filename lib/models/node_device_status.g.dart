@@ -11,10 +11,7 @@ NodeDeviceStatus _$NodeDeviceStatusFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       power: json['power'] as bool?,
       neonBrightness: (json['neon'] as num?)?.toInt(),
-      ledColor: json['ledColor'] == null
-          ? null
-          : NodeDeviceLedColor.fromJson(
-              json['ledColor'] as Map<String, dynamic>),
+      ledColor: NodeDeviceStatus._intToLedColor(json['led-color']),
       motor: json['motor'] == null
           ? null
           : NodeDeviceMotor.fromJson(json['motor'] as Map<String, dynamic>),

@@ -32,12 +32,12 @@ class NodeDeviceLedColor extends Equatable {
       red: color.red,
       green: color.green,
       blue: color.blue,
-      opacity: (color.opacity * 100).toInt(),
+      opacity: (color.opacity * 255).toInt(),
     );
   }
 
   Color toColor() {
-    return Color.fromRGBO(red, green, blue, opacity / 100);
+    return Color.fromRGBO(red, green, blue, opacity / 255);
   }
 
   String toHexString() {
