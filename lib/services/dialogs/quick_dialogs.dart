@@ -3,11 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum QuickDialogsTheme {
-  platformSpecific,
-  materialOnly,
-  cupertinoOnly,
-}
+enum QuickDialogsTheme { platformSpecific, materialOnly, cupertinoOnly }
 
 class QuickDialogs {
   /// Gets or sets the overall app dialog theme. This defaults to "platform
@@ -34,37 +30,40 @@ class QuickDialogs {
     VoidCallback? destructiveActionCallback,
   }) {
     showDialog(
-        context: context,
-        builder: (context) {
-          return _PlatformAlertDialog.stringContent(
-            title: title,
-            content: message,
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  constructiveActionName.toUpperCase(),
-                  style: const TextStyle(color: Colors.blue),
-                ),
-                onPressed: () {
-                  // Close the dialog.
-                  Navigator.of(context).pop();
-                },
+      context: context,
+      builder: (context) {
+        return _PlatformAlertDialog.stringContent(
+          title: title,
+          content: message,
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                constructiveActionName.toUpperCase(),
+                style: const TextStyle(color: Colors.blue),
               ),
-              TextButton(
-                child: Text(destructiveActionName.toUpperCase(),
-                    style: const TextStyle(color: Colors.red)),
-                onPressed: () {
-                  // Close the dialog.
-                  Navigator.of(context).pop();
+              onPressed: () {
+                // Close the dialog.
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                destructiveActionName.toUpperCase(),
+                style: const TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                // Close the dialog.
+                Navigator.of(context).pop();
 
-                  if (destructiveActionCallback != null) {
-                    destructiveActionCallback();
-                  }
-                },
-              )
-            ],
-          );
-        });
+                if (destructiveActionCallback != null) {
+                  destructiveActionCallback();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Display a standard information dialog.
@@ -76,27 +75,28 @@ class QuickDialogs {
     String okButton = "OK",
   }) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return _PlatformAlertDialog.stringContent(
-            title: title,
-            content: message,
-            actions: <Widget>[
-              _PlatformDialogButton.stringContent(
-                text: okButton,
-                onPressed: () {
-                  // Dialog is part of the Navigator.
-                  // This will just close the *dialog*.
-                  Navigator.pop(context);
+      context: context,
+      builder: (BuildContext context) {
+        return _PlatformAlertDialog.stringContent(
+          title: title,
+          content: message,
+          actions: <Widget>[
+            _PlatformDialogButton.stringContent(
+              text: okButton,
+              onPressed: () {
+                // Dialog is part of the Navigator.
+                // This will just close the *dialog*.
+                Navigator.pop(context);
 
-                  if (onOkClicked != null) {
-                    onOkClicked();
-                  }
-                },
-              ),
-            ],
-          );
-        });
+                if (onOkClicked != null) {
+                  onOkClicked();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Display a confirmation dialog, and set the required positive and negative
@@ -109,31 +109,32 @@ class QuickDialogs {
     required String negativeButtonText,
   }) async {
     final result = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return _PlatformAlertDialog.stringContent(
-            title: title,
-            content: message,
-            actions: <Widget>[
-              _PlatformDialogButton.stringContent(
-                text: negativeButtonText,
-                onPressed: () {
-                  // Dialog is part of the Navigator.
-                  // This will just close the *dialog*.
-                  Navigator.pop(context, false);
-                },
-              ),
-              _PlatformDialogButton.stringContent(
-                text: positiveButtonText,
-                onPressed: () {
-                  // Return true for confirmation
-                  Navigator.pop(context, true);
-                },
-              ),
-            ],
-          );
-        });
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return _PlatformAlertDialog.stringContent(
+          title: title,
+          content: message,
+          actions: <Widget>[
+            _PlatformDialogButton.stringContent(
+              text: negativeButtonText,
+              onPressed: () {
+                // Dialog is part of the Navigator.
+                // This will just close the *dialog*.
+                Navigator.pop(context, false);
+              },
+            ),
+            _PlatformDialogButton.stringContent(
+              text: positiveButtonText,
+              onPressed: () {
+                // Return true for confirmation
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
 
     return result;
   }
@@ -146,17 +147,21 @@ class _PlatformAlertDialog extends StatelessWidget {
   final Widget contentWidget;
   final List<Widget> actions;
 
-  _PlatformAlertDialog.stringContent(
-      {required String title,
-      required String content,
-      required List<Widget> actions})
-      : this.widgetContent(
-            title: title, actions: actions, contentWidget: Text(content));
+  _PlatformAlertDialog.stringContent({
+    required String title,
+    required String content,
+    required List<Widget> actions,
+  }) : this.widgetContent(
+         title: title,
+         actions: actions,
+         contentWidget: Text(content),
+       );
 
-  const _PlatformAlertDialog.widgetContent(
-      {required this.title,
-      required this.contentWidget,
-      required this.actions});
+  const _PlatformAlertDialog.widgetContent({
+    required this.title,
+    required this.contentWidget,
+    required this.actions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +173,7 @@ class _PlatformAlertDialog extends StatelessWidget {
         return _createMaterialDialog(title, contentWidget, actions);
 
       case QuickDialogsTheme.platformSpecific:
+      // ignore: unreachable_switch_default
       default:
         if (Theme.of(context).platform == TargetPlatform.iOS) {
           return _createCupertinoDialog(title, contentWidget, actions);
@@ -178,7 +184,10 @@ class _PlatformAlertDialog extends StatelessWidget {
   }
 
   Widget _createCupertinoDialog(
-      String title, Widget contentWidget, List<Widget> actions) {
+    String title,
+    Widget contentWidget,
+    List<Widget> actions,
+  ) {
     return CupertinoAlertDialog(
       title: title.isEmpty ? null : Text(title),
       content: contentWidget,
@@ -187,7 +196,10 @@ class _PlatformAlertDialog extends StatelessWidget {
   }
 
   Widget _createMaterialDialog(
-      String title, Widget contentWidget, List<Widget> actions) {
+    String title,
+    Widget contentWidget,
+    List<Widget> actions,
+  ) {
     return AlertDialog(
       title: Text(title),
       content: contentWidget,
@@ -200,12 +212,15 @@ class _PlatformDialogButton extends StatelessWidget {
   final Widget textWidget;
   final VoidCallback onPressed;
 
-  _PlatformDialogButton.stringContent(
-      {required String text, required VoidCallback onPressed})
-      : this.widgetContent(textWidget: Text(text), onPressed: onPressed);
+  _PlatformDialogButton.stringContent({
+    required String text,
+    required VoidCallback onPressed,
+  }) : this.widgetContent(textWidget: Text(text), onPressed: onPressed);
 
-  const _PlatformDialogButton.widgetContent(
-      {required this.textWidget, required this.onPressed});
+  const _PlatformDialogButton.widgetContent({
+    required this.textWidget,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +232,7 @@ class _PlatformDialogButton extends StatelessWidget {
         return _createMaterialAction(textWidget, onPressed);
 
       case QuickDialogsTheme.platformSpecific:
+      // ignore: unreachable_switch_default
       default:
         if (Theme.of(context).platform == TargetPlatform.iOS) {
           return _createCupertinoAction(textWidget, onPressed);
@@ -227,16 +243,10 @@ class _PlatformDialogButton extends StatelessWidget {
   }
 
   Widget _createCupertinoAction(Widget textWidget, VoidCallback onPressed) {
-    return CupertinoDialogAction(
-      onPressed: onPressed,
-      child: textWidget,
-    );
+    return CupertinoDialogAction(onPressed: onPressed, child: textWidget);
   }
 
   Widget _createMaterialAction(Widget textWidget, VoidCallback onPressed) {
-    return TextButton(
-      onPressed: onPressed,
-      child: textWidget,
-    );
+    return TextButton(onPressed: onPressed, child: textWidget);
   }
 }

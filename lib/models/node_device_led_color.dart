@@ -29,10 +29,10 @@ class NodeDeviceLedColor extends Equatable {
 
   factory NodeDeviceLedColor.fromColor(Color color) {
     return NodeDeviceLedColor(
-      red: color.red,
-      green: color.green,
-      blue: color.blue,
-      opacity: (color.opacity * 255).toInt(),
+      red: (color.r * 255.0).round().clamp(0, 255),
+      green: (color.g * 255.0).round().clamp(0, 255),
+      blue: (color.b * 255.0).round().clamp(0, 255),
+      opacity: (color.a * 255).round().clamp(0, 255),
     );
   }
 
@@ -41,7 +41,7 @@ class NodeDeviceLedColor extends Equatable {
   }
 
   String toHexString() {
-    return "#${toColor().value.toRadixString(16).padLeft(8, "0")}";
+    return "#${toColor().toARGB32().toRadixString(16).padLeft(8, "0")}";
   }
 
   // For testing purposes.

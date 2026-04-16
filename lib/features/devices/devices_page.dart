@@ -40,13 +40,17 @@ class _DevicesPageState
   Widget buildState(BuildContext context, DevicesState state) {
     Widget body = const SizedBox();
     if (state.hasError) {
-      body =
-          CentralErrorDisplay(message: state.error!, onRetry: _scanForDevices);
+      body = CentralErrorDisplay(
+        message: state.error!,
+        onRetry: _scanForDevices,
+      );
     } else if (state.loading) {
       body = const CentralLoadingIndicator();
     } else if (!state.hasData) {
       body = CentralErrorDisplay(
-          message: "No devices found", onRetry: _scanForDevices);
+        message: "No devices found",
+        onRetry: _scanForDevices,
+      );
     } else {
       final devices = state.data!;
       final deviceCount = state.data!.length;
@@ -74,7 +78,8 @@ class _DevicesPageState
                   });
                 } else {
                   NavigationService.navigateTo(
-                      DeviceNavigator(devices: {device}));
+                    DeviceNavigator(devices: {device}),
+                  );
                 }
               },
               onLongPress: _isBulkSelecting
@@ -86,10 +91,9 @@ class _DevicesPageState
                       });
                     },
               title: Text(device.name),
-              titleTextStyle: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
+              titleTextStyle: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               subtitle: Text(device.ipAddress),
               selected: _selectedDevices.contains(device),
               // Show what features are available for each device
@@ -101,13 +105,13 @@ class _DevicesPageState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (deviceNode!.hasPowerState)
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.boltLightning,
                                 color: Colors.amber,
                                 size: _iconSize,
                               ),
                             if (deviceNode.hasNeonBrightnessState)
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.solidLightbulb,
                                 color: Colors.amber,
                                 size: _iconSize,
@@ -118,13 +122,13 @@ class _DevicesPageState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (deviceNode.hasLedColorState)
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.palette,
                                 color: Colors.red,
                                 size: _iconSize,
                               ),
                             if (deviceNode.hasMotorState)
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.gear,
                                 color: Colors.blueGrey,
                                 size: _iconSize,
@@ -153,7 +157,7 @@ class _DevicesPageState
         actions: _isBulkSelecting
             ? [
                 IconButton(
-                  icon: const Icon(FontAwesomeIcons.xmark),
+                  icon: const FaIcon(FontAwesomeIcons.xmark),
                   onPressed: () {
                     setState(() {
                       _isBulkSelecting = false;
@@ -164,7 +168,7 @@ class _DevicesPageState
               ]
             : [
                 IconButton(
-                  icon: const Icon(FontAwesomeIcons.arrowsRotate),
+                  icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
                   onPressed: state.loading ? null : _scanForDevices,
                 ),
               ],
@@ -172,24 +176,26 @@ class _DevicesPageState
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: body,
-          ),
+          Expanded(child: body),
           if (_isBulkSelecting)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.max,
               children: [
                 ElevatedButton(
-                    onPressed: () => NavigationService.navigateTo(
-                        DeviceNavigator(devices: _selectedDevices)),
-                    child: const Text("Bulk edit")),
+                  onPressed: () => NavigationService.navigateTo(
+                    DeviceNavigator(devices: _selectedDevices),
+                  ),
+                  child: const Text("Bulk edit"),
+                ),
                 ElevatedButton(
-                    onPressed: () => NavigationService.navigateTo(
-                        PresetsNavigator(devices: _selectedDevices)),
-                    child: const Text("Action preset"))
+                  onPressed: () => NavigationService.navigateTo(
+                    PresetsNavigator(devices: _selectedDevices),
+                  ),
+                  child: const Text("Action preset"),
+                ),
               ],
-            )
+            ),
         ],
       ),
     );

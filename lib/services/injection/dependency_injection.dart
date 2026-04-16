@@ -4,7 +4,7 @@ import 'package:home_app/services/connectivity_service/connectivity_service.dart
 import 'package:home_app/services/storage_service/storage_service.dart';
 import 'package:kiwi/kiwi.dart';
 
-const bool _useMock = true;
+const bool _useMock = false;
 
 class DependencyInjection extends StatelessWidget {
   final Widget child;
@@ -31,15 +31,9 @@ class DependencyInjection extends StatelessWidget {
       const MockConnectivityService(),
       LiveConnectivityService(),
     );
-    _addInstance<StorageService>(
-      LocalStorage(),
-      SafeStorage(),
-    );
+    _addInstance<StorageService>(LocalStorage(), SafeStorage());
 
-    return DependencyInjectorInheritance(
-      container: _container,
-      child: child,
-    );
+    return DependencyInjectorInheritance(container: _container, child: child);
   }
 
   void _addInstance<T>(T mock, T live) {
@@ -54,9 +48,10 @@ class DependencyInjection extends StatelessWidget {
 class DependencyInjectorInheritance extends InheritedWidget {
   final KiwiContainer container;
 
-  const DependencyInjectorInheritance(
-      {required this.container, required Widget child})
-      : super(child: child);
+  const DependencyInjectorInheritance({
+    required this.container,
+    required Widget child,
+  }) : super(child: child);
 
   static DependencyInjectorInheritance? of(BuildContext context) {
     return context

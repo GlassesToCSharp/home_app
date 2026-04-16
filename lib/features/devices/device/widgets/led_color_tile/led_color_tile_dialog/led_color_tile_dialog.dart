@@ -11,17 +11,20 @@ class LedColorTileDialog extends StatefulWidget {
   final NodeDeviceLedColor color;
   final List<String> ipAddresses;
 
-  const LedColorTileDialog({
-    required this.color,
-    required this.ipAddresses,
-  });
+  const LedColorTileDialog({required this.color, required this.ipAddresses});
 
   @override
   State<StatefulWidget> createState() => _LedColorTileDialogState();
 }
 
-class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
-    LedColorTileDialogBloc, LedColorTileDialogEvent, LedColorTileDialogState> {
+class _LedColorTileDialogState
+    extends
+        BlocState<
+          LedColorTileDialog,
+          LedColorTileDialogBloc,
+          LedColorTileDialogEvent,
+          LedColorTileDialogState
+        > {
   int _red = 0;
   int _green = 0;
   int _blue = 0;
@@ -51,17 +54,21 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
   void onStateChange(context, LedColorTileDialogState newState) {
     if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), newState.error!);
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
     }
 
     if (newState.hasData && newState.data == true) {
       Navigator.pop<NodeDeviceLedColor>(
-          context,
-          NodeDeviceLedColor(
-              red: _red,
-              green: _green,
-              blue: _blue,
-              opacity: (_opacity * 255).toInt()));
+        context,
+        NodeDeviceLedColor(
+          red: _red,
+          green: _green,
+          blue: _blue,
+          opacity: (_opacity * 255).toInt(),
+        ),
+      );
     }
   }
 
@@ -79,10 +86,10 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
             labelTypes: const [],
             onColorChanged: (value) {
               setState(() {
-                _red = value.red;
-                _green = value.green;
-                _blue = value.blue;
-                _opacity = value.opacity;
+                _red = (value.r * 255.0).round().clamp(0, 255);
+                _green = (value.g * 255.0).round().clamp(0, 255);
+                _blue = (value.b * 255.0).round().clamp(0, 255);
+                _opacity = value.a;
                 _haveValuesChanged = true;
               });
             },
@@ -102,7 +109,8 @@ class _LedColorTileDialogState extends BlocState<LedColorTileDialog,
               TextButton(
                 onPressed: _haveValuesChanged
                     ? () => bloc.add(
-                        NewColor(_red, _green, _blue, (_opacity * 255).toInt()))
+                        NewColor(_red, _green, _blue, (_opacity * 255).toInt()),
+                      )
                     : null,
                 child: const Text("Save"),
               ),

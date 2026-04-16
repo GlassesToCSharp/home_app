@@ -1,14 +1,12 @@
 part of 'storage_service.dart';
 
 class SafeStorage extends StorageService {
-  static const _androidOptions = AndroidOptions(
-    encryptedSharedPreferences: true,
-  );
+  static const _androidOptions = AndroidOptions();
 
   final FlutterSecureStorage _storage;
 
   SafeStorage()
-      : _storage = const FlutterSecureStorage(aOptions: _androidOptions);
+    : _storage = const FlutterSecureStorage(aOptions: _androidOptions);
 
   @override
   Future<String> read(String key, {String defaultValue = ""}) async {

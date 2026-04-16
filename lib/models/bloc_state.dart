@@ -6,7 +6,8 @@ import 'package:home_app/services/injection/dependency_injection.dart';
 export 'package:kiwi/kiwi.dart';
 
 abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
-    extends State<T> with AutomaticKeepAliveClientMixin {
+    extends State<T>
+    with AutomaticKeepAliveClientMixin {
   B? _bloc;
 
   B get bloc => _bloc ?? _createBloc();
@@ -37,10 +38,7 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
     return BlocListener<B, S>(
       listener: onStateChange,
       bloc: _bloc,
-      child: BlocBuilder<B, S>(
-        bloc: _bloc,
-        builder: buildState,
-      ),
+      child: BlocBuilder<B, S>(bloc: _bloc, builder: buildState),
     );
   }
 
@@ -52,12 +50,13 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
 
   B createBloc(KiwiContainer di);
 
-  void onStateChange(context, S newState) {}
+  void onStateChange(BuildContext context, S newState) {}
 
   Widget buildState(BuildContext context, S state);
 
   B _createBloc() {
-    return createBloc(DependencyInjectorInheritance.of(context)?.container ??
-        KiwiContainer());
+    return createBloc(
+      DependencyInjectorInheritance.of(context)?.container ?? KiwiContainer(),
+    );
   }
 }

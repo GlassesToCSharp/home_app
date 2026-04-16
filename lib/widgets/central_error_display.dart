@@ -10,25 +10,20 @@ class CentralErrorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          FontAwesomeIcons.circleExclamation,
-          size: 32,
-        ),
-        const SizedBox(height: 10),
-        Text(
-          message,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: onRetry,
-          style: Theme.of(context).elevatedButtonTheme.style,
-          child: const Text("Retry"),
-        ),
-      ],
-    ));
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const FaIcon(FontAwesomeIcons.circleExclamation, size: 32),
+          const SizedBox(height: 10),
+          Text(message, style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: Theme.of(context).elevatedButtonTheme.style,
+            child: const Text("Retry"),
+          ),
+        ],
+      ),
+    );
   }
 }

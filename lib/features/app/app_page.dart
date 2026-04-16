@@ -15,25 +15,28 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const _navigationItems = [
+  static const TextStyle optionStyle = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+  );
+  static final _navigationItems = [
     BottomNavigationBarItem(
-        icon: Icon(FontAwesomeIcons.satelliteDish), label: "Devices"),
+      icon: FaIcon(FontAwesomeIcons.satelliteDish),
+      label: "Devices",
+    ),
     BottomNavigationBarItem(
-        icon: Icon(FontAwesomeIcons.folderTree), label: "Presets"),
+      icon: FaIcon(FontAwesomeIcons.folderTree),
+      label: "Presets",
+    ),
     BottomNavigationBarItem(
-        icon: Icon(FontAwesomeIcons.gear), label: "Settings"),
+      icon: FaIcon(FontAwesomeIcons.gear),
+      label: "Settings",
+    ),
   ];
   static const _pages = [
     DevicesPage(),
     PresetsPage(devices: {}),
-    Center(
-      child: Text(
-        'Index 2: Settings',
-        style: optionStyle,
-      ),
-    ),
+    Center(child: Text('Index 2: Settings', style: optionStyle)),
   ];
 
   int _selectedIndex = 0;
@@ -68,10 +71,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     }
 
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: _pages,
-      ),
+      body: PageView(controller: _pageController, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onTap,
         currentIndex: _selectedIndex,

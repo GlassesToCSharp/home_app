@@ -44,7 +44,7 @@ class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
   Widget buildState(BuildContext context, PowerStateTileState state) {
     return SwitchListTile(
       title: const Text("Power"),
-      activeColor: Colors.grey[100],
+      activeThumbColor: Colors.grey[100],
       activeTrackColor: Theme.of(context).primaryColor,
       inactiveThumbColor: Colors.grey[700],
       inactiveTrackColor: Colors.grey[350],

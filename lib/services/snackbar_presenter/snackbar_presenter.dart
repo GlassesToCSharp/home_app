@@ -10,8 +10,10 @@ class SnackBarPresenter {
 
   /// Present an information [SnackBar] in the provided [Scaffold].
   static void presentInformation(
-      ScaffoldMessengerState scaffoldMessengerState, String message,
-      {Color? iconColor}) {
+    ScaffoldMessengerState scaffoldMessengerState,
+    String message, {
+    Color? iconColor,
+  }) {
     // If the `iconColor` is null, it will default to the icon theme data color.
     _presentSnackbar(
       scaffoldMessengerState,
@@ -23,8 +25,10 @@ class SnackBarPresenter {
 
   /// Present a success [SnackBar] in the provided [Scaffold].
   static void presentSuccess(
-      ScaffoldMessengerState scaffoldMessengerState, String message,
-      {Color? iconColor}) {
+    ScaffoldMessengerState scaffoldMessengerState,
+    String message, {
+    Color? iconColor,
+  }) {
     _presentSnackbar(
       scaffoldMessengerState,
       message,
@@ -35,8 +39,10 @@ class SnackBarPresenter {
 
   /// Present an error [SnackBar] in the provided [Scaffold].
   static void presentError(
-      ScaffoldMessengerState scaffoldMessengerState, String error,
-      {Color? iconColor}) {
+    ScaffoldMessengerState scaffoldMessengerState,
+    String error, {
+    Color? iconColor,
+  }) {
     _presentSnackbar(
       scaffoldMessengerState,
       error,
@@ -46,21 +52,20 @@ class SnackBarPresenter {
   }
 
   /// Handles displaying the action [SnackBar] with its contents.
-  static void _presentSnackbar(ScaffoldMessengerState scaffoldMessengerState,
-      String message, Color? color, IconData icon) {
+  static void _presentSnackbar(
+    ScaffoldMessengerState scaffoldMessengerState,
+    String message,
+    Color? color,
+    FaIconData icon,
+  ) {
     assert(message.isNotEmpty);
     final snackbar = SnackBar(
       content: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(
-            icon,
-            color: color,
-          ),
+          FaIcon(icon, color: color),
           const SizedBox(width: _separationDistance),
-          Expanded(
-            child: Text(message),
-          ),
+          Expanded(child: Text(message)),
         ],
       ),
     );
