@@ -16,12 +16,14 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
   final ConnectivityService connectivityService;
 
   DevicesBloc({required this.repository, required this.connectivityService})
-      : super(const DevicesState.idle(data: <Device>[])) {
+    : super(const DevicesState.idle(data: <Device>[])) {
     on<ScanForDevices>(_handleScanForDevicesEvent);
   }
 
   Future<void> _handleScanForDevicesEvent(
-      ScanForDevices event, Emitter<DevicesState> emit) async {
+    ScanForDevices event,
+    Emitter<DevicesState> emit,
+  ) async {
     emit(const DevicesState.loading());
 
     try {
@@ -29,23 +31,26 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
       // is, add it to the list to return.
       final devices = <Device>[];
       final nodeDeviceStatus = <Future<NodeDeviceStatus>>[];
-      final mdnsDevices = await connectivityService.scanForDevices();
-      for (final mdnsDevice in mdnsDevices) {
-        nodeDeviceStatus.add(Future(() async {
-          try {
-            return await repository.getDeviceStatus(mdnsDevice.ipAddress);
-          } catch (e) {
-            // If retrieving the device status fails, enter empty null device
-            // status.
-            return NodeDeviceStatus(
+      final nodeDevices = await connectivityService.scanForDevices();
+      for (final nodeDevice in nodeDevices) {
+        nodeDeviceStatus.add(
+          Future(() async {
+            try {
+              return await repository.getDeviceStatus(nodeDevice.ipAddress);
+            } catch (e) {
+              // If retrieving the device status fails, enter empty null device
+              // status.
+              return NodeDeviceStatus(
                 name: "[E] ${e.toString()}",
                 power: null,
                 neonBrightness: null,
                 ledColor: null,
-                motor: null);
-          }
-        }));
-        devices.add(Device(ipAddress: mdnsDevice.ipAddress));
+                motor: null,
+              );
+            }
+          }),
+        );
+        devices.add(Device(ipAddress: nodeDevice.ipAddress));
       }
 
       final statuses = await Future.wait(nodeDeviceStatus);

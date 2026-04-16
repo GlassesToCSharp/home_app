@@ -2,34 +2,47 @@ part of 'connectivity_service.dart';
 
 class LiveConnectivityService extends ConnectivityService {
   final Connectivity connectivity;
-  final MdnsScannerService scanner;
 
-  LiveConnectivityService()
-      : connectivity = Connectivity(),
-        scanner = MdnsScannerService.instance;
+  LiveConnectivityService() : connectivity = Connectivity();
 
   @override
   Future<bool> isConnectedToLocalNetwork() {
-    return connectivity.checkConnectivity().then((result) =>
-        result.contains(ConnectivityResult.wifi) ||
-        result.contains(ConnectivityResult.ethernet));
+    return connectivity.checkConnectivity().then(
+      (result) =>
+          result.contains(ConnectivityResult.wifi) ||
+          // Potential for web/PC use?
+          result.contains(ConnectivityResult.ethernet),
+    );
   }
 
   @override
   Future<List<Device>> scanForDevices() async {
-    final mdnsDevices = await scanner.searchMdnsDevices();
+    const int port = 4210; // TODO: make this configurable?
     final devices = <Device>[];
-    for (final mdnsDevice in mdnsDevices) {
-      final mdnsInfo = await mdnsDevice.mdnsInfo;
-      if (mdnsInfo == null) {
-        continue;
+
+    // Bind to any available port
+    final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+
+    socket.broadcastEnabled = true;
+
+    socket.send(
+      utf8.encode("DISCOVER_NODEMCU"),
+      InternetAddress("255.255.255.255"),
+      port,
+    );
+
+    socket.listen((event) {
+      if (event == RawSocketEvent.read) {
+        final datagram = socket.receive();
+        if (datagram != null) {
+          devices.add(Device(ipAddress: datagram.address.address));
+        }
       }
-      final mdnsName = mdnsInfo.getOnlyTheStartOfMdnsName();
-      // The devices we want will have a predefined name to filter by.
-      if (mdnsName == "LocalNodeMCU4IoT") {
-        devices.add(Device(ipAddress: "${mdnsDevice.address}:80"));
-      }
-    }
+    });
+
+    // Stop listening after a timeout
+    await Future.delayed(Duration(seconds: 5));
+    socket.close();
 
     return devices;
   }
