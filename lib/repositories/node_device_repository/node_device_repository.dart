@@ -9,9 +9,15 @@ part 'mock_node_device_repository.dart';
 
 abstract class NodeDeviceRepository {
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress);
+  Future<void> setDeviceId(String ipAddress, String newId);
   Future<void> setDeviceName(String ipAddress, String newName);
   Future<void> setLedColor(
-      String ipAddress, int red, int green, int blue, int opacity);
+    String ipAddress,
+    int red,
+    int green,
+    int blue,
+    int opacity,
+  );
   Future<void> setNeonBrightness(String ipAddress, int brightness);
   Future<void> setPowerState(String ipAddress, bool enable);
   Future<void> setMotorSpeed(String ipAddress, int speed);

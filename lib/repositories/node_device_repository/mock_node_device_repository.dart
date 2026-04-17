@@ -7,6 +7,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
     final device = NodeDeviceStatus(
+      id: Random().nextBool() ? "DUMMY ${Random().nextInt(1000)}" : "",
       name: "DUMMY ${Random().nextInt(1000)}",
       ledColor: Random().nextBool()
           ? NodeDeviceLedColor(
@@ -30,6 +31,16 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
     _deviceList[ipAddress] = device;
 
     return returnDelayed(device);
+  }
+
+  @override
+  Future<void> setDeviceId(String ipAddress, String newId) {
+    _checkIpAddressExists(ipAddress);
+
+    final device = _deviceList[ipAddress]!.copyWith(id: newId);
+    _deviceList[ipAddress] = device;
+
+    return returnDelayed(null);
   }
 
   @override

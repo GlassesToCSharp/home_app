@@ -22,36 +22,43 @@ class _PresetsPageState
 
   final _presetActions = <PresetActions>[
     PresetActions(
-        name: "Open Trinity",
-        newValues: NodeDeviceStatus(
-            name: "",
-            power: true,
-            neonBrightness: 75,
-            ledColor: NodeDeviceLedColor.fromColor(Colors.red),
-            motor: const NodeDeviceMotor(
-              speed: 200,
-              position: 1000,
-              acceleration: 200,
-            ))),
+      name: "Open Trinity",
+      newValues: NodeDeviceStatus(
+        id: "",
+        name: "",
+        power: true,
+        neonBrightness: 75,
+        ledColor: NodeDeviceLedColor.fromColor(Colors.red),
+        motor: const NodeDeviceMotor(
+          speed: 200,
+          position: 1000,
+          acceleration: 200,
+        ),
+      ),
+    ),
     PresetActions(
-        name: "Close Trinity",
-        newValues: NodeDeviceStatus(
-            name: "",
-            power: false,
-            neonBrightness: 0,
-            ledColor: NodeDeviceLedColor.fromColor(Colors.black),
-            motor: const NodeDeviceMotor(
-              speed: 200,
-              position: 0,
-              acceleration: 200,
-            ))),
+      name: "Close Trinity",
+      newValues: NodeDeviceStatus(
+        id: "",
+        name: "",
+        power: false,
+        neonBrightness: 0,
+        ledColor: NodeDeviceLedColor.fromColor(Colors.black),
+        motor: const NodeDeviceMotor(
+          speed: 200,
+          position: 0,
+          acceleration: 200,
+        ),
+      ),
+    ),
   ];
 
   @override
   PresetsBloc createBloc(KiwiContainer di) {
     return PresetsBloc(
-        devices: widget.devices,
-        repository: di.resolve<NodeDeviceRepository>());
+      devices: widget.devices,
+      repository: di.resolve<NodeDeviceRepository>(),
+    );
   }
 
   @override
@@ -60,7 +67,9 @@ class _PresetsPageState
 
     if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), newState.error!);
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
     } else if (newState.data == true) {
       NavigationService.pop();
     }
@@ -100,9 +109,7 @@ class _PresetsPageState
                             });
                           },
                     title: Text(presetAction.name),
-                    titleTextStyle: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
+                    titleTextStyle: Theme.of(context).textTheme.bodyLarge!
                         .copyWith(fontWeight: FontWeight.bold),
                     selected: _selectedIndex == index,
                   ),
@@ -116,12 +123,11 @@ class _PresetsPageState
           ? FloatingActionButton.extended(
               onPressed: state.loading
                   ? null
-                  : () => bloc
-                      .add(Execute(_presetActions[_selectedIndex].newValues)),
+                  : () => bloc.add(
+                      Execute(_presetActions[_selectedIndex].newValues),
+                    ),
               label: state.loading
-                  ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
+                  ? const CircularProgressIndicator(color: Colors.white)
                   : const Text("Action"),
             )
           : null,

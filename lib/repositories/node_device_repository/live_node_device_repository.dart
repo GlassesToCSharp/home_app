@@ -4,8 +4,18 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
     return HttpService.get(
-            hostIpUrl: ipAddress, endpoint: _createUrl(["status"]))
-        .then((value) => NodeDeviceStatus.fromJson(value.toMap()));
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["status"]),
+    ).then((value) => NodeDeviceStatus.fromJson(value.toMap()));
+  }
+
+  @override
+  Future<void> setDeviceId(String ipAddress, String newId) {
+    return HttpService.post(
+      hostIpUrl: ipAddress,
+      endpoint: _createUrl(["id"]),
+      body: {"id": newId},
+    );
   }
 
   @override
@@ -13,20 +23,24 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["name"]),
-      body: {
-        "name": newName,
-      },
+      body: {"name": newName},
     );
   }
 
   @override
   Future<void> setLedColor(
-      String ipAddress, int red, int green, int blue, int opacity) {
+    String ipAddress,
+    int red,
+    int green,
+    int blue,
+    int opacity,
+  ) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["led-color"]),
       body: {
-        "color": ((opacity & 0xFF) << 24) |
+        "color":
+            ((opacity & 0xFF) << 24) |
             ((red & 0xFF) << 16) |
             ((green & 0xFF) << 8) |
             (blue & 0xFF),
@@ -39,9 +53,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["neon-brightness"]),
-      body: {
-        "neon-brightness": brightness,
-      },
+      body: {"neon-brightness": brightness},
     );
   }
 
@@ -50,9 +62,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "acceleration"]),
-      body: {
-        "acceleration": acceleration,
-      },
+      body: {"acceleration": acceleration},
     );
   }
 
@@ -61,9 +71,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "position"]),
-      body: {
-        "position": position,
-      },
+      body: {"position": position},
     );
   }
 
@@ -72,9 +80,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "speed"]),
-      body: {
-        "speed": speed,
-      },
+      body: {"speed": speed},
     );
   }
 
@@ -83,9 +89,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["power"]),
-      body: {
-        "state": enable,
-      },
+      body: {"state": enable},
     );
   }
 

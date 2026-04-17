@@ -13,6 +13,7 @@ part 'node_device_status.g.dart';
 
 @JsonSerializable(createToJson: false)
 class NodeDeviceStatus extends Equatable {
+  final String id;
   final String name;
   final bool? power;
   @JsonKey(name: "neon-brightness")
@@ -22,14 +23,16 @@ class NodeDeviceStatus extends Equatable {
   final NodeDeviceMotor? motor;
 
   @override
-  List<Object?> get props => [name, power, neonBrightness, ledColor, motor];
+  List<Object?> get props => [id, name, power, neonBrightness, ledColor, motor];
 
+  bool get isIdSet => id.isNotEmpty;
   bool get hasPowerState => power != null;
   bool get hasNeonBrightnessState => neonBrightness != null;
   bool get hasLedColorState => ledColor != null;
   bool get hasMotorState => motor != null;
 
   const NodeDeviceStatus({
+    required this.id,
     required this.name,
     required this.power,
     required this.neonBrightness,
@@ -41,6 +44,7 @@ class NodeDeviceStatus extends Equatable {
       _$NodeDeviceStatusFromJson(json);
 
   factory NodeDeviceStatus.empty() => const NodeDeviceStatus(
+    id: "",
     name: "",
     power: null,
     neonBrightness: null,
@@ -50,6 +54,7 @@ class NodeDeviceStatus extends Equatable {
 
   // For testing purposes.
   NodeDeviceStatus copyWith({
+    String? id,
     String? name,
     bool? power,
     int? neonBrightness,
@@ -57,6 +62,7 @@ class NodeDeviceStatus extends Equatable {
     NodeDeviceMotor? motor,
   }) {
     return NodeDeviceStatus(
+      id: id ?? this.id,
       name: name ?? this.name,
       power: power ?? this.power,
       neonBrightness: neonBrightness ?? this.neonBrightness,
