@@ -8,46 +8,41 @@ import 'package:home_app/features/devices/device/widgets/power_state_tile/power_
 export 'package:home_app/features/devices/models/device.dart';
 
 class DevicePage extends StatefulWidget {
-  final Set<Device> devices;
+  final Device device;
 
-  const DevicePage({required this.devices});
+  const DevicePage({required this.device});
 
   @override
   State<DevicePage> createState() => _DevicePageState();
 }
 
 class _DevicePageState extends State<DevicePage> {
-  Device get firstDevice => widget.devices.first;
+  Device get _device => widget.device;
 
   @override
   Widget build(BuildContext context) {
     final items = [
-      if (widget.devices.length == 1)
-        // Device name - only available for one device
-        NameTile(device: firstDevice),
+      // Device name - only available for one device
+      NameTile(device: _device),
       // Power state
-      PowerStateTile(devices: widget.devices),
+      PowerStateTile(device: _device),
       // Motor control
-      MotorControlTile(devices: widget.devices),
+      MotorControlTile(device: _device),
       // LED colour
-      LedColorTile(devices: widget.devices),
+      LedColorTile(device: _device),
       // Neon Brightness
-      NeonBrightnessTile(devices: widget.devices),
+      NeonBrightnessTile(device: _device),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: widget.devices.length == 1
-            ? Text(firstDevice.ipAddress)
-            : Text("${widget.devices.length} devices"),
+        title: Text(_device.ipAddress),
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
       ),
       body: ListView.separated(
-        separatorBuilder: (context, index) => Container(
-          height: 0.5,
-          color: Colors.grey,
-        ),
+        separatorBuilder: (context, index) =>
+            Container(height: 0.5, color: Colors.grey),
         itemCount: items.length + 1, // To include the last separator, add 1.
         itemBuilder: ((context, index) {
           if (index >= items.length) {

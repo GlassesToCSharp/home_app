@@ -12,33 +12,37 @@ part 'motor_control_tile_dialog_state.dart';
 class MotorControlTileDialogBloc
     extends Bloc<MotorControlTileDialogEvent, MotorControlTileDialogState> {
   final NodeDeviceRepository repository;
-  final List<String> ipAddresses;
+  final String ipAddress;
 
-  MotorControlTileDialogBloc(
-      {required this.repository, required this.ipAddresses})
-      : super(const MotorControlTileDialogState.data(false)) {
+  MotorControlTileDialogBloc({
+    required this.repository,
+    required this.ipAddress,
+  }) : super(const MotorControlTileDialogState.data(false)) {
     on<NewConfiguration>(_handleNewConfigurationEvent);
   }
 
   Future<void> _handleNewConfigurationEvent(
-      NewConfiguration event, Emitter<MotorControlTileDialogState> emit) async {
+    NewConfiguration event,
+    Emitter<MotorControlTileDialogState> emit,
+  ) async {
     emit(const MotorControlTileDialogState.loading());
 
     try {
       final futures = <Future>[];
-      for (var ipAddress in ipAddresses) {
-        final subFutures = <Future>[];
-        // Do these sequentially, as the device won't be able to do these
-        // simultaneously.
-        subFutures.add(repository.setMotorAcceleration(
-            ipAddress, event.newConfiguration.acceleration));
-        subFutures.add(
-            repository.setMotorSpeed(ipAddress, event.newConfiguration.speed));
-        subFutures.add(repository.setMotorPosition(
-            ipAddress, event.newConfiguration.position));
-
-        futures.add(Future.wait(subFutures));
-      }
+      // Do these sequentially, as the device won't be able to do these
+      // simultaneously.
+      futures.add(
+        repository.setMotorAcceleration(
+          ipAddress,
+          event.newConfiguration.acceleration,
+        ),
+      );
+      futures.add(
+        repository.setMotorSpeed(ipAddress, event.newConfiguration.speed),
+      );
+      futures.add(
+        repository.setMotorPosition(ipAddress, event.newConfiguration.position),
+      );
 
       await Future.wait(futures);
       emit(const MotorControlTileDialogState.data(true));

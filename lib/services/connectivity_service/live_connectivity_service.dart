@@ -35,7 +35,14 @@ class LiveConnectivityService extends ConnectivityService {
       if (event == RawSocketEvent.read) {
         final datagram = socket.receive();
         if (datagram != null) {
-          devices.add(Device(ipAddress: datagram.address.address));
+          devices.add(
+            Device(
+              ipAddress: datagram.address.address,
+              // We don't want a null status, but still don't show this as a
+              // valid node device.
+              nodeDeviceStatus: NodeDeviceStatus.empty(),
+            ),
+          );
         }
       }
     });

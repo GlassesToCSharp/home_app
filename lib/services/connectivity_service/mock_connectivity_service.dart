@@ -15,6 +15,7 @@ class MockConnectivityService extends ConnectivityService with MockRepository {
       5,
       (count, generator) => Device(
         ipAddress: "$subnet.${generator.nextInt(256)}",
+        nodeDeviceStatus: NodeDeviceStatus.empty(),
       ),
     );
   }

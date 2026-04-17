@@ -5,9 +5,9 @@ import 'package:home_app/features/devices/mixins/device_helper.dart';
 import 'package:home_app/features/devices/models/device.dart';
 
 class NeonBrightnessTile extends StatefulWidget {
-  final Set<Device> devices;
+  final Device device;
 
-  const NeonBrightnessTile({required this.devices});
+  const NeonBrightnessTile({required this.device});
 
   @override
   State<NeonBrightnessTile> createState() => _NeonBrightnessTileState();
@@ -15,12 +15,8 @@ class NeonBrightnessTile extends StatefulWidget {
 
 class _NeonBrightnessTileState extends State<NeonBrightnessTile>
     with DeviceHelper {
-  bool get _hasBrightness =>
-      firstWhere<Device>(widget.devices,
-          (device) => device.nodeDeviceStatus?.neonBrightness != null) !=
-      null;
-  Device get _firstNonNullDevice => firstWhere<Device>(widget.devices,
-      (device) => device.nodeDeviceStatus?.neonBrightness != null)!;
+  Device get _device => widget.device;
+  bool get _hasBrightness => _device.nodeDeviceStatus.hasNeonBrightnessState;
 
   int _brightness = 0;
 
@@ -29,12 +25,16 @@ class _NeonBrightnessTileState extends State<NeonBrightnessTile>
     super.initState();
 
     if (_hasBrightness) {
-      _brightness = _firstNonNullDevice.nodeDeviceStatus!.neonBrightness!;
+      _brightness = _device.nodeDeviceStatus.neonBrightness!;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_hasBrightness) {
+      return const SizedBox();
+    }
+
     return ListTile(
       title: const Text("Neon brightness"),
       trailing: Text("${convert8BitToPercent(_brightness)}%"),
@@ -46,9 +46,7 @@ class _NeonBrightnessTileState extends State<NeonBrightnessTile>
                 builder: (_) {
                   return NeonBrightnessTileDialog(
                     brightness: convert8BitToPercent(_brightness),
-                    ipAddresses: widget.devices
-                        .map((device) => device.ipAddress)
-                        .toList(),
+                    ipAddress: _device.ipAddress,
                   );
                 },
               );

@@ -6,21 +6,17 @@ import 'package:home_app/features/devices/models/device.dart';
 export 'package:home_app/features/devices/models/device.dart';
 
 class LedColorTile extends StatefulWidget {
-  final Set<Device> devices;
+  final Device device;
 
-  const LedColorTile({required this.devices});
+  const LedColorTile({required this.device});
 
   @override
   State<LedColorTile> createState() => _LedColorTileState();
 }
 
 class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
-  bool get _hasLedControl =>
-      firstWhere<Device>(widget.devices,
-          (device) => device.nodeDeviceStatus?.ledColor != null) !=
-      null;
-  Device get _firstNonNullDevice => firstWhere<Device>(
-      widget.devices, (device) => device.nodeDeviceStatus?.ledColor != null)!;
+  Device get _device => widget.device;
+  bool get _hasLedControl => _device.nodeDeviceStatus.hasLedColorState;
 
   NodeDeviceLedColor _color = NodeDeviceLedColor.fromColor(Colors.black);
 
@@ -29,12 +25,16 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
     super.initState();
 
     if (_hasLedControl) {
-      _color = _firstNonNullDevice.nodeDeviceStatus!.ledColor!;
+      _color = _device.nodeDeviceStatus.ledColor!;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_hasLedControl) {
+      return const SizedBox();
+    }
+
     return ListTile(
       title: const Text("LED Colour"),
       trailing: Row(
@@ -42,11 +42,7 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
         children: [
           Text(_color.toHexString()),
           const SizedBox(width: 10),
-          Container(
-            width: 20,
-            height: 20,
-            color: _color.toColor(),
-          ),
+          Container(width: 20, height: 20, color: _color.toColor()),
         ],
       ),
       onTap: _hasLedControl
@@ -57,9 +53,7 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
                 builder: (_) {
                   return LedColorTileDialog(
                     color: _color,
-                    ipAddresses: widget.devices
-                        .map((device) => device.ipAddress)
-                        .toList(),
+                    ipAddress: _device.ipAddress,
                   );
                 },
               );

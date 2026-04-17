@@ -40,17 +40,18 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
             } catch (e) {
               // If retrieving the device status fails, enter empty null device
               // status.
-              return NodeDeviceStatus(
+              return NodeDeviceStatus.empty().copyWith(
                 name: "[E] ${e.toString()}",
-                power: null,
-                neonBrightness: null,
-                ledColor: null,
-                motor: null,
               );
             }
           }),
         );
-        devices.add(Device(ipAddress: nodeDevice.ipAddress));
+        devices.add(
+          Device(
+            ipAddress: nodeDevice.ipAddress,
+            nodeDeviceStatus: NodeDeviceStatus.empty(),
+          ),
+        );
       }
 
       final statuses = await Future.wait(nodeDeviceStatus);

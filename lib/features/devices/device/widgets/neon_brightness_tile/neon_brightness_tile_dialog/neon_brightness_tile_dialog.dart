@@ -6,22 +6,25 @@ import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 class NeonBrightnessTileDialog extends StatefulWidget {
   final int brightness;
-  final List<String> ipAddresses;
+  final String ipAddress;
 
   const NeonBrightnessTileDialog({
     required this.brightness,
-    required this.ipAddresses,
+    required this.ipAddress,
   });
 
   @override
   State<StatefulWidget> createState() => _NeonBrightnessTileDialogState();
 }
 
-class _NeonBrightnessTileDialogState extends BlocState<
-    NeonBrightnessTileDialog,
-    NeonBrightnessTileDialogBloc,
-    NeonBrightnessTileDialogEvent,
-    NeonBrightnessTileDialogState> {
+class _NeonBrightnessTileDialogState
+    extends
+        BlocState<
+          NeonBrightnessTileDialog,
+          NeonBrightnessTileDialogBloc,
+          NeonBrightnessTileDialogEvent,
+          NeonBrightnessTileDialogState
+        > {
   double _brightness = 0;
   bool _hasValueChanged = false;
 
@@ -35,7 +38,7 @@ class _NeonBrightnessTileDialogState extends BlocState<
   @override
   NeonBrightnessTileDialogBloc createBloc(KiwiContainer di) {
     return NeonBrightnessTileDialogBloc(
-      ipAddresses: widget.ipAddresses,
+      ipAddress: widget.ipAddress,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }
@@ -44,7 +47,9 @@ class _NeonBrightnessTileDialogState extends BlocState<
   void onStateChange(context, NeonBrightnessTileDialogState newState) {
     if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), newState.error!);
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
     }
 
     if (newState.hasData && newState.data == true) {
@@ -93,8 +98,9 @@ class _NeonBrightnessTileDialogState extends BlocState<
               // Positive action
               TextButton(
                 onPressed: _hasValueChanged
-                    ? () => bloc
-                        .add(NewBrightness(convertPercentTo8Bit(_brightness)))
+                    ? () => bloc.add(
+                        NewBrightness(convertPercentTo8Bit(_brightness)),
+                      )
                     : null,
                 child: const Text("Save"),
               ),

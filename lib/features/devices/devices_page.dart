@@ -77,9 +77,7 @@ class _DevicesPageState
                     }
                   });
                 } else {
-                  NavigationService.navigateTo(
-                    DeviceNavigator(devices: {device}),
-                  );
+                  NavigationService.navigateTo(DeviceNavigator(device: device));
                 }
               },
               onLongPress: _isBulkSelecting
@@ -104,7 +102,7 @@ class _DevicesPageState
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (deviceNode!.hasPowerState)
+                            if (deviceNode.hasPowerState)
                               const FaIcon(
                                 FontAwesomeIcons.boltLightning,
                                 color: Colors.amber,
@@ -183,9 +181,9 @@ class _DevicesPageState
               mainAxisSize: MainAxisSize.max,
               children: [
                 ElevatedButton(
-                  onPressed: () => NavigationService.navigateTo(
-                    DeviceNavigator(devices: _selectedDevices),
-                  ),
+                  onPressed: null, // () => NavigationService.navigateTo(
+                  //   DeviceNavigator(device: _selectedDevices),
+                  // ),
                   child: const Text("Bulk edit"),
                 ),
                 ElevatedButton(

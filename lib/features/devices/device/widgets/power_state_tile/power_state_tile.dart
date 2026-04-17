@@ -6,29 +6,32 @@ import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 class PowerStateTile extends StatefulWidget {
-  final Set<Device> devices;
+  final Device device;
 
-  const PowerStateTile({required this.devices});
+  const PowerStateTile({required this.device});
 
   @override
   State<PowerStateTile> createState() => _PowerStateTileState();
 }
 
-class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
-    PowerStateTileEvent, PowerStateTileState> with DeviceHelper {
-  bool get _hasPowerState =>
-      firstWhere<Device>(
-          widget.devices, (device) => device.nodeDeviceStatus?.power != null) !=
-      null;
-  Device get _firstDevice => widget.devices.first;
+class _PowerStateTileState
+    extends
+        BlocState<
+          PowerStateTile,
+          PowerStateTileBloc,
+          PowerStateTileEvent,
+          PowerStateTileState
+        >
+    with DeviceHelper {
+  Device get _device => widget.device;
+  bool get _hasPowerState => _device.nodeDeviceStatus.hasPowerState;
 
   @override
   PowerStateTileBloc createBloc(KiwiContainer di) {
     return PowerStateTileBloc(
       repository: di.resolve<NodeDeviceRepository>(),
-      ipAddresses: widget.devices.map((device) => device.ipAddress).toList(),
-      initialState:
-          _hasPowerState ? _firstDevice.nodeDeviceStatus!.power! : false,
+      ipAddress: _device.ipAddress,
+      initialState: _hasPowerState ? _device.nodeDeviceStatus.power! : false,
     );
   }
 
@@ -36,8 +39,18 @@ class _PowerStateTileState extends BlocState<PowerStateTile, PowerStateTileBloc,
   void onStateChange(context, PowerStateTileState newState) {
     if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), newState.error!);
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_hasPowerState) {
+      return const SizedBox();
+    }
+    return super.build(context);
   }
 
   @override

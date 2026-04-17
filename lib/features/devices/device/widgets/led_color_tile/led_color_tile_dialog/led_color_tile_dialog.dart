@@ -9,9 +9,9 @@ export 'package:home_app/models/node_device_led_color.dart';
 
 class LedColorTileDialog extends StatefulWidget {
   final NodeDeviceLedColor color;
-  final List<String> ipAddresses;
+  final String ipAddress;
 
-  const LedColorTileDialog({required this.color, required this.ipAddresses});
+  const LedColorTileDialog({required this.color, required this.ipAddress});
 
   @override
   State<StatefulWidget> createState() => _LedColorTileDialogState();
@@ -45,7 +45,7 @@ class _LedColorTileDialogState
   @override
   LedColorTileDialogBloc createBloc(KiwiContainer di) {
     return LedColorTileDialogBloc(
-      ipAddresses: widget.ipAddresses,
+      ipAddress: widget.ipAddress,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }

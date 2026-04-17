@@ -4,7 +4,7 @@ import 'package:home_app/services/connectivity_service/connectivity_service.dart
 import 'package:home_app/services/storage_service/storage_service.dart';
 import 'package:kiwi/kiwi.dart';
 
-const bool _useMock = false;
+const bool _useMock = true;
 
 class DependencyInjection extends StatelessWidget {
   final Widget child;

@@ -15,7 +15,7 @@ part 'node_device_status.g.dart';
 class NodeDeviceStatus extends Equatable {
   final String name;
   final bool? power;
-  @JsonKey(name: "neon")
+  @JsonKey(name: "neon-brightness")
   final int? neonBrightness;
   @JsonKey(name: "led-color", fromJson: _intToLedColor)
   final NodeDeviceLedColor? ledColor;
@@ -39,6 +39,14 @@ class NodeDeviceStatus extends Equatable {
 
   factory NodeDeviceStatus.fromJson(Map<String, dynamic> json) =>
       _$NodeDeviceStatusFromJson(json);
+
+  factory NodeDeviceStatus.empty() => const NodeDeviceStatus(
+    name: "",
+    power: null,
+    neonBrightness: null,
+    ledColor: null,
+    motor: null,
+  );
 
   // For testing purposes.
   NodeDeviceStatus copyWith({

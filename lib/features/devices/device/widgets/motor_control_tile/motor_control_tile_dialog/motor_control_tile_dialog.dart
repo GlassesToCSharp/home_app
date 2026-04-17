@@ -8,22 +8,25 @@ export 'package:home_app/models/node_device_motor.dart';
 
 class MotorControlTileDialog extends StatefulWidget {
   final NodeDeviceMotor motorValues;
-  final List<String> ipAddresses;
+  final String ipAddress;
 
   const MotorControlTileDialog({
     required this.motorValues,
-    required this.ipAddresses,
+    required this.ipAddress,
   });
 
   @override
   State<StatefulWidget> createState() => _MotorControlTileDialogState();
 }
 
-class _MotorControlTileDialogState extends BlocState<
-    MotorControlTileDialog,
-    MotorControlTileDialogBloc,
-    MotorControlTileDialogEvent,
-    MotorControlTileDialogState> {
+class _MotorControlTileDialogState
+    extends
+        BlocState<
+          MotorControlTileDialog,
+          MotorControlTileDialogBloc,
+          MotorControlTileDialogEvent,
+          MotorControlTileDialogState
+        > {
   int _position = 0;
   int _speed = 0;
   int _acceleration = 0;
@@ -41,7 +44,7 @@ class _MotorControlTileDialogState extends BlocState<
   @override
   MotorControlTileDialogBloc createBloc(KiwiContainer di) {
     return MotorControlTileDialogBloc(
-      ipAddresses: widget.ipAddresses,
+      ipAddress: widget.ipAddress,
       repository: di.resolve<NodeDeviceRepository>(),
     );
   }
@@ -50,17 +53,20 @@ class _MotorControlTileDialogState extends BlocState<
   void onStateChange(context, MotorControlTileDialogState newState) {
     if (newState.hasError) {
       SnackBarPresenter.presentError(
-          ScaffoldMessenger.of(context), newState.error!);
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
     }
 
     if (newState.hasData && newState.data == true) {
       Navigator.pop<NodeDeviceMotor>(
-          context,
-          NodeDeviceMotor(
-            speed: _speed,
-            position: _position,
-            acceleration: _acceleration,
-          ));
+        context,
+        NodeDeviceMotor(
+          speed: _speed,
+          position: _position,
+          acceleration: _acceleration,
+        ),
+      );
     }
   }
 
@@ -118,11 +124,15 @@ class _MotorControlTileDialogState extends BlocState<
               // Positive action
               TextButton(
                 onPressed: _haveValuesChanged
-                    ? () => bloc.add(NewConfiguration(NodeDeviceMotor(
-                          speed: _speed,
-                          position: _position,
-                          acceleration: _acceleration,
-                        )))
+                    ? () => bloc.add(
+                        NewConfiguration(
+                          NodeDeviceMotor(
+                            speed: _speed,
+                            position: _position,
+                            acceleration: _acceleration,
+                          ),
+                        ),
+                      )
                     : null,
                 child: const Text("Save"),
               ),

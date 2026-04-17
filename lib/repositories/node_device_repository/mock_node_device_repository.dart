@@ -8,19 +8,23 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
     final device = NodeDeviceStatus(
       name: "DUMMY ${Random().nextInt(1000)}",
-      ledColor: NodeDeviceLedColor(
-        red: Random().nextInt(256),
-        green: Random().nextInt(256),
-        blue: Random().nextInt(256),
-        opacity: Random().nextInt(256),
-      ),
-      power: Random().nextBool(),
-      neonBrightness: Random().nextInt(256),
-      motor: NodeDeviceMotor(
-        acceleration: Random().nextInt(1000),
-        position: Random().nextInt(1000),
-        speed: Random().nextInt(1000),
-      ),
+      ledColor: Random().nextBool()
+          ? NodeDeviceLedColor(
+              red: Random().nextInt(256),
+              green: Random().nextInt(256),
+              blue: Random().nextInt(256),
+              opacity: Random().nextInt(256),
+            )
+          : null,
+      power: Random().nextBool() ? Random().nextBool() : null,
+      neonBrightness: Random().nextBool() ? Random().nextInt(256) : null,
+      motor: Random().nextBool()
+          ? NodeDeviceMotor(
+              acceleration: Random().nextInt(1000),
+              position: Random().nextInt(1000),
+              speed: Random().nextInt(1000),
+            )
+          : null,
     );
 
     _deviceList[ipAddress] = device;
@@ -40,12 +44,22 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
 
   @override
   Future<void> setLedColor(
-      String ipAddress, int red, int green, int blue, int opacity) {
+    String ipAddress,
+    int red,
+    int green,
+    int blue,
+    int opacity,
+  ) {
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(
-        ledColor: NodeDeviceLedColor(
-            red: red, green: green, blue: blue, opacity: opacity));
+      ledColor: NodeDeviceLedColor(
+        red: red,
+        green: green,
+        blue: blue,
+        opacity: opacity,
+      ),
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -64,9 +78,10 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(
-        motor: _deviceList[ipAddress]!
-            .motor!
-            .copyWith(acceleration: acceleration));
+      motor: _deviceList[ipAddress]!.motor!.copyWith(
+        acceleration: acceleration,
+      ),
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -76,7 +91,8 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(
-        motor: _deviceList[ipAddress]!.motor!.copyWith(position: position));
+      motor: _deviceList[ipAddress]!.motor!.copyWith(position: position),
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -85,8 +101,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   Future<void> setMotorSpeed(String ipAddress, int speed) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!
-        .copyWith(motor: _deviceList[ipAddress]!.motor!.copyWith(speed: speed));
+    final device = _deviceList[ipAddress]!.copyWith(
+      motor: _deviceList[ipAddress]!.motor!.copyWith(speed: speed),
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
