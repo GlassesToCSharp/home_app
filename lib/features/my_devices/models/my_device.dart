@@ -3,6 +3,8 @@ import 'package:home_app/services/database_service/database_service.dart';
 import 'package:home_app/services/database_service/models/database_entry.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+export 'package:home_app/features/devices/models/device.dart';
+
 part 'my_device.g.dart';
 
 // Don't forget to run:
