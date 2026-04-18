@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/device/device_navigator.dart';
-import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/features/my_devices/widgets/device_item/bloc/device_item_bloc.dart';
+import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
@@ -15,7 +16,14 @@ class DeviceItem extends StatefulWidget {
   State<DeviceItem> createState() => _DeviceItemState();
 }
 
-class _DeviceItemState extends State<DeviceItem> {
+class _DeviceItemState
+    extends
+        BlocState<
+          DeviceItem,
+          DeviceItemBloc,
+          DeviceItemEvent,
+          DeviceItemState
+        > {
   static const _iconSize = 16.0;
 
   MyDevice get myDevice => widget.myDevice;
@@ -23,18 +31,36 @@ class _DeviceItemState extends State<DeviceItem> {
   NodeDeviceStatus get deviceNode => device.nodeDeviceStatus;
 
   @override
-  Widget build(BuildContext context) {
+  DeviceItemEvent? get initialEvent => const GetDeviceData();
+
+  @override
+  DeviceItemBloc createBloc(KiwiContainer di) {
+    return DeviceItemBloc(
+      myDevice: myDevice,
+      repository: di.resolve<NodeDeviceRepository>(),
+      dbService: di.resolve<DatabaseService>(),
+    );
+  }
+
+  @override
+  Widget buildState(BuildContext context, DeviceItemState state) {
     return Card(
       child: Stack(
         children: [
           Positioned.fill(
             child: ListTile(
-              // TODO: Only allow onTap if the device exists and it's not loading.
-              onTap: () {
-                NavigationService.navigateTo(DeviceNavigator(device: device));
-              },
-              // TODO: initially use MyDevice's name, but then use Device.
-              title: Text(myDevice.name),
+              onTap: (state.hasData && !state.loading)
+                  ? null
+                  : () {
+                      NavigationService.navigateTo(
+                        DeviceNavigator(device: device),
+                      );
+                    },
+              title: Text(
+                myDevice.device?.name == null
+                    ? myDevice.name
+                    : myDevice.device!.name,
+              ),
               titleTextStyle: Theme.of(
                 context,
               ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
@@ -84,12 +110,22 @@ class _DeviceItemState extends State<DeviceItem> {
             ),
           ),
           // isNodeDevice will tell us if the device has been reached.
-          if (!device.isNodeDevice)
+          if (state.loading || !device.isNodeDevice || state.hasError)
             // Show a warning message of the list tile
             Positioned.fill(
               child: Container(
                 color: Colors.blueGrey.withAlpha(50),
-                child: Center(child: Text("Device not available")),
+                child: Center(
+                  child: Text(
+                    state.loading
+                        ? "Fetching device data..."
+                        : !device.isNodeDevice
+                        ? "Device not available"
+                        : state.hasError
+                        ? state.error!
+                        : "Unknown issue",
+                  ),
+                ),
               ),
             ),
         ],

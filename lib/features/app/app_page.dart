@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/app/bloc/app_bloc.dart';
 import 'package:home_app/features/devices/devices_page.dart';
+import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/features/presets/presets_page.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/widgets/central_error_display.dart';
@@ -22,7 +23,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
   static final _navigationItems = [
     BottomNavigationBarItem(
       icon: FaIcon(FontAwesomeIcons.satelliteDish),
-      label: "Devices",
+      label: "My Devices",
     ),
     BottomNavigationBarItem(
       icon: FaIcon(FontAwesomeIcons.folderTree),
@@ -34,7 +35,7 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     ),
   ];
   static const _pages = [
-    DevicesPage(),
+    MyDevicesPage(),
     PresetsPage(devices: {}),
     Center(child: Text('Index 2: Settings', style: optionStyle)),
   ];
@@ -71,7 +72,11 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     }
 
     return Scaffold(
-      body: PageView(controller: _pageController, children: _pages),
+      body: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onTap,
         currentIndex: _selectedIndex,

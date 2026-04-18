@@ -72,6 +72,22 @@ class MyDevice extends DatabaseEntry<MyDevice> {
     );
   }
 
+  MyDevice copyWith({
+    int? id,
+    String? deviceId,
+    String? name,
+    String? ipAddress,
+    Device? device,
+  }) {
+    return MyDevice(
+      id: id ?? this.id,
+      deviceId: deviceId ?? this.deviceId,
+      name: name ?? this.name,
+      ipAddress: ipAddress ?? this.ipAddress,
+      device: device ?? this.device,
+    );
+  }
+
   Map<String, Object?> toJson() => _$MyDeviceToJson(this);
 
   factory MyDevice.fromJson(Map<String, Object?> json) =>
