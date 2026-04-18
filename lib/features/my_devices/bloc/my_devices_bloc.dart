@@ -1,0 +1,62 @@
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:home_app/features/devices/models/device.dart';
+import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/models/base_state.dart';
+import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+import 'package:home_app/services/database_service/database_service.dart';
+
+export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+export 'package:home_app/services/database_service/database_service.dart';
+
+part 'my_devices_event.dart';
+part 'my_devices_state.dart';
+
+class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState> {
+  final NodeDeviceRepository repository;
+  final DatabaseService dbService;
+
+  MyDevicesBloc({required this.repository, required this.dbService})
+    : super(MyDevicesState.loading()) {
+    on<GetMyDevices>(_handleGetMyDevicesEvent);
+  }
+
+  Future<void> _handleGetMyDevicesEvent(
+    MyDevicesEvent event,
+    Emitter<MyDevicesState> emit,
+  ) async {
+    emit(MyDevicesState.loading(data: state.data));
+
+    try {
+      final myDevices = await MyDevice.instance().getAll(dbService);
+      // Check the devices are online and get the latest state of those devices.
+      // Use the /status endpoint for this.
+      final statusCalls = <Future>[];
+      for (final myDevice in myDevices) {
+        statusCalls.add(
+          Future(() async {
+            try {
+              return await repository.getDeviceStatus(myDevice.ipAddress);
+            } catch (e) {
+              // If retrieving the device status fails, enter empty null device
+              // status.
+              print(e);
+              return NodeDeviceStatus.empty();
+            }
+          }),
+        );
+      }
+
+      final statusCallsResults = await Future.wait(statusCalls);
+      for (int i = 0; i < statusCallsResults.length; i++) {
+        myDevices[i].withDevice(
+          myDevices[i].toDevice().withDeviceStatus(statusCallsResults[i]),
+        );
+      }
+
+      emit(MyDevicesState.data(myDevices));
+    } catch (e) {
+      emit(MyDevicesState.error(e.toString(), data: state.data));
+    }
+  }
+}

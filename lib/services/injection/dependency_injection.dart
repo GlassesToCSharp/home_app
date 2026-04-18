@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/connectivity_service/connectivity_service.dart';
+import 'package:home_app/services/database_service/database_service.dart';
 import 'package:home_app/services/storage_service/storage_service.dart';
 import 'package:kiwi/kiwi.dart';
 
@@ -31,6 +32,7 @@ class DependencyInjection extends StatelessWidget {
       const MockConnectivityService(),
       LiveConnectivityService(),
     );
+    _addInstance<DatabaseService>(MockDatabaseService(), LiveDatabaseService());
     _addInstance<StorageService>(LocalStorage(), SafeStorage());
 
     return DependencyInjectorInheritance(container: _container, child: child);
