@@ -11,6 +11,7 @@ class MockDatabaseService extends DatabaseService {
   @override
   Future<void> initialiseDatabase() {
     _dbDictionary["myDevices"] = <Map<String, Object?>>[];
+    _dbDictionary["presets"] = <Map<String, Object?>>[];
     return Future.delayed(const Duration());
   }
 

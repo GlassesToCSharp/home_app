@@ -4,6 +4,8 @@ import 'package:home_app/services/database_service/database_service.dart';
 abstract class DatabaseEntry<T> extends Equatable {
   const DatabaseEntry();
 
+  Map<String, Object?> toJson();
+
   Future<T> insert(DatabaseService dbService);
   Future<List<T>> getAll(DatabaseService dbService);
   Future<T> udpate(DatabaseService dbService);

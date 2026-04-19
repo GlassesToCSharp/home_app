@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/features/presets/models/preset.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

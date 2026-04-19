@@ -17,11 +17,12 @@ class LiveDatabaseService extends DatabaseService {
       // constructed for each platform.
       join(await getDatabasesPath(), "local_database.db"),
       // When the database is first created, create a table to store dogs.
-      onCreate: (db, version) {
+      onCreate: (db, version) async {
         // Run the CREATE TABLE statement on the database.
         // TODO: Does it need to run here, or can it be run later? Need to
         // remove the dependency to other classes.
-        return db.execute(MyDevice.databaseTableCreation());
+        await db.execute(MyDevice.databaseTableCreation());
+        await db.execute(Preset.databaseTableCreation());
       },
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.

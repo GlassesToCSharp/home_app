@@ -96,6 +96,7 @@ class MyDevice extends DatabaseEntry<MyDevice> {
     );
   }
 
+  @override
   Map<String, Object?> toJson() => _$MyDeviceToJson(this);
 
   factory MyDevice.fromJson(Map<String, Object?> json) =>
