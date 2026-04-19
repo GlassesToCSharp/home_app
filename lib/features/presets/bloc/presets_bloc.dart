@@ -15,6 +15,7 @@ class PresetsBloc extends Bloc<PresetsEvent, PresetsState> {
   PresetsBloc({required this.dbService}) : super(const PresetsState.loading()) {
     // on<Execute>(_handleExecuteEvent);
     on<GetPresets>(_handleGetPresetsEvent);
+    on<CreatePreset>(_handleCreatePresetEvent);
   }
 
   // Future _handleExecuteEvent(Execute event, Emitter<PresetsState> emit) async {
@@ -96,6 +97,28 @@ class PresetsBloc extends Bloc<PresetsEvent, PresetsState> {
 
     try {
       final presets = await Preset.instance().getAll(dbService);
+      emit(PresetsState.data(presets));
+    } catch (e) {
+      emit(PresetsState.error(e.toString()));
+    }
+  }
+
+  Future<void> _handleCreatePresetEvent(
+    CreatePreset event,
+    Emitter<PresetsState> emit,
+  ) async {
+    try {
+      // Check name does not exceed max length in DB.
+      if (event.name.length > 29) {
+        throw "Name is too long";
+      }
+
+      // Setting ID to 0 doesn't matter. It will get updated anyway on DB entry.
+      Preset newPreset = Preset(id: 0, name: event.name);
+      newPreset = await newPreset.insert(dbService);
+
+      final presets = List<Preset>.from(state.data ?? <Preset>[]);
+      presets.add(newPreset);
       emit(PresetsState.data(presets));
     } catch (e) {
       emit(PresetsState.error(e.toString()));

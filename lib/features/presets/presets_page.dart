@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/presets/bloc/presets_bloc.dart';
+import 'package:home_app/features/presets/models/preset.dart';
+import 'package:home_app/features/presets/widgets/name_entry_dialog.dart';
 import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
@@ -15,6 +18,7 @@ class PresetsPage extends StatefulWidget {
 class _PresetsPageState
     extends BlocState<PresetsPage, PresetsBloc, PresetsEvent, PresetsState> {
   int _selectedIndex = -1;
+  final _presets = <Preset>[];
 
   @override
   PresetsEvent? get initialEvent => const GetPresets();
@@ -25,44 +29,77 @@ class _PresetsPageState
   }
 
   @override
+  void onStateChange(BuildContext context, PresetsState newState) {
+    super.onStateChange(context, newState);
+
+    if (newState.hasData) {
+      setState(() {
+        _presets.clear();
+        _presets.addAll(newState.data!);
+      });
+    }
+  }
+
+  @override
   Widget buildState(BuildContext context, PresetsState state) {
     Widget body = const SizedBox();
     if (state.hasError) {
       body = CentralErrorDisplay(message: state.error!, onRetry: _getPresets);
     } else if (state.loading) {
       body = const CentralLoadingIndicator();
-    } else if (!state.hasData || state.data!.isEmpty) {
+    } else if (_presets.isEmpty) {
       body = CentralErrorDisplay(
         message: "No presets saved",
         onRetry: _getPresets,
       );
     } else {
-      final presets = state.data!;
       body = ListView.builder(
-        itemCount: presets.length,
+        itemCount: _presets.length,
         itemBuilder: (_, index) {
-          if (index >= presets.length) {
+          if (index >= _presets.length) {
             return const SizedBox();
           }
-          final presetAction = presets[index];
-          return Card(
-            child: ListTile(
-              onTap: [].isEmpty || state.loading
-                  ? null
-                  : () {
-                      setState(() {
-                        if (_selectedIndex == index) {
-                          _selectedIndex = -1;
-                        } else {
-                          _selectedIndex = index;
-                        }
-                      });
-                    },
-              title: Text(presetAction.name),
-              titleTextStyle: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-              selected: _selectedIndex == index,
+          final presetAction = _presets[index];
+          return Dismissible(
+            key: Key(_presets[index].id.toString()),
+            background: Container(
+              color: Colors.red[700],
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: FaIcon(FontAwesomeIcons.trash, color: Colors.white),
+                ),
+              ),
+            ),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (direction) {
+              if (direction == DismissDirection.endToStart) {
+                bloc.add(RemovePreset(_presets[index]));
+                return Future.value(true);
+              }
+
+              return Future.value(false);
+            },
+            child: Card(
+              child: ListTile(
+                onTap: [].isEmpty || state.loading
+                    ? null
+                    : () {
+                        setState(() {
+                          if (_selectedIndex == index) {
+                            _selectedIndex = -1;
+                          } else {
+                            _selectedIndex = index;
+                          }
+                        });
+                      },
+                title: Text(presetAction.name),
+                titleTextStyle: Theme.of(
+                  context,
+                ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                selected: _selectedIndex == index,
+              ),
             ),
           );
         },
@@ -75,6 +112,12 @@ class _PresetsPageState
         backgroundColor: Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+            onPressed: state.loading ? null : _getPresets,
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,7 +126,18 @@ class _PresetsPageState
       floatingActionButton: state.loading
           ? null
           : FloatingActionButton(
-              onPressed: null,
+              onPressed: state.loading
+                  ? null
+                  : () async {
+                      await showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return NameEntryDialog(
+                            onSubmit: (name) => bloc.add(CreatePreset(name)),
+                          );
+                        },
+                      );
+                    },
               child: FaIcon(FontAwesomeIcons.plus),
               //  state.loading
               //     ? null
