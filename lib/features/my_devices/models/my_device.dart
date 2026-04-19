@@ -57,9 +57,16 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   }
 
   Device toDevice() {
+    if (device != null) {
+      return device!;
+    }
+
     return Device(
       ipAddress: ipAddress,
-      nodeDeviceStatus: NodeDeviceStatus.empty(),
+      nodeDeviceStatus: NodeDeviceStatus.empty().copyWith(
+        id: deviceId,
+        name: name,
+      ),
     );
   }
 
@@ -106,7 +113,10 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   Future<MyDevice> insert(DatabaseService dbService) {
     return dbService
         .insert(_tableName, toJson())
-        .then((newDbObject) => MyDevice.fromJson(newDbObject));
+        .then(
+          (newDbObject) =>
+              MyDevice.fromJson(newDbObject).copyWith(device: device),
+        );
   }
 
   @override

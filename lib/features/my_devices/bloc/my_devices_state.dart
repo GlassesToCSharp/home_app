@@ -1,8 +1,8 @@
 part of 'my_devices_bloc.dart';
 
 class MyDevicesState extends BaseState<List<MyDevice>> {
-  @override
-  bool get hasData => super.hasData && data!.isNotEmpty;
+  // @override
+  // bool get hasData => super.hasData && data!.isNotEmpty;
 
   const MyDevicesState.loading({List<MyDevice>? data})
     : super.loading(data: data);

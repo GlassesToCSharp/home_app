@@ -81,10 +81,12 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
         await repository.setDeviceId(myDevice.ipAddress, newId);
         myDevice = myDevice.copyWith(deviceId: newId);
       }
-      await myDevice.insert(dbService);
+      myDevice = await myDevice.insert(dbService);
 
-      // Reload the list
-      add(const GetMyDevices());
+      // Update the list for one item
+      final myDevices = List<MyDevice>.from(state.data ?? <MyDevice>[]);
+      myDevices.add(myDevice);
+      emit(MyDevicesState.data(myDevices));
     } catch (e) {
       emit(MyDevicesState.error(e.toString(), data: state.data));
     }
@@ -99,8 +101,10 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
     try {
       await event.myDevice.delete(dbService);
 
-      // Reload the list
-      add(const GetMyDevices());
+      // Update the list for one item
+      final myDevices = List<MyDevice>.from(state.data ?? <MyDevice>[]);
+      myDevices.remove(event.myDevice);
+      emit(MyDevicesState.data(myDevices));
     } catch (e) {
       emit(MyDevicesState.error(e.toString(), data: state.data));
     }

@@ -22,6 +22,8 @@ class _MyDevicesPageState
           MyDevicesEvent,
           MyDevicesState
         > {
+  final _myDevices = <MyDevice>[];
+
   @override
   MyDevicesEvent? get initialEvent => const GetMyDevices();
 
@@ -37,29 +39,68 @@ class _MyDevicesPageState
   }
 
   @override
+  void onStateChange(BuildContext context, MyDevicesState newState) {
+    super.onStateChange(context, newState);
+
+    if (newState.hasData) {
+      setState(() {
+        _myDevices.clear();
+        _myDevices.addAll(newState.data!);
+      });
+    }
+  }
+
+  @override
   Widget buildState(BuildContext context, MyDevicesState state) {
     Widget body = const SizedBox();
     if (state.hasError) {
       body = CentralErrorDisplay(message: state.error!, onRetry: _getMyDevices);
     } else if (state.loading) {
       body = const CentralLoadingIndicator();
-    } else if (!state.hasData) {
+    } else if (_myDevices.isEmpty) {
       body = CentralErrorDisplay(
         message: "No devices found",
         onRetry: _getMyDevices,
       );
     } else {
-      final devices = state.data!;
-      final deviceCount = state.data!.length;
+      final deviceCount = _myDevices.length;
       body = ListView.builder(
         itemCount: deviceCount,
         itemBuilder: (_, index) {
           if (index >= deviceCount) {
             return const SizedBox();
           }
-          return DeviceItem(
-            myDevice: devices[index],
-            onDeleteRquest: () => bloc.add(RemoveFromMyDevices(devices[index])),
+          final device = _myDevices[index].toDevice();
+          return Dismissible(
+            key: Key(_myDevices[index].deviceId),
+            background: Container(
+              color: Colors.red[700],
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: FaIcon(FontAwesomeIcons.trash, color: Colors.white),
+                ),
+              ),
+            ),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (direction) {
+              if (direction == DismissDirection.endToStart) {
+                bloc.add(RemoveFromMyDevices(_myDevices[index]));
+                return Future.value(true);
+              }
+
+              return Future.value(false);
+            },
+            child: DeviceItem(
+              device: device,
+              requestRefreshStatus: ![
+                device.nodeDeviceStatus.hasLedColorState,
+                device.nodeDeviceStatus.hasMotorState,
+                device.nodeDeviceStatus.hasNeonBrightnessState,
+                device.nodeDeviceStatus.hasPowerState,
+              ].any((i) => i),
+            ),
           );
         },
       );
@@ -72,6 +113,10 @@ class _MyDevicesPageState
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
         actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+            onPressed: state.loading ? null : _getMyDevices,
+          ),
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.plus),
             onPressed: state.loading

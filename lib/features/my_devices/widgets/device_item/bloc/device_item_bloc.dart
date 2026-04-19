@@ -13,17 +13,25 @@ part 'device_item_event.dart';
 part 'device_item_state.dart';
 
 class DeviceItemBloc extends Bloc<DeviceItemEvent, DeviceItemState> {
-  final MyDevice myDevice;
+  final Device device;
   final NodeDeviceRepository repository;
   final DatabaseService dbService;
 
   DeviceItemBloc({
-    required this.myDevice,
+    required this.device,
     required this.repository,
     required this.dbService,
   }) : super(const DeviceItemState.loading()) {
+    on<SetDeviceData>(_handleSetDeviceDataEvent);
     on<GetDeviceData>(_handleGetDeviceDataEvent);
     on<UpdateDeviceData>(_handleUpdateDeviceDataEvent);
+  }
+
+  Future<void> _handleSetDeviceDataEvent(
+    SetDeviceData event,
+    Emitter<DeviceItemState> emit,
+  ) async {
+    emit(DeviceItemState.data(event.device));
   }
 
   Future<void> _handleGetDeviceDataEvent(
@@ -33,14 +41,14 @@ class DeviceItemBloc extends Bloc<DeviceItemEvent, DeviceItemState> {
     emit(const DeviceItemState.loading());
 
     try {
-      final device = await repository.getDeviceStatus(myDevice.ipAddress);
-      if (device.id != myDevice.deviceId) {
+      final deviceStatus = await repository.getDeviceStatus(device.ipAddress);
+      if (deviceStatus.id != device.nodeDeviceStatus.id) {
         throw "Device ID does not match";
       }
 
       emit(
         DeviceItemState.data(
-          Device(ipAddress: myDevice.ipAddress, nodeDeviceStatus: device),
+          Device(ipAddress: device.ipAddress, nodeDeviceStatus: deviceStatus),
         ),
       );
     } catch (e) {
@@ -52,13 +60,13 @@ class DeviceItemBloc extends Bloc<DeviceItemEvent, DeviceItemState> {
     UpdateDeviceData event,
     Emitter<DeviceItemState> emit,
   ) async {
-    if (myDevice.deviceId != event.device.nodeDeviceStatus.id) {
+    if (device.nodeDeviceStatus.id != event.device.nodeDeviceStatus.id) {
       // If the device IDs do not match, this is a different device.
       return;
     }
 
-    MyDevice newMyDevice = myDevice.copyWith();
-    if (myDevice.name != event.device.name) {
+    MyDevice newMyDevice = MyDevice.fromDevice(device);
+    if (newMyDevice.name != event.device.name) {
       newMyDevice = newMyDevice.copyWith(name: event.device.name);
     }
 
