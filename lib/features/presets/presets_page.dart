@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/presets/bloc/presets_bloc.dart';
-import 'package:home_app/features/presets/models/preset.dart';
+import 'package:home_app/features/presets/preset/preset_navigator.dart';
 import 'package:home_app/features/presets/widgets/name_entry_dialog.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
@@ -17,7 +17,6 @@ class PresetsPage extends StatefulWidget {
 
 class _PresetsPageState
     extends BlocState<PresetsPage, PresetsBloc, PresetsEvent, PresetsState> {
-  int _selectedIndex = -1;
   final _presets = <Preset>[];
 
   @override
@@ -59,7 +58,7 @@ class _PresetsPageState
           if (index >= _presets.length) {
             return const SizedBox();
           }
-          final presetAction = _presets[index];
+          final preset = _presets[index];
           return Dismissible(
             key: Key(_presets[index].id.toString()),
             background: Container(
@@ -75,7 +74,7 @@ class _PresetsPageState
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) {
               if (direction == DismissDirection.endToStart) {
-                bloc.add(RemovePreset(_presets[index]));
+                bloc.add(RemovePreset(preset));
                 return Future.value(true);
               }
 
@@ -83,22 +82,12 @@ class _PresetsPageState
             },
             child: Card(
               child: ListTile(
-                onTap: [].isEmpty || state.loading
-                    ? null
-                    : () {
-                        setState(() {
-                          if (_selectedIndex == index) {
-                            _selectedIndex = -1;
-                          } else {
-                            _selectedIndex = index;
-                          }
-                        });
-                      },
-                title: Text(presetAction.name),
+                onTap: () =>
+                    NavigationService.navigateTo(PresetNavigator(preset)),
+                title: Text(preset.name),
                 titleTextStyle: Theme.of(
                   context,
                 ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-                selected: _selectedIndex == index,
               ),
             ),
           );

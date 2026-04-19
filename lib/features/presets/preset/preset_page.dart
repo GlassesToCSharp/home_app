@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/presets/models/preset.dart';
 
+export 'package:home_app/features/presets/models/preset.dart';
+
 class PresetPage extends StatefulWidget {
-  const PresetPage({super.key});
+  final Preset preset;
+
+  const PresetPage(this.preset, {super.key});
 
   @override
   State<PresetPage> createState() => _PresetPageState();
@@ -15,20 +20,33 @@ class _PresetPageState extends State<PresetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Preset Actions"),
+        title: Text(widget.preset.name),
         backgroundColor: Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.pen),
+            onPressed: null, // TODO: Edit name of preset
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _presetActions.length,
+              // Add 1 to display the "Add Action" button
+              itemCount: _presetActions.length + 1,
               itemBuilder: (_, index) {
-                if (index >= _presetActions.length) {
-                  return const SizedBox();
+                if (index == _presetActions.length) {
+                  return Center(
+                    child: ElevatedButton.icon(
+                      icon: FaIcon(FontAwesomeIcons.plus),
+                      label: Text("Add action"),
+                      onPressed: () {},
+                    ),
+                  );
                 }
                 final presetAction = _presetActions[index];
                 return Card(
