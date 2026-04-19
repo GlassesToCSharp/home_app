@@ -53,7 +53,7 @@ class _DeviceItemState
       child: Stack(
         children: [
           ListTile(
-            onTap: (state.hasData && !state.loading)
+            onTap: (state.loading || state.hasError)
                 ? null
                 : () {
                     NavigationService.navigateTo(
