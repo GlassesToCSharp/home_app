@@ -5,13 +5,13 @@ import 'package:home_app/services/navigation_service/base_navigator.dart';
 export 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 
 class DevicesNavigator extends BaseNavigator {
-  final MyDevicesBloc myDevicesBloc;
+  final Function(Device) onDeviceSelected;
 
-  const DevicesNavigator(this.myDevicesBloc);
+  const DevicesNavigator({required this.onDeviceSelected});
 
   @override
   Widget build() {
-    return DevicesPage(myDevicesBloc);
+    return DevicesPage(onDeviceSelected: onDeviceSelected);
   }
 
   @override

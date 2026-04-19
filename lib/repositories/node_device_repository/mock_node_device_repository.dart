@@ -6,31 +6,33 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
 
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
-    final device = NodeDeviceStatus(
-      id: Random().nextBool() ? getRandomString(3) : "",
-      name: "DUMMY ${Random().nextInt(1000)}",
-      ledColor: Random().nextBool()
-          ? NodeDeviceLedColor(
-              red: Random().nextInt(256),
-              green: Random().nextInt(256),
-              blue: Random().nextInt(256),
-              opacity: Random().nextInt(256),
-            )
-          : null,
-      power: Random().nextBool() ? Random().nextBool() : null,
-      neonBrightness: Random().nextBool() ? Random().nextInt(256) : null,
-      motor: Random().nextBool()
-          ? NodeDeviceMotor(
-              acceleration: Random().nextInt(1000),
-              position: Random().nextInt(1000),
-              speed: Random().nextInt(1000),
-            )
-          : null,
-    );
+    if (_deviceList[ipAddress] == null) {
+      final device = NodeDeviceStatus(
+        id: Random().nextBool() ? getRandomString(3) : "",
+        name: "DUMMY ${Random().nextInt(1000)}",
+        ledColor: Random().nextBool()
+            ? NodeDeviceLedColor(
+                red: Random().nextInt(256),
+                green: Random().nextInt(256),
+                blue: Random().nextInt(256),
+                opacity: Random().nextInt(256),
+              )
+            : null,
+        power: Random().nextBool() ? Random().nextBool() : null,
+        neonBrightness: Random().nextBool() ? Random().nextInt(256) : null,
+        motor: Random().nextBool()
+            ? NodeDeviceMotor(
+                acceleration: Random().nextInt(1000),
+                position: Random().nextInt(1000),
+                speed: Random().nextInt(1000),
+              )
+            : null,
+      );
 
-    _deviceList[ipAddress] = device;
+      _deviceList[ipAddress] = device;
+    }
 
-    return returnDelayed(device);
+    return returnDelayed(_deviceList[ipAddress]!);
   }
 
   @override

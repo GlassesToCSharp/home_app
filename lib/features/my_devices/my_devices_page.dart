@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
-import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/device_item.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
@@ -58,7 +57,10 @@ class _MyDevicesPageState
           if (index >= deviceCount) {
             return const SizedBox();
           }
-          return DeviceItem(devices[index]);
+          return DeviceItem(
+            myDevice: devices[index],
+            onDeleteRquest: () => bloc.add(RemoveFromMyDevices(devices[index])),
+          );
         },
       );
     }
@@ -74,7 +76,12 @@ class _MyDevicesPageState
             icon: const FaIcon(FontAwesomeIcons.plus),
             onPressed: state.loading
                 ? null
-                : () => NavigationService.navigateTo(DevicesNavigator(bloc)),
+                : () => NavigationService.navigateTo(
+                    DevicesNavigator(
+                      onDeviceSelected: (device) =>
+                          bloc.add(AddToMyDevices(device)),
+                    ),
+                  ),
           ),
         ],
       ),

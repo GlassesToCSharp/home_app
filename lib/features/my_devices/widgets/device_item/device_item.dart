@@ -9,8 +9,13 @@ export 'package:home_app/features/my_devices/models/my_device.dart';
 
 class DeviceItem extends StatefulWidget {
   final MyDevice myDevice;
+  final Function onDeleteRquest;
 
-  const DeviceItem(this.myDevice, {super.key});
+  const DeviceItem({
+    required this.myDevice,
+    required this.onDeleteRquest,
+    super.key,
+  });
 
   @override
   State<DeviceItem> createState() => _DeviceItemState();
@@ -43,95 +48,117 @@ class _DeviceItemState
   @override
   Widget buildState(BuildContext context, DeviceItemState state) {
     final device = state.data;
-    return Card(
-      child: Stack(
-        children: [
-          ListTile(
-            onTap: (state.hasData && !state.loading)
-                ? null
-                : () {
-                    NavigationService.navigateTo(
-                      DeviceNavigator(device: state.data!),
-                    );
-                  },
-            title: Text(
-              myDevice.device?.name == null
-                  ? myDevice.name
-                  : myDevice.device!.name,
-            ),
-            titleTextStyle: Theme.of(
-              context,
-            ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-            subtitle: Text(myDevice.ipAddress),
-            // Show what features are available for each device
-            trailing: device == null
-                ? null
-                : device.isNodeDevice
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (device.nodeDeviceStatus.hasPowerState)
-                            const FaIcon(
-                              FontAwesomeIcons.boltLightning,
-                              color: Colors.amber,
-                              size: _iconSize,
-                            ),
-                          if (device.nodeDeviceStatus.hasNeonBrightnessState)
-                            const FaIcon(
-                              FontAwesomeIcons.solidLightbulb,
-                              color: Colors.amber,
-                              size: _iconSize,
-                            ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (device.nodeDeviceStatus.hasLedColorState)
-                            const FaIcon(
-                              FontAwesomeIcons.palette,
-                              color: Colors.red,
-                              size: _iconSize,
-                            ),
-                          if (device.nodeDeviceStatus.hasMotorState)
-                            const FaIcon(
-                              FontAwesomeIcons.gear,
-                              color: Colors.blueGrey,
-                              size: _iconSize,
-                            ),
-                        ],
-                      ),
-                    ],
-                  )
-                : null,
+    return Dismissible(
+      key: Key(myDevice.deviceId),
+      background: Container(
+        color: Colors.red[700],
+        child: const Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: FaIcon(FontAwesomeIcons.trash, color: Colors.white),
           ),
-          // isNodeDevice will tell us if the device has been reached.
-          if (state.loading || device?.isNodeDevice != true || state.hasError)
-            // Show a warning message of the list tile
-            Positioned.fill(
-              child: Container(
-                color: Colors.blueGrey.withAlpha(200),
-                child: Center(
-                  child: Text(
-                    state.loading
-                        ? "Fetching device data..."
-                        : device?.isNodeDevice != true
-                        ? "Device not available"
-                        : state.hasError
-                        ? state.error!
-                        : "Unknown issue",
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+        ),
+      ),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          widget.onDeleteRquest();
+          return Future.value(true);
+        }
+
+        return Future.value(false);
+      },
+      child: Card(
+        child: Stack(
+          children: [
+            ListTile(
+              onTap: (state.hasData && !state.loading)
+                  ? null
+                  : () {
+                      NavigationService.navigateTo(
+                        DeviceNavigator(device: state.data!),
+                      );
+                    },
+              title: Text(
+                myDevice.device?.name == null
+                    ? myDevice.name
+                    : myDevice.device!.name,
+              ),
+              titleTextStyle: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+              subtitle: Text(myDevice.ipAddress),
+              // Show what features are available for each device
+              trailing: device == null
+                  ? null
+                  : device.isNodeDevice
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (device.nodeDeviceStatus.hasPowerState)
+                              const FaIcon(
+                                FontAwesomeIcons.boltLightning,
+                                color: Colors.amber,
+                                size: _iconSize,
+                              ),
+                            if (device.nodeDeviceStatus.hasNeonBrightnessState)
+                              const FaIcon(
+                                FontAwesomeIcons.solidLightbulb,
+                                color: Colors.amber,
+                                size: _iconSize,
+                              ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (device.nodeDeviceStatus.hasLedColorState)
+                              const FaIcon(
+                                FontAwesomeIcons.palette,
+                                color: Colors.red,
+                                size: _iconSize,
+                              ),
+                            if (device.nodeDeviceStatus.hasMotorState)
+                              const FaIcon(
+                                FontAwesomeIcons.gear,
+                                color: Colors.blueGrey,
+                                size: _iconSize,
+                              ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : null,
+            ),
+            // isNodeDevice will tell us if the device has been reached.
+            if (state.loading || device?.isNodeDevice != true || state.hasError)
+              // Show a warning message of the list tile
+              Positioned.fill(
+                child: Container(
+                  color: Colors.blueGrey.withAlpha(200),
+                  child: Center(
+                    child: Text(
+                      state.loading
+                          ? "Fetching device data..."
+                          : state.hasError
+                          ? state.error!
+                          : device?.isNodeDevice != true
+                          ? "Device not available"
+                          : "Unknown issue",
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

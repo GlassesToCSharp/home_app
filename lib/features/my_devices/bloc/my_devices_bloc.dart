@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/features/my_devices/models/my_device.dart';
 import 'package:home_app/mixins/device_utils.dart';
 import 'package:home_app/models/base_state.dart';
@@ -22,6 +21,7 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
     : super(MyDevicesState.loading()) {
     on<GetMyDevices>(_handleGetMyDevicesEvent);
     on<AddToMyDevices>(_handleAddToMyDevices);
+    on<RemoveFromMyDevices>(_handleRemoveFromMyDevices);
   }
 
   Future<void> _handleGetMyDevicesEvent(
@@ -43,7 +43,6 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
             } catch (e) {
               // If retrieving the device status fails, enter empty null device
               // status.
-              print(e);
               return NodeDeviceStatus.empty();
             }
           }),
@@ -83,6 +82,22 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
         myDevice = myDevice.copyWith(deviceId: newId);
       }
       await myDevice.insert(dbService);
+
+      // Reload the list
+      add(const GetMyDevices());
+    } catch (e) {
+      emit(MyDevicesState.error(e.toString(), data: state.data));
+    }
+  }
+
+  Future<void> _handleRemoveFromMyDevices(
+    RemoveFromMyDevices event,
+    Emitter<MyDevicesState> emit,
+  ) async {
+    // No loading, just do it.
+
+    try {
+      await event.myDevice.delete(dbService);
 
       // Reload the list
       add(const GetMyDevices());

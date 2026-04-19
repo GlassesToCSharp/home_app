@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
-import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
+import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
-export 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
+export 'package:home_app/features/devices/models/device.dart';
 
 class DevicesPage extends StatefulWidget {
-  final MyDevicesBloc myDevicesBloc;
+  final Function(Device) onDeviceSelected;
 
-  const DevicesPage(this.myDevicesBloc);
+  const DevicesPage({required this.onDeviceSelected});
 
   @override
   State<DevicesPage> createState() => _DevicesPageState();
@@ -72,8 +72,7 @@ class _DevicesPageState
                   return;
                 }
 
-                // Add to the MyDevices list and navigate away.
-                widget.myDevicesBloc.add(AddToMyDevices(device));
+                widget.onDeviceSelected(device);
                 NavigationService.pop();
               },
               title: Text(device.name),

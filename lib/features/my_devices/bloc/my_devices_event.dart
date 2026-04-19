@@ -21,10 +21,10 @@ class AddToMyDevices extends MyDevicesEvent {
 }
 
 class RemoveFromMyDevices extends MyDevicesEvent {
-  final Device device;
+  final MyDevice myDevice;
 
-  const RemoveFromMyDevices(this.device);
+  const RemoveFromMyDevices(this.myDevice);
 
   @override
-  List<Object> get props => [...super.props, device];
+  List<Object> get props => [...super.props, myDevice];
 }
