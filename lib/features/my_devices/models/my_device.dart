@@ -104,15 +104,17 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   static String databaseTableCreation() {
     return "CREATE TABLE IF NOT EXISTS $_tableName("
         "$_colId INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "$_colDeviceId VARCHAR(3) PRIMARY KEY, "
+        "$_colDeviceId VARCHAR(3), "
         "$_colName VARCHAR(19), "
         "$_colIpAddress VARCHAR(15))";
   }
 
   @override
   Future<MyDevice> insert(DatabaseService dbService) {
+    final entry = toJson();
+    entry.remove(_colId);
     return dbService
-        .insert(_tableName, toJson())
+        .insert(_tableName, entry)
         .then(
           (newDbObject) =>
               MyDevice.fromJson(newDbObject).copyWith(device: device),

@@ -1,10 +1,10 @@
 part of 'database_service.dart';
 
 class LiveDatabaseService extends DatabaseService {
-  late Database _db;
+  Database? _db;
 
   @override
-  bool get isInitialised => _db.isOpen;
+  bool get isInitialised => _db != null;
 
   LiveDatabaseService();
 
@@ -39,7 +39,7 @@ class LiveDatabaseService extends DatabaseService {
       await initialiseDatabase();
     }
 
-    final newId = await _db.insert(
+    final newId = await _db!.insert(
       tableName,
       object,
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -62,7 +62,7 @@ class LiveDatabaseService extends DatabaseService {
     }
 
     // Query the table for all objects. {SELECT * FROM tableName}
-    final result = await _db.query(tableName);
+    final result = await _db!.query(tableName);
 
     // Convert the List<Map<String, Object?> into a List<T>.
     return result.map(converter).toList();
@@ -78,7 +78,7 @@ class LiveDatabaseService extends DatabaseService {
       await initialiseDatabase();
     }
 
-    var res = await _db.update(
+    var res = await _db!.update(
       tableName,
       model,
       // Ensure that the object has an identifying column name (default: id).
@@ -100,7 +100,7 @@ class LiveDatabaseService extends DatabaseService {
     }
 
     try {
-      await _db.delete(
+      await _db!.delete(
         tableName,
         // Use a `where` clause to delete a specific object.
         where: "$identifyingColumnName = ?",
