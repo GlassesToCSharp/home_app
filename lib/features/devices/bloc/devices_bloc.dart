@@ -1,22 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:home_app/features/devices/models/device.dart';
+import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/mixins/device_utils.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/connectivity_service/connectivity_service.dart';
+import 'package:home_app/services/database_service/database_service.dart';
 
 export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 export 'package:home_app/services/connectivity_service/connectivity_service.dart';
+export 'package:home_app/services/database_service/database_service.dart';
 
 part 'devices_event.dart';
 part 'devices_state.dart';
 
-class DevicesBloc extends Bloc<DevicesEvent, DevicesState> {
+class DevicesBloc extends Bloc<DevicesEvent, DevicesState> with DeviceUtils {
   final NodeDeviceRepository repository;
   final ConnectivityService connectivityService;
+  final DatabaseService dbService;
 
-  DevicesBloc({required this.repository, required this.connectivityService})
-    : super(const DevicesState.idle(data: <Device>[])) {
+  DevicesBloc({
+    required this.repository,
+    required this.connectivityService,
+    required this.dbService,
+  }) : super(const DevicesState.idle(data: <Device>[])) {
     on<ScanForDevices>(_handleScanForDevicesEvent);
   }
 

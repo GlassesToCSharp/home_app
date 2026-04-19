@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
-import 'package:home_app/features/devices/device/device_navigator.dart';
-import 'package:home_app/features/presets/presets_navigator.dart';
+import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
+import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
+export 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
+
 class DevicesPage extends StatefulWidget {
-  const DevicesPage();
+  final MyDevicesBloc myDevicesBloc;
+
+  const DevicesPage(this.myDevicesBloc);
 
   @override
   State<DevicesPage> createState() => _DevicesPageState();
@@ -19,20 +23,15 @@ class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
   static const _iconSize = 16.0;
 
-  bool _isBulkSelecting = false;
-  final _selectedDevices = <Device>{};
-
   @override
   DevicesEvent? get initialEvent => const ScanForDevices();
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   DevicesBloc createBloc(KiwiContainer di) {
     return DevicesBloc(
       repository: di.resolve<NodeDeviceRepository>(),
       connectivityService: di.resolve<ConnectivityService>(),
+      dbService: di.resolve<DatabaseService>(),
     );
   }
 
@@ -65,35 +64,23 @@ class _DevicesPageState
           return Card(
             child: ListTile(
               onTap: () {
-                if (_isBulkSelecting) {
-                  setState(() {
-                    if (_selectedDevices.contains(device)) {
-                      _selectedDevices.remove(device);
-                      if (_selectedDevices.isEmpty) {
-                        _isBulkSelecting = false;
-                      }
-                    } else {
-                      _selectedDevices.add(device);
-                    }
-                  });
-                } else {
-                  NavigationService.navigateTo(DeviceNavigator(device: device));
+                if (!device.isNodeDevice) {
+                  SnackBarPresenter.presentError(
+                    ScaffoldMessenger.of(context),
+                    "Cannot add a non-Node device",
+                  );
+                  return;
                 }
+
+                // Add to the MyDevices list and navigate away.
+                widget.myDevicesBloc.add(AddToMyDevices(device));
+                NavigationService.pop();
               },
-              onLongPress: _isBulkSelecting
-                  ? null
-                  : () {
-                      setState(() {
-                        _isBulkSelecting = true;
-                        _selectedDevices.add(device);
-                      });
-                    },
               title: Text(device.name),
               titleTextStyle: Theme.of(
                 context,
               ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               subtitle: Text(device.ipAddress),
-              selected: _selectedDevices.contains(device),
               // Show what features are available for each device
               trailing: device.isNodeDevice
                   ? Row(
@@ -144,57 +131,20 @@ class _DevicesPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: _isBulkSelecting
-            ? Text("Selected ${_selectedDevices.length} device(s)")
-            : const Text("Network devices"),
-        backgroundColor: _isBulkSelecting
-            ? Theme.of(context).cardColor
-            : Theme.of(context).primaryColor,
+        title: const Text("Network devices"),
+        backgroundColor: Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
-        actions: _isBulkSelecting
-            ? [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.xmark),
-                  onPressed: () {
-                    setState(() {
-                      _isBulkSelecting = false;
-                      _selectedDevices.clear();
-                    });
-                  },
-                ),
-              ]
-            : [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
-                  onPressed: state.loading ? null : _scanForDevices,
-                ),
-              ],
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+            onPressed: state.loading ? null : _scanForDevices,
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: body),
-          if (_isBulkSelecting)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                ElevatedButton(
-                  onPressed: null, // () => NavigationService.navigateTo(
-                  //   DeviceNavigator(device: _selectedDevices),
-                  // ),
-                  child: const Text("Bulk edit"),
-                ),
-                ElevatedButton(
-                  onPressed: () => NavigationService.navigateTo(
-                    PresetsNavigator(devices: _selectedDevices),
-                  ),
-                  child: const Text("Action preset"),
-                ),
-              ],
-            ),
-        ],
+        children: [Expanded(child: body)],
       ),
     );
   }

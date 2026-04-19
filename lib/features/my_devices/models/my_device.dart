@@ -47,6 +47,7 @@ class MyDevice extends DatabaseEntry<MyDevice> {
       deviceId: device.nodeDeviceStatus.id,
       name: device.nodeDeviceStatus.name,
       ipAddress: device.ipAddress,
+      device: device,
     );
   }
 

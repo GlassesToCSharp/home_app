@@ -6,8 +6,11 @@ class MockDatabaseService extends DatabaseService {
   final _dbDictionary = <String, List<Map<String, Object?>>>{};
 
   @override
+  bool get isInitialised => _dbDictionary.isNotEmpty;
+
+  @override
   Future<void> initialiseDatabase() {
-    _dbDictionary["myDevices"] = List<Map<String, Object?>>.empty();
+    _dbDictionary["myDevices"] = <Map<String, Object?>>[];
     return Future.delayed(const Duration());
   }
 
@@ -16,18 +19,26 @@ class MockDatabaseService extends DatabaseService {
     String tableName,
     Map<String, Object?> object, [
     String identifyingColumnName = "id",
-  ]) {
+  ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     object[identifyingColumnName] = _dbDictionary[tableName]?.length ?? 0;
     _dbDictionary[tableName]?.add(object);
-    return Future.delayed(_mockDelay);
+    return await Future.delayed(_mockDelay, () => object);
   }
 
   @override
   Future<List<T>> getAll<T>(
     String tableName,
     T Function(Map<String, Object?>) converter,
-  ) {
-    return Future.delayed(
+  ) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
+    return await Future.delayed(
       _mockDelay,
       () => _dbDictionary[tableName]!,
     ).then((listResult) => listResult.map(converter).toList());
@@ -38,14 +49,18 @@ class MockDatabaseService extends DatabaseService {
     String tableName,
     Map<String, Object?> model, [
     String identifyingColumnName = "id",
-  ]) {
+  ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     final list = _dbDictionary[tableName]!;
     final index = list.indexWhere(
       (m) => m[identifyingColumnName] == model[identifyingColumnName],
     );
     list[index] = model;
     _dbDictionary[tableName] = list;
-    return Future.delayed(_mockDelay, () => 1);
+    return await Future.delayed(_mockDelay, () => 1);
   }
 
   @override
@@ -53,11 +68,15 @@ class MockDatabaseService extends DatabaseService {
     String tableName,
     Map<String, Object?> model, [
     String identifyingColumnName = "id",
-  ]) {
+  ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     final list = _dbDictionary[tableName]!;
     list.removeWhere(
       (m) => m[identifyingColumnName] == model[identifyingColumnName],
     );
-    return Future.delayed(_mockDelay);
+    await Future.delayed(_mockDelay);
   }
 }

@@ -1,13 +1,13 @@
 part of 'node_device_repository.dart';
 
 class MockNodeDeviceRepository extends NodeDeviceRepository
-    with MockRepository {
+    with MockRepository, DeviceUtils {
   static final _deviceList = <String, NodeDeviceStatus>{};
 
   @override
   Future<NodeDeviceStatus> getDeviceStatus(String ipAddress) {
     final device = NodeDeviceStatus(
-      id: Random().nextBool() ? "DUMMY ${Random().nextInt(1000)}" : "",
+      id: Random().nextBool() ? getRandomString(3) : "",
       name: "DUMMY ${Random().nextInt(1000)}",
       ledColor: Random().nextBool()
           ? NodeDeviceLedColor(

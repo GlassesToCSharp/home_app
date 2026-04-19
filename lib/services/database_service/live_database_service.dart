@@ -3,6 +3,9 @@ part of 'database_service.dart';
 class LiveDatabaseService extends DatabaseService {
   late Database _db;
 
+  @override
+  bool get isInitialised => _db.isOpen;
+
   LiveDatabaseService();
 
   @override
@@ -32,6 +35,10 @@ class LiveDatabaseService extends DatabaseService {
     Map<String, Object?> object, [
     String identifyingColumnName = "id",
   ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     final newId = await _db.insert(
       tableName,
       object,
@@ -50,6 +57,10 @@ class LiveDatabaseService extends DatabaseService {
     String tableName,
     T Function(Map<String, Object?>) converter,
   ) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     // Query the table for all objects. {SELECT * FROM tableName}
     final result = await _db.query(tableName);
 
@@ -63,6 +74,10 @@ class LiveDatabaseService extends DatabaseService {
     Map<String, Object?> model, [
     String identifyingColumnName = "id",
   ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     var res = await _db.update(
       tableName,
       model,
@@ -80,6 +95,10 @@ class LiveDatabaseService extends DatabaseService {
     Map<String, Object?> model, [
     String identifyingColumnName = "id",
   ]) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
     try {
       await _db.delete(
         tableName,

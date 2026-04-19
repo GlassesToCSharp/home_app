@@ -74,7 +74,7 @@ class _MyDevicesPageState
             icon: const FaIcon(FontAwesomeIcons.plus),
             onPressed: state.loading
                 ? null
-                : () => NavigationService.navigateTo(const DevicesNavigator()),
+                : () => NavigationService.navigateTo(DevicesNavigator(bloc)),
           ),
         ],
       ),

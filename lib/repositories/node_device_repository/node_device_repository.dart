@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:home_app/mixins/device_utils.dart';
 import 'package:home_app/mixins/mock_repository.dart';
 import 'package:home_app/models/node_device_status.dart';
 import 'package:home_app/services/requests/http_service.dart';

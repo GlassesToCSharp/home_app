@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/app/bloc/app_bloc.dart';
-import 'package:home_app/features/devices/devices_page.dart';
 import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/features/presets/presets_page.dart';
 import 'package:home_app/models/bloc_state.dart';

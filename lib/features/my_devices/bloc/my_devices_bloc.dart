@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/mixins/device_utils.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/database_service/database_service.dart';
@@ -12,13 +13,15 @@ export 'package:home_app/services/database_service/database_service.dart';
 part 'my_devices_event.dart';
 part 'my_devices_state.dart';
 
-class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState> {
+class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
+    with DeviceUtils {
   final NodeDeviceRepository repository;
   final DatabaseService dbService;
 
   MyDevicesBloc({required this.repository, required this.dbService})
     : super(MyDevicesState.loading()) {
     on<GetMyDevices>(_handleGetMyDevicesEvent);
+    on<AddToMyDevices>(_handleAddToMyDevices);
   }
 
   Future<void> _handleGetMyDevicesEvent(
@@ -55,6 +58,34 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState> {
       }
 
       emit(MyDevicesState.data(myDevices));
+    } catch (e) {
+      emit(MyDevicesState.error(e.toString(), data: state.data));
+    }
+  }
+
+  Future<void> _handleAddToMyDevices(
+    AddToMyDevices event,
+    Emitter<MyDevicesState> emit,
+  ) async {
+    // No loading, just do it.
+
+    try {
+      MyDevice myDevice = MyDevice.fromDevice(event.newDevice);
+
+      if (!myDevice.device!.isNodeDevice) {
+        throw "Only Node devices can be added";
+      }
+
+      // If a device ID has not been set, set it. Maximum length is 3 chars.
+      if (myDevice.device!.nodeDeviceStatus.id.isEmpty) {
+        final newId = getRandomString(3);
+        await repository.setDeviceId(myDevice.ipAddress, newId);
+        myDevice = myDevice.copyWith(deviceId: newId);
+      }
+      await myDevice.insert(dbService);
+
+      // Reload the list
+      add(const GetMyDevices());
     } catch (e) {
       emit(MyDevicesState.error(e.toString(), data: state.data));
     }

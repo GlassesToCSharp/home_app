@@ -9,6 +9,8 @@ part 'live_database_service.dart';
 part 'mock_database_service.dart';
 
 abstract class DatabaseService {
+  bool get isInitialised;
+
   const DatabaseService();
 
   Future<void> initialiseDatabase();
