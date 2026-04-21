@@ -88,6 +88,22 @@ class _PresetsPageState
                 titleTextStyle: Theme.of(
                   context,
                 ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                trailing: IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.pen, size: 16),
+                  onPressed: () async {
+                    await showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return NameEntryDialog(
+                          initialName: preset.name,
+                          onSubmit: (newName) => bloc.add(
+                            UpdatePreset(Preset(id: preset.id, name: newName)),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           );

@@ -5,14 +5,18 @@ class NameEntryDialog extends StatelessWidget {
   static const _maxLength = 29;
   final _nameController = TextEditingController();
 
+  final String initialName;
   final Function(String) onSubmit;
   final int maxLength;
 
   NameEntryDialog({
     required this.onSubmit,
+    this.initialName = "",
     this.maxLength = _maxLength,
     super.key,
-  });
+  }) {
+    _nameController.text = initialName;
+  }
 
   @override
   Widget build(BuildContext context) {

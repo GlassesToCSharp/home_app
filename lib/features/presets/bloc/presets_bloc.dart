@@ -16,6 +16,7 @@ class PresetsBloc extends Bloc<PresetsEvent, PresetsState> {
     // on<Execute>(_handleExecuteEvent);
     on<GetPresets>(_handleGetPresetsEvent);
     on<CreatePreset>(_handleCreatePresetEvent);
+    on<UpdatePreset>(_handleUpdatePresetEvent);
     on<RemovePreset>(_handleRemovePresetEvent);
   }
 
@@ -120,6 +121,26 @@ class PresetsBloc extends Bloc<PresetsEvent, PresetsState> {
 
       final presets = List<Preset>.from(state.data ?? <Preset>[]);
       presets.add(newPreset);
+      emit(PresetsState.data(presets));
+    } catch (e) {
+      emit(PresetsState.error(e.toString()));
+    }
+  }
+
+  Future<void> _handleUpdatePresetEvent(
+    UpdatePreset event,
+    Emitter<PresetsState> emit,
+  ) async {
+    try {
+      final updatedPreset = await event.updatedPreset.udpate(dbService);
+
+      final presets = List<Preset>.from(state.data ?? <Preset>[]);
+      final index = presets.indexWhere((p) => p.id == updatedPreset.id);
+      if (index == -1) {
+        presets.add(updatedPreset);
+      } else {
+        presets.replaceRange(index, index + 1, [updatedPreset]);
+      }
       emit(PresetsState.data(presets));
     } catch (e) {
       emit(PresetsState.error(e.toString()));

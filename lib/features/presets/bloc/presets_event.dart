@@ -20,6 +20,15 @@ class CreatePreset extends PresetsEvent {
   const CreatePreset(this.name);
 }
 
+class UpdatePreset extends PresetsEvent {
+  final Preset updatedPreset;
+
+  @override
+  List<Object> get props => [...super.props, updatedPreset];
+
+  const UpdatePreset(this.updatedPreset);
+}
+
 class RemovePreset extends PresetsEvent {
   final Preset preset;
 

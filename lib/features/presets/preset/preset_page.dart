@@ -24,12 +24,6 @@ class _PresetPageState extends State<PresetPage> {
         backgroundColor: Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
-        actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.pen),
-            onPressed: null, // TODO: Edit name of preset
-          ),
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
