@@ -10,10 +10,12 @@ export 'package:home_app/features/my_devices/models/my_device.dart';
 class DeviceItem extends StatefulWidget {
   final Device device;
   final bool requestRefreshStatus;
+  final Function(MyDevice)? onSave;
 
   const DeviceItem({
     required this.device,
     this.requestRefreshStatus = false,
+    this.onSave,
     super.key,
   });
 

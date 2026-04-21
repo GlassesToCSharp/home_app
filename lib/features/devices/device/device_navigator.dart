@@ -6,12 +6,13 @@ export 'package:home_app/features/devices/models/device.dart';
 
 class DeviceNavigator extends BaseNavigator {
   final Device device;
+  final Function(Device)? onSave;
 
-  const DeviceNavigator({required this.device});
+  const DeviceNavigator({required this.device, this.onSave});
 
   @override
   Widget build() {
-    return DevicePage(device: device);
+    return DevicePage(device: device, onSave: onSave);
   }
 
   @override

@@ -9,8 +9,9 @@ export 'package:home_app/features/devices/models/device.dart';
 
 class DevicePage extends StatefulWidget {
   final Device device;
+  final Function(Device)? onSave;
 
-  const DevicePage({required this.device});
+  const DevicePage({required this.device, this.onSave});
 
   @override
   State<DevicePage> createState() => _DevicePageState();
