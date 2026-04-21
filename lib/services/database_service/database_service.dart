@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:home_app/features/my_devices/models/my_device.dart';
 import 'package:home_app/features/presets/models/preset.dart';
+import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -21,8 +22,10 @@ abstract class DatabaseService {
   );
   Future<List<T>> getAll<T>(
     String tableName,
-    T Function(Map<String, Object?>) converter,
-  );
+    T Function(Map<String, Object?>) converter, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  });
   Future<int> update(
     String tableName,
     Map<String, Object?> model, [

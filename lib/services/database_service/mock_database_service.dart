@@ -10,8 +10,9 @@ class MockDatabaseService extends DatabaseService {
 
   @override
   Future<void> initialiseDatabase() {
-    _dbDictionary["myDevices"] = <Map<String, Object?>>[];
-    _dbDictionary["presets"] = <Map<String, Object?>>[];
+    _dbDictionary[MyDevice.tableName] = <Map<String, Object?>>[];
+    _dbDictionary[Preset.tableName] = <Map<String, Object?>>[];
+    _dbDictionary[PresetAction.tableName] = <Map<String, Object?>>[];
     return Future.delayed(const Duration());
   }
 
@@ -33,8 +34,10 @@ class MockDatabaseService extends DatabaseService {
   @override
   Future<List<T>> getAll<T>(
     String tableName,
-    T Function(Map<String, Object?>) converter,
-  ) async {
+    T Function(Map<String, Object?>) converter, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  }) async {
     if (!isInitialised) {
       await initialiseDatabase();
     }

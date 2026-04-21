@@ -12,13 +12,14 @@ part 'my_device.g.dart';
 
 @JsonSerializable()
 class MyDevice extends DatabaseEntry<MyDevice> {
-  static const String _tableName = "myDevices";
-  static const String _colId = "id";
+  // Table name and ID column are accessed elsewhere for linking DB items.
+  static const String tableName = "myDevices";
+  static const String colId = "id";
   static const String _colDeviceId = "deviceId";
   static const String _colName = "name";
   static const String _colIpAddress = "ipAddress";
 
-  @JsonKey(name: _colId)
+  @JsonKey(name: colId)
   final int id;
   @JsonKey(name: _colDeviceId)
   final String deviceId;
@@ -103,8 +104,8 @@ class MyDevice extends DatabaseEntry<MyDevice> {
       _$MyDeviceFromJson(json);
 
   static String databaseTableCreation() {
-    return "CREATE TABLE IF NOT EXISTS $_tableName("
-        "$_colId INTEGER PRIMARY KEY AUTOINCREMENT, "
+    return "CREATE TABLE IF NOT EXISTS $tableName("
+        "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "
         "$_colDeviceId VARCHAR(3), "
         "$_colName VARCHAR(19), "
         "$_colIpAddress VARCHAR(15))";
@@ -113,9 +114,9 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   @override
   Future<MyDevice> insert(DatabaseService dbService) {
     final entry = toJson();
-    entry.remove(_colId);
+    entry.remove(colId);
     return dbService
-        .insert(_tableName, entry)
+        .insert(tableName, entry)
         .then(
           (newDbObject) =>
               MyDevice.fromJson(newDbObject).copyWith(device: device),
@@ -124,16 +125,16 @@ class MyDevice extends DatabaseEntry<MyDevice> {
 
   @override
   Future<List<MyDevice>> getAll(DatabaseService dbService) {
-    return dbService.getAll(_tableName, MyDevice.fromJson);
+    return dbService.getAll(tableName, MyDevice.fromJson);
   }
 
   @override
   Future<MyDevice> udpate(DatabaseService dbService) {
-    return dbService.update(_tableName, toJson()).then((_) => this);
+    return dbService.update(tableName, toJson()).then((_) => this);
   }
 
   @override
   Future<void> delete(DatabaseService dbService) {
-    return dbService.delete(_tableName, toJson());
+    return dbService.delete(tableName, toJson());
   }
 }

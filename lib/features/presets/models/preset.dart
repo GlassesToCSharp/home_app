@@ -11,11 +11,12 @@ part 'preset.g.dart';
 
 @JsonSerializable()
 class Preset extends DatabaseEntry<Preset> {
-  static const String _tableName = "presets";
-  static const String _colId = "id";
+  // Table name and ID column are accessed elsewhere for linking DB items.
+  static const String tableName = "presets";
+  static const String colId = "id";
   static const String _colName = "name";
 
-  @JsonKey(name: _colId)
+  @JsonKey(name: colId)
   final int id;
   @JsonKey(name: _colName)
   final String name;
@@ -36,30 +37,30 @@ class Preset extends DatabaseEntry<Preset> {
   factory Preset.fromJson(Map<String, Object?> json) => _$PresetFromJson(json);
 
   static String databaseTableCreation() {
-    return "CREATE TABLE IF NOT EXISTS $_tableName("
-        "$_colId INTEGER PRIMARY KEY AUTOINCREMENT, "
+    return "CREATE TABLE IF NOT EXISTS $tableName("
+        "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "
         "$_colName VARCHAR(29))";
   }
 
   @override
   Future<Preset> insert(DatabaseService dbService) {
     final entry = toJson();
-    entry.remove(_colId);
-    return dbService.insert(_tableName, entry).then(Preset.fromJson);
+    entry.remove(colId);
+    return dbService.insert(tableName, entry).then(Preset.fromJson);
   }
 
   @override
   Future<List<Preset>> getAll(DatabaseService dbService) {
-    return dbService.getAll(_tableName, Preset.fromJson);
+    return dbService.getAll(tableName, Preset.fromJson);
   }
 
   @override
   Future<Preset> udpate(DatabaseService dbService) {
-    return dbService.update(_tableName, toJson()).then((_) => this);
+    return dbService.update(tableName, toJson()).then((_) => this);
   }
 
   @override
   Future<void> delete(DatabaseService dbService) {
-    return dbService.delete(_tableName, toJson());
+    return dbService.delete(tableName, toJson());
   }
 }

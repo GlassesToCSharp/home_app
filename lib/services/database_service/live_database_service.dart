@@ -16,6 +16,9 @@ class LiveDatabaseService extends DatabaseService {
       // `path` package is best practice to ensure the path is correctly
       // constructed for each platform.
       join(await getDatabasesPath(), "local_database.db"),
+      // As we are using Foreign Keys to link entries between different tables,
+      // we need to enable this.
+      onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'),
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) async {
         // Run the CREATE TABLE statement on the database.
@@ -23,6 +26,7 @@ class LiveDatabaseService extends DatabaseService {
         // remove the dependency to other classes.
         await db.execute(MyDevice.databaseTableCreation());
         await db.execute(Preset.databaseTableCreation());
+        await db.execute(PresetAction.databaseTableCreation());
       },
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.
@@ -56,14 +60,25 @@ class LiveDatabaseService extends DatabaseService {
   @override
   Future<List<T>> getAll<T>(
     String tableName,
-    T Function(Map<String, Object?>) converter,
-  ) async {
+    T Function(Map<String, Object?>) converter, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  }) async {
     if (!isInitialised) {
       await initialiseDatabase();
     }
 
+    if ((whereClause != null && whereArgs == null) ||
+        (whereClause == null && whereArgs != null)) {
+      throw "If 'where' arguments are passed, both the clause and the arguments must not be null.";
+    }
+
     // Query the table for all objects. {SELECT * FROM tableName}
-    final result = await _db!.query(tableName);
+    final result = await _db!.query(
+      tableName,
+      where: whereClause,
+      whereArgs: whereArgs,
+    );
 
     // Convert the List<Map<String, Object?> into a List<T>.
     return result.map(converter).toList();
