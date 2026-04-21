@@ -4,21 +4,17 @@ import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/services/navigation_service/base_navigator.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
-export 'package:home_app/features/my_devices/my_devices_page.dart'
-    show PagePurpose;
+export 'package:home_app/features/presets/models/preset.dart';
 
 class MyDevicesNavigator extends BaseNavigator {
   final Function(MyDevice) onDeviceSaved;
-  final PagePurpose purpose;
+  final Preset? preset;
 
-  const MyDevicesNavigator({
-    required this.onDeviceSaved,
-    this.purpose = PagePurpose.modifySavedDevices,
-  });
+  const MyDevicesNavigator({required this.onDeviceSaved, this.preset});
 
   @override
   Widget build() {
-    return MyDevicesPage(onDeviceSaved: onDeviceSaved, purpose: purpose);
+    return MyDevicesPage(onDeviceSaved: onDeviceSaved, preset: preset);
   }
 
   @override

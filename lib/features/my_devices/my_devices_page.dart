@@ -8,16 +8,13 @@ import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
-enum PagePurpose { selectPresetAction, modifySavedDevices }
+export 'package:home_app/features/presets/models/preset.dart';
 
 class MyDevicesPage extends StatefulWidget {
   final Function(MyDevice)? onDeviceSaved;
-  final PagePurpose purpose;
+  final Preset? preset;
 
-  const MyDevicesPage({
-    this.purpose = PagePurpose.modifySavedDevices,
-    this.onDeviceSaved,
-  });
+  const MyDevicesPage({this.onDeviceSaved, this.preset});
 
   @override
   State<MyDevicesPage> createState() => _MyDevicesPageState();
@@ -79,7 +76,7 @@ class _MyDevicesPageState
           if (index >= deviceCount) {
             return const SizedBox();
           }
-          final device = _myDevices[index].toDevice();
+          final myDevice = _myDevices[index];
           return Dismissible(
             key: Key(_myDevices[index].deviceId),
             background: Container(
@@ -102,14 +99,14 @@ class _MyDevicesPageState
               return Future.value(false);
             },
             child: ExpansionDeviceItem(
-              device: device,
-              includeNameEdit: widget.purpose == PagePurpose.modifySavedDevices,
+              myDevice: myDevice,
+              preset: widget.preset,
               requestRefreshStatus: ![
-                device.nodeDeviceStatus.hasLedColorState,
-                device.nodeDeviceStatus.hasMotorState,
-                device.nodeDeviceStatus.hasNeonBrightnessState,
-                device.nodeDeviceStatus.hasPowerState,
-              ].any((i) => i),
+                myDevice.device?.nodeDeviceStatus.hasLedColorState,
+                myDevice.device?.nodeDeviceStatus.hasMotorState,
+                myDevice.device?.nodeDeviceStatus.hasNeonBrightnessState,
+                myDevice.device?.nodeDeviceStatus.hasPowerState,
+              ].any((i) => i == true),
             ),
           );
         },

@@ -6,20 +6,22 @@ import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/ne
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/bloc/device_item_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/models/preset.dart';
 
 class ExpansionDeviceItem extends StatefulWidget {
-  final Device device;
+  final MyDevice myDevice;
   final bool requestRefreshStatus;
   final Function(MyDevice)? onSave;
-  final bool includeNameEdit;
+  final Preset? preset;
 
   const ExpansionDeviceItem({
-    required this.device,
+    required this.myDevice,
     this.requestRefreshStatus = false,
     this.onSave,
-    this.includeNameEdit = false,
+    this.preset,
     super.key,
   });
 
@@ -35,17 +37,17 @@ class _ExpansionDeviceItemState
           DeviceItemEvent,
           DeviceItemState
         > {
-  Device get device => widget.device;
+  MyDevice get myDevice => widget.myDevice;
 
   @override
   DeviceItemEvent? get initialEvent => widget.requestRefreshStatus
       ? const GetDeviceData()
-      : SetDeviceData(device);
+      : SetDeviceData(widget.myDevice);
 
   @override
   DeviceItemBloc createBloc(KiwiContainer di) {
     return DeviceItemBloc(
-      device: device,
+      myDevice: widget.myDevice,
       repository: di.resolve<NodeDeviceRepository>(),
       dbService: di.resolve<DatabaseService>(),
     );
@@ -59,36 +61,49 @@ class _ExpansionDeviceItemState
           data: Theme.of(context).copyWith(dividerColor: Colors.blueGrey),
           child: ExpansionTile(
             title: Text(
-              state.data?.name == null ? device.name : state.data!.name,
+              state.data?.name == null ? myDevice.name : state.data!.name,
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(device.ipAddress),
+            subtitle: Text(myDevice.ipAddress),
             controlAffinity: ListTileControlAffinity.leading,
             children: state.data == null
                 ? <Widget>[]
                 : <Widget>[
-                    if (widget.includeNameEdit)
+                    if (widget.preset == null)
                       // Device name
-                      NameTile(device: state.data!),
-                    if (state.data!.nodeDeviceStatus.hasPowerState)
+                      NameTile(device: state.data!.device!),
+                    if (state.data!.device!.nodeDeviceStatus.hasPowerState)
                       // Power state
-                      PowerStateTile(device: state.data!),
-                    if (state.data!.nodeDeviceStatus.hasMotorState)
+                      PowerStateTile(
+                        myDevice: state.data!,
+                        preset: widget.preset,
+                        onNewValueSet: () {
+                          NavigationService.pop();
+                          // TODO: Update the list.
+                        },
+                      ),
+                    if (state.data!.device!.nodeDeviceStatus.hasMotorState)
                       // Motor control
-                      MotorControlTile(device: state.data!),
-                    if (state.data!.nodeDeviceStatus.hasLedColorState)
+                      MotorControlTile(device: state.data!.device!),
+                    if (state.data!.device!.nodeDeviceStatus.hasLedColorState)
                       // LED colour
-                      LedColorTile(device: state.data!),
-                    if (state.data!.nodeDeviceStatus.hasNeonBrightnessState)
+                      LedColorTile(device: state.data!.device!),
+                    if (state
+                        .data!
+                        .device!
+                        .nodeDeviceStatus
+                        .hasNeonBrightnessState)
                       // Neon Brightness
-                      NeonBrightnessTile(device: state.data!),
+                      NeonBrightnessTile(device: state.data!.device!),
                   ],
           ),
         ),
         // isNodeDevice will tell us if the device has been reached.
-        if (state.loading || !device.isNodeDevice || state.hasError)
+        if (state.loading ||
+            state.data?.device?.isNodeDevice != true ||
+            state.hasError)
           // Show a warning message of the list tile
           Positioned.fill(
             child: Container(
@@ -99,7 +114,7 @@ class _ExpansionDeviceItemState
                       ? "Fetching device data..."
                       : state.hasError
                       ? state.error!
-                      : !device.isNodeDevice
+                      : state.data?.device?.isNodeDevice != true
                       ? "Device not available"
                       : "Unknown issue",
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(

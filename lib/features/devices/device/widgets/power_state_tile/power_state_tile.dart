@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/bloc/power_state_tile_bloc.dart';
 import 'package:home_app/features/devices/mixins/device_helper.dart';
-import 'package:home_app/features/devices/models/device.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
-class PowerStateTile extends StatefulWidget {
-  final Device device;
+export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/models/preset.dart';
 
-  const PowerStateTile({required this.device});
+class PowerStateTile extends StatefulWidget {
+  final MyDevice myDevice;
+  final Preset? preset;
+  final Function? onNewValueSet;
+
+  const PowerStateTile({
+    required this.myDevice,
+    this.preset,
+    this.onNewValueSet,
+  });
 
   @override
   State<PowerStateTile> createState() => _PowerStateTileState();
@@ -23,15 +31,17 @@ class _PowerStateTileState
           PowerStateTileState
         >
     with DeviceHelper {
-  Device get _device => widget.device;
+  Device get _device => widget.myDevice.device!;
   bool get _hasPowerState => _device.nodeDeviceStatus.hasPowerState;
 
   @override
   PowerStateTileBloc createBloc(KiwiContainer di) {
     return PowerStateTileBloc(
       repository: di.resolve<NodeDeviceRepository>(),
-      ipAddress: _device.ipAddress,
+      myDevice: widget.myDevice,
       initialState: _hasPowerState ? _device.nodeDeviceStatus.power! : false,
+      dbService: di.resolve<DatabaseService>(),
+      preset: widget.preset,
     );
   }
 
@@ -42,6 +52,10 @@ class _PowerStateTileState
         ScaffoldMessenger.of(context),
         newState.error!,
       );
+    } else if (newState.hasData &&
+        newState.data == true &&
+        widget.onNewValueSet != null) {
+      widget.onNewValueSet!();
     }
   }
 

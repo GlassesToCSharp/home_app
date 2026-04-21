@@ -1,9 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:home_app/features/my_devices/models/my_device.dart';
+import 'package:home_app/features/presets/models/preset.dart';
+import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+import 'package:home_app/services/database_service/database_service.dart';
 
+export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/models/preset.dart';
 export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
+export 'package:home_app/services/database_service/database_service.dart';
 
 part 'power_state_tile_event.dart';
 part 'power_state_tile_state.dart';
@@ -11,12 +18,16 @@ part 'power_state_tile_state.dart';
 class PowerStateTileBloc
     extends Bloc<PowerStateTileEvent, PowerStateTileState> {
   final NodeDeviceRepository repository;
-  final String ipAddress;
+  final MyDevice myDevice;
+  final Preset? preset;
+  final DatabaseService dbService;
 
   PowerStateTileBloc({
     required this.repository,
-    required this.ipAddress,
+    required this.myDevice,
     required bool initialState,
+    required this.dbService,
+    this.preset,
   }) : super(PowerStateTileState.data(initialState)) {
     on<NewPowerState>(_handleNewStateEvent);
   }
@@ -31,7 +42,21 @@ class PowerStateTileBloc
     emit(PowerStateTileState.loading(data: event.newState));
 
     try {
-      await repository.setPowerState(ipAddress, event.newState);
+      if (preset == null) {
+        await repository.setPowerState(
+          myDevice.device!.ipAddress,
+          event.newState,
+        );
+      } else {
+        final presetAction = PresetAction(
+          id: 0,
+          presetId: preset!.id,
+          deviceId: myDevice.id,
+          instructionName: InstructionName.power,
+          instructionValue: event.newState ? 1 : 0,
+        );
+        await presetAction.insert(dbService);
+      }
       emit(PowerStateTileState.data(event.newState));
     } catch (e) {
       emit(PowerStateTileState.error(e.toString(), data: initialState));

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/my_devices/my_devices_navigator.dart';
-import 'package:home_app/features/my_devices/my_devices_page.dart';
-import 'package:home_app/features/presets/models/preset.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 export 'package:home_app/features/presets/models/preset.dart';
@@ -43,7 +41,7 @@ class _PresetPageState extends State<PresetPage> {
                       label: Text("Add action"),
                       onPressed: () => NavigationService.navigateTo(
                         MyDevicesNavigator(
-                          purpose: PagePurpose.selectPresetAction,
+                          preset: widget.preset,
                           onDeviceSaved: (_) {
                             // TODO: Save to list
                           },

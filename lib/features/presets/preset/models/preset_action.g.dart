@@ -10,7 +10,11 @@ PresetAction _$PresetActionFromJson(Map<String, dynamic> json) => PresetAction(
   id: (json['id'] as num).toInt(),
   presetId: (json['presetId'] as num).toInt(),
   deviceId: (json['deviceId'] as num).toInt(),
-  deviceInstruction: json['deviceInstruction'] as String,
+  instructionName: $enumDecode(
+    _$InstructionNameEnumMap,
+    json['instructionName'],
+  ),
+  instructionValue: (json['instructionValue'] as num).toInt(),
 );
 
 Map<String, dynamic> _$PresetActionToJson(PresetAction instance) =>
@@ -18,5 +22,15 @@ Map<String, dynamic> _$PresetActionToJson(PresetAction instance) =>
       'id': instance.id,
       'presetId': instance.presetId,
       'deviceId': instance.deviceId,
-      'deviceInstruction': instance.deviceInstruction,
+      'instructionName': _$InstructionNameEnumMap[instance.instructionName]!,
+      'instructionValue': instance.instructionValue,
     };
+
+const _$InstructionNameEnumMap = {
+  InstructionName.power: 'power',
+  InstructionName.neonBrightness: 'neonBrightness',
+  InstructionName.ledColor: 'ledColor',
+  InstructionName.motorAcceleration: 'motorAcceleration',
+  InstructionName.motorSpeed: 'motorSpeed',
+  InstructionName.motorPosition: 'motorPosition',
+};

@@ -9,6 +9,23 @@ part 'preset_action.g.dart';
 // Don't forget to run:
 // dart run build_runner build --delete-conflicting-outputs
 
+// Max enum name length - 30
+@JsonEnum()
+enum InstructionName {
+  @JsonValue("power")
+  power,
+  @JsonValue("neonBrightness")
+  neonBrightness,
+  @JsonValue("ledColor")
+  ledColor,
+  @JsonValue("motorAcceleration")
+  motorAcceleration,
+  @JsonValue("motorSpeed")
+  motorSpeed,
+  @JsonValue("motorPosition")
+  motorPosition,
+}
+
 @JsonSerializable()
 class PresetAction extends DatabaseEntry<PresetAction> {
   // Table name and ID column are accessed elsewhere for linking DB items.
@@ -16,7 +33,8 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   static const String colId = "id";
   static const String _colPresetId = "presetId";
   static const String _colDeviceId = "deviceId";
-  static const String _colDeviceInstruction = "deviceInstruction";
+  static const String _colInstructionName = "instructionName";
+  static const String _colInstructionValue = "instructionValue";
 
   @JsonKey(name: colId)
   final int id;
@@ -24,17 +42,26 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   final int presetId;
   @JsonKey(name: _colDeviceId)
   final int deviceId;
-  @JsonKey(name: _colDeviceInstruction)
-  final String deviceInstruction;
+  @JsonKey(name: _colInstructionName)
+  final InstructionName instructionName;
+  @JsonKey(name: _colInstructionValue)
+  final int instructionValue;
 
   @override
-  List<Object?> get props => [id, presetId, deviceId, deviceInstruction];
+  List<Object?> get props => [
+    id,
+    presetId,
+    deviceId,
+    instructionName,
+    instructionValue,
+  ];
 
   const PresetAction({
     required this.id,
     required this.presetId,
     required this.deviceId,
-    required this.deviceInstruction,
+    required this.instructionName,
+    required this.instructionValue,
   });
 
   @override
@@ -48,7 +75,8 @@ class PresetAction extends DatabaseEntry<PresetAction> {
         "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "
         "$_colPresetId INTEGER, "
         "$_colDeviceId INTEGER, "
-        "$_colDeviceInstruction VARCHAR(255), "
+        "$_colInstructionName VARCHAR(255), "
+        "$_colInstructionValue INTEGER, "
         "FOREIGN KEY ($_colPresetId) REFERENCES ${Preset.tableName}(${Preset.colId}, "
         "FOREIGN KEY ($_colDeviceId) REFERENCES ${MyDevice.tableName}(${MyDevice.colId}, ) "
         "ON DELETE NO ACTION ON UPDATE NO ACTION)";

@@ -26,7 +26,7 @@ class _DevicePageState extends State<DevicePage> {
       // Device name - only available for one device
       NameTile(device: _device),
       // Power state
-      PowerStateTile(device: _device),
+      //PowerStateTile(device: _device),
       // Motor control
       MotorControlTile(device: _device),
       // LED colour

@@ -8,12 +8,12 @@ abstract class DeviceItemEvent extends Equatable {
 }
 
 class SetDeviceData extends DeviceItemEvent {
-  final Device device;
+  final MyDevice myDevice;
 
   @override
-  List<Object> get props => [...super.props, device];
+  List<Object> get props => [...super.props, myDevice];
 
-  const SetDeviceData(this.device);
+  const SetDeviceData(this.myDevice);
 }
 
 class GetDeviceData extends DeviceItemEvent {
