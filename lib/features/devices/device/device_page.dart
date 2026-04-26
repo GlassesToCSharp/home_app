@@ -30,7 +30,7 @@ class _DevicePageState extends State<DevicePage> {
       // Motor control
       MotorControlTile(device: _device),
       // LED colour
-      LedColorTile(device: _device),
+      //LedColorTile(device: _device),
       // Neon Brightness
       //NeonBrightnessTile(device: _device),
     ];

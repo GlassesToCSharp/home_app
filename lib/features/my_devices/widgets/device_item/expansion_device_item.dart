@@ -101,7 +101,25 @@ class _ExpansionDeviceItemState
                       MotorControlTile(device: state.data!.device!),
                     if (state.data!.device!.nodeDeviceStatus.hasLedColorState)
                       // LED colour
-                      LedColorTile(device: state.data!.device!),
+                      LedColorTile(
+                        myDevice: state.data!,
+                        preset: widget.preset,
+                        onNewValueSet: (newValue) {
+                          NavigationService.pop();
+                          if (widget.onSave != null) {
+                            widget.onSave!(
+                              myDevice,
+                              PresetAction(
+                                id: 0,
+                                presetId: widget.preset!.id,
+                                deviceId: myDevice.id,
+                                instructionName: InstructionName.ledColor,
+                                instructionValue: newValue,
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     if (state
                         .data!
                         .device!

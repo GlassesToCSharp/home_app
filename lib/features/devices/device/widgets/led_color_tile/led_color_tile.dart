@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile_dialog/led_color_tile_dialog.dart';
 import 'package:home_app/features/devices/mixins/device_helper.dart';
-import 'package:home_app/features/devices/models/device.dart';
 
-export 'package:home_app/features/devices/models/device.dart';
+export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/models/preset.dart';
 
 class LedColorTile extends StatefulWidget {
-  final Device device;
+  final MyDevice myDevice;
+  final Preset? preset;
+  final Function(int)? onNewValueSet;
 
-  const LedColorTile({required this.device});
+  const LedColorTile({required this.myDevice, this.preset, this.onNewValueSet});
 
   @override
   State<LedColorTile> createState() => _LedColorTileState();
 }
 
 class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
-  Device get _device => widget.device;
-  bool get _hasLedControl => _device.nodeDeviceStatus.hasLedColorState;
+  MyDevice get _device => widget.myDevice;
+  bool get _hasLedControl => _device.device!.nodeDeviceStatus.hasLedColorState;
 
   NodeDeviceLedColor _color = NodeDeviceLedColor.fromColor(Colors.black);
 
@@ -25,7 +27,7 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
     super.initState();
 
     if (_hasLedControl) {
-      _color = _device.nodeDeviceStatus.ledColor!;
+      _color = _device.device!.nodeDeviceStatus.ledColor!;
     }
   }
 
@@ -54,6 +56,9 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
                   return LedColorTileDialog(
                     color: _color,
                     ipAddress: _device.ipAddress,
+                    myDevice: _device,
+                    preset: widget.preset,
+                    onNewValueSet: widget.onNewValueSet,
                   );
                 },
               );

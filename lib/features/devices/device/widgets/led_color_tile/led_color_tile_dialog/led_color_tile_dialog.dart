@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile_dialog/bloc/led_color_tile_dialog_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
-import 'package:home_app/models/node_device_led_color.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
+export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/models/preset.dart';
 export 'package:home_app/models/node_device_led_color.dart';
 
 class LedColorTileDialog extends StatefulWidget {
   final NodeDeviceLedColor color;
   final String ipAddress;
+  final MyDevice myDevice;
+  final Preset? preset;
+  final Function(int)? onNewValueSet;
 
-  const LedColorTileDialog({required this.color, required this.ipAddress});
+  const LedColorTileDialog({
+    required this.color,
+    required this.ipAddress,
+    required this.myDevice,
+    this.preset,
+    this.onNewValueSet,
+  });
 
   @override
   State<StatefulWidget> createState() => _LedColorTileDialogState();
@@ -45,8 +55,10 @@ class _LedColorTileDialogState
   @override
   LedColorTileDialogBloc createBloc(KiwiContainer di) {
     return LedColorTileDialogBloc(
-      ipAddress: widget.ipAddress,
+      myDevice: widget.myDevice,
+      preset: widget.preset,
       repository: di.resolve<NodeDeviceRepository>(),
+      dbService: di.resolve<DatabaseService>(),
     );
   }
 
@@ -69,6 +81,9 @@ class _LedColorTileDialogState
           opacity: (_opacity * 255).toInt(),
         ),
       );
+      if (widget.onNewValueSet != null) {
+        widget.onNewValueSet!((_red << 16) + (_green << 8) + _blue);
+      }
     }
   }
 
