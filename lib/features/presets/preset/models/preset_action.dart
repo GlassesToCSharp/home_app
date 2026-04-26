@@ -193,7 +193,6 @@ class PresetAction extends DatabaseEntry<PresetAction> {
               .withFetchedDevice(dbService)
               .then((pa) => pa.withFetchedPreset(dbService)),
         );
-    ;
   }
 
   @override
