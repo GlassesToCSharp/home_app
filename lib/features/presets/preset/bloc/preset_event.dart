@@ -20,3 +20,12 @@ class AddPresetAction extends PresetEvent {
 
   const AddPresetAction(this.myDevice, this.presetAction);
 }
+
+class RemovePresetAction extends PresetEvent {
+  final PresetAction presetAction;
+
+  @override
+  List<Object> get props => [...super.props, presetAction];
+
+  const RemovePresetAction(this.presetAction);
+}

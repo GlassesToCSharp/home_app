@@ -48,6 +48,14 @@ class _PresetPageState
         backgroundColor: Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+            onPressed: state.loading
+                ? null
+                : () => bloc.add(const RefreshPresetActions()),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -73,12 +81,37 @@ class _PresetPageState
                   );
                 }
                 final presetAction = _presetActions[index];
-                return Card(
-                  child: ListTile(
-                    onTap: null,
-                    title: Text(presetAction.instructionName.toString()),
-                    titleTextStyle: Theme.of(context).textTheme.bodyLarge!
-                        .copyWith(fontWeight: FontWeight.bold),
+                return Dismissible(
+                  key: Key(presetAction.id.toString()),
+                  background: Container(
+                    color: Colors.red[700],
+                    child: const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 16),
+                        child: FaIcon(
+                          FontAwesomeIcons.trash,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) {
+                    if (direction == DismissDirection.endToStart) {
+                      bloc.add(RemovePresetAction(presetAction));
+                      return Future.value(true);
+                    }
+
+                    return Future.value(false);
+                  },
+                  child: Card(
+                    child: ListTile(
+                      onTap: null,
+                      title: Text(presetAction.instructionName.toString()),
+                      titleTextStyle: Theme.of(context).textTheme.bodyLarge!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 );
               },

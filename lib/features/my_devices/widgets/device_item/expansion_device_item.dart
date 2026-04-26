@@ -83,6 +83,7 @@ class _ExpansionDeviceItemState
                         preset: widget.preset,
                         onNewValueSet: (newValue) {
                           if (widget.onSave != null) {
+                            NavigationService.pop();
                             widget.onSave!(
                               myDevice,
                               PresetAction(

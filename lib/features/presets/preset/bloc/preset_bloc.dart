@@ -19,6 +19,7 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
     : super(const PresetState.loading()) {
     on<RefreshPresetActions>(_handleRefreshPresetActionsEvent);
     on<AddPresetAction>(_handleAddPresetActionEvent);
+    on<RemovePresetAction>(_handleRemovePresetActionEvent);
   }
 
   Future<void> _handleRefreshPresetActionsEvent(
@@ -47,8 +48,34 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
     try {
       final newPresetAction = await event.presetAction.insert(dbService);
 
-      final presetActions = state.data ?? <PresetAction>[];
+      final presetActions = List<PresetAction>.from(
+        state.data ?? <PresetAction>[],
+      );
       presetActions.add(newPresetAction);
+      emit(PresetState.data(presetActions));
+    } catch (e) {
+      emit(PresetState.error(e.toString(), data: state.data));
+    }
+  }
+
+  Future<void> _handleRemovePresetActionEvent(
+    RemovePresetAction event,
+    Emitter<PresetState> emit,
+  ) async {
+    // No loading state. Just save.
+
+    try {
+      await event.presetAction.delete(dbService);
+
+      final presetActions = List<PresetAction>.from(
+        state.data ?? <PresetAction>[],
+      );
+      final index = presetActions.indexWhere(
+        (pa) => pa.id == event.presetAction.id,
+      );
+      if (index >= 0) {
+        presetActions.removeAt(index);
+      }
       emit(PresetState.data(presetActions));
     } catch (e) {
       emit(PresetState.error(e.toString(), data: state.data));
