@@ -124,8 +124,42 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   }
 
   @override
-  Future<List<MyDevice>> getAll(DatabaseService dbService) {
-    return dbService.getAll(tableName, MyDevice.fromJson);
+  Future<List<MyDevice>> getAll(
+    DatabaseService dbService, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  }) {
+    return dbService.getAll(
+      tableName,
+      MyDevice.fromJson,
+      whereClause: whereClause,
+      whereArgs: whereArgs,
+    );
+  }
+
+  @override
+  Future<MyDevice> getById(
+    DatabaseService dbService,
+    int id, {
+    String columnIdentifier = colId,
+  }) {
+    return dbService
+        .getAll(
+          tableName,
+          MyDevice.fromJson,
+          whereClause: "$columnIdentifier = ?",
+          whereArgs: [id],
+        )
+        .then((myDevices) {
+          switch (myDevices.length) {
+            case 0:
+              throw "No devices found";
+            case 1:
+              return myDevices.first;
+            default:
+              throw "Too many devices with ID $id";
+          }
+        });
   }
 
   @override

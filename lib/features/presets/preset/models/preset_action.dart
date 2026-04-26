@@ -29,7 +29,7 @@ enum InstructionName {
 @JsonSerializable()
 class PresetAction extends DatabaseEntry<PresetAction> {
   // Table name and ID column are accessed elsewhere for linking DB items.
-  static const String tableName = "presets";
+  static const String tableName = "presetActions";
   static const String colId = "id";
   static const String _colPresetId = "presetId";
   static const String _colDeviceId = "deviceId";
@@ -40,8 +40,12 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   final int id;
   @JsonKey(name: _colPresetId)
   final int presetId;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final Preset? preset;
   @JsonKey(name: _colDeviceId)
   final int deviceId;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final MyDevice? device;
   @JsonKey(name: _colInstructionName)
   final InstructionName instructionName;
   @JsonKey(name: _colInstructionValue)
@@ -51,7 +55,9 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   List<Object?> get props => [
     id,
     presetId,
+    preset,
     deviceId,
+    device,
     instructionName,
     instructionValue,
   ];
@@ -59,7 +65,9 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   const PresetAction({
     required this.id,
     required this.presetId,
+    this.preset,
     required this.deviceId,
+    this.device,
     required this.instructionName,
     required this.instructionValue,
   });
@@ -94,33 +102,98 @@ class PresetAction extends DatabaseEntry<PresetAction> {
         "ON DELETE NO ACTION ON UPDATE NO ACTION)";
   }
 
+  Future<PresetAction> withFetchedPreset(DatabaseService dbService) async {
+    return PresetAction(
+      id: id,
+      deviceId: deviceId,
+      device: device,
+      presetId: presetId,
+      preset: await Preset.instance().getById(dbService, presetId),
+      instructionName: instructionName,
+      instructionValue: instructionValue,
+    );
+  }
+
+  Future<PresetAction> withFetchedDevice(DatabaseService dbService) async {
+    return PresetAction(
+      id: id,
+      deviceId: deviceId,
+      device: await MyDevice.instance().getById(dbService, deviceId),
+      presetId: presetId,
+      preset: preset,
+      instructionName: instructionName,
+      instructionValue: instructionValue,
+    );
+  }
+
   @override
-  Future<PresetAction> insert(DatabaseService dbService) {
+  Future<PresetAction> insert(DatabaseService dbService) async {
     final entry = toJson();
     entry.remove(colId);
-    return dbService.insert(tableName, entry).then(PresetAction.fromJson);
+    return dbService
+        .insert(tableName, entry)
+        .then(PresetAction.fromJson)
+        .then(
+          (pa) => pa
+              .withFetchedDevice(dbService)
+              .then((pa) => pa.withFetchedPreset(dbService)),
+        );
   }
 
   @override
   Future<List<PresetAction>> getAll(
-    DatabaseService dbService, [
-    Preset? preset,
-  ]) {
-    if (preset == null) {
+    DatabaseService dbService, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  }) {
+    if (whereClause == null) {
       return dbService.getAll(tableName, PresetAction.fromJson);
     }
 
     return dbService.getAll(
       tableName,
       PresetAction.fromJson,
-      whereClause: "$_colPresetId = ?",
-      whereArgs: [preset.id],
+      whereClause: whereClause,
+      whereArgs: whereArgs,
     );
   }
 
   @override
+  Future<PresetAction> getById(
+    DatabaseService dbService,
+    int id, {
+    String columnIdentifier = colId,
+  }) {
+    return dbService
+        .getAll(
+          tableName,
+          PresetAction.fromJson,
+          whereClause: "$columnIdentifier = ?",
+          whereArgs: [id],
+        )
+        .then((presetActions) {
+          switch (presetActions.length) {
+            case 0:
+              throw "No preset actions found";
+            case 1:
+              return presetActions.first;
+            default:
+              throw "Too many preset actions with ID $id";
+          }
+        });
+  }
+
+  @override
   Future<PresetAction> udpate(DatabaseService dbService) {
-    return dbService.update(tableName, toJson()).then((_) => this);
+    return dbService
+        .update(tableName, toJson())
+        .then((_) => this)
+        .then(
+          (pa) => pa
+              .withFetchedDevice(dbService)
+              .then((pa) => pa.withFetchedPreset(dbService)),
+        );
+    ;
   }
 
   @override

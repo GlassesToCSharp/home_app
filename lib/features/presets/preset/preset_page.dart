@@ -108,9 +108,12 @@ class _PresetPageState
                   child: Card(
                     child: ListTile(
                       onTap: null,
-                      title: Text(presetAction.instructionName.toString()),
+                      title: Text(presetAction.device!.name),
                       titleTextStyle: Theme.of(context).textTheme.bodyLarge!
                           .copyWith(fontWeight: FontWeight.bold),
+                      subtitle: Text(
+                        "${presetAction.instructionName.name} = ${presetAction.instructionValue}",
+                      ),
                     ),
                   ),
                 );

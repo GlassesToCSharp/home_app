@@ -50,8 +50,42 @@ class Preset extends DatabaseEntry<Preset> {
   }
 
   @override
-  Future<List<Preset>> getAll(DatabaseService dbService) {
-    return dbService.getAll(tableName, Preset.fromJson);
+  Future<List<Preset>> getAll(
+    DatabaseService dbService, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  }) {
+    return dbService.getAll(
+      tableName,
+      Preset.fromJson,
+      whereClause: whereClause,
+      whereArgs: whereArgs,
+    );
+  }
+
+  @override
+  Future<Preset> getById(
+    DatabaseService dbService,
+    int id, {
+    String columnIdentifier = colId,
+  }) {
+    return dbService
+        .getAll(
+          tableName,
+          Preset.fromJson,
+          whereClause: "$columnIdentifier = ?",
+          whereArgs: [id],
+        )
+        .then((presets) {
+          switch (presets.length) {
+            case 0:
+              throw "No presets found";
+            case 1:
+              return presets.first;
+            default:
+              throw "Too many presets with ID $id";
+          }
+        });
   }
 
   @override

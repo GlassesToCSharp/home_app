@@ -7,7 +7,16 @@ abstract class DatabaseEntry<T> extends Equatable {
   Map<String, Object?> toJson();
 
   Future<T> insert(DatabaseService dbService);
-  Future<List<T>> getAll(DatabaseService dbService);
+  Future<List<T>> getAll(
+    DatabaseService dbService, {
+    String? whereClause,
+    List<Object?>? whereArgs,
+  });
+  Future<T> getById(
+    DatabaseService dbService,
+    int id, {
+    String columnIdentifier = "id",
+  });
   Future<T> udpate(DatabaseService dbService);
   Future<void> delete(DatabaseService dbService);
 }
