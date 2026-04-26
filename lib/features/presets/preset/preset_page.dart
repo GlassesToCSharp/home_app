@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/my_devices/my_devices_navigator.dart';
+import 'package:home_app/features/presets/preset/bloc/preset_bloc.dart';
+import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 export 'package:home_app/features/presets/models/preset.dart';
@@ -14,11 +16,32 @@ class PresetPage extends StatefulWidget {
   State<PresetPage> createState() => _PresetPageState();
 }
 
-class _PresetPageState extends State<PresetPage> {
-  final _presetActions = <Preset>[];
+class _PresetPageState
+    extends BlocState<PresetPage, PresetBloc, PresetEvent, PresetState> {
+  final _presetActions = <PresetAction>[];
 
   @override
-  Widget build(BuildContext context) {
+  PresetBloc createBloc(KiwiContainer di) {
+    return PresetBloc(
+      preset: widget.preset,
+      dbService: di.resolve<DatabaseService>(),
+    );
+  }
+
+  @override
+  void onStateChange(BuildContext context, PresetState newState) {
+    super.onStateChange(context, newState);
+
+    if (newState.hasData) {
+      setState(() {
+        _presetActions.clear();
+        _presetActions.addAll(newState.data!);
+      });
+    }
+  }
+
+  @override
+  Widget buildState(BuildContext context, PresetState state) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.preset.name),
@@ -42,9 +65,8 @@ class _PresetPageState extends State<PresetPage> {
                       onPressed: () => NavigationService.navigateTo(
                         MyDevicesNavigator(
                           preset: widget.preset,
-                          onDeviceSaved: (_) {
-                            // TODO: Save to list
-                          },
+                          onDeviceSaved: (myDevice, presetAction) =>
+                              bloc.add(AddPresetAction(myDevice, presetAction)),
                         ),
                       ),
                     ),
@@ -54,7 +76,7 @@ class _PresetPageState extends State<PresetPage> {
                 return Card(
                   child: ListTile(
                     onTap: null,
-                    title: Text(presetAction.name),
+                    title: Text(presetAction.instructionName.toString()),
                     titleTextStyle: Theme.of(context).textTheme.bodyLarge!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),

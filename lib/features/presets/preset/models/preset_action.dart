@@ -70,6 +70,18 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   factory PresetAction.fromJson(Map<String, Object?> json) =>
       _$PresetActionFromJson(json);
 
+  // Empty instance for using the "getAll" method.
+  factory PresetAction.instance() {
+    return PresetAction(
+      id: 0,
+      deviceId: 0,
+      presetId: 0,
+      // Doesn't matter the value here.
+      instructionName: InstructionName.ledColor,
+      instructionValue: 0,
+    );
+  }
+
   static String databaseTableCreation() {
     return "CREATE TABLE IF NOT EXISTS $tableName("
         "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "

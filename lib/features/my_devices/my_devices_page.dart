@@ -3,15 +3,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
 import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
+import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
+export 'package:home_app/features/my_devices/models/my_device.dart';
 export 'package:home_app/features/presets/models/preset.dart';
+export 'package:home_app/features/presets/preset/models/preset_action.dart';
 
 class MyDevicesPage extends StatefulWidget {
-  final Function(MyDevice)? onDeviceSaved;
+  final Function(MyDevice, PresetAction)? onDeviceSaved;
   final Preset? preset;
 
   const MyDevicesPage({this.onDeviceSaved, this.preset});
@@ -101,6 +104,7 @@ class _MyDevicesPageState
             child: ExpansionDeviceItem(
               myDevice: myDevice,
               preset: widget.preset,
+              onSave: widget.onDeviceSaved,
               requestRefreshStatus: ![
                 myDevice.device?.nodeDeviceStatus.hasLedColorState,
                 myDevice.device?.nodeDeviceStatus.hasMotorState,

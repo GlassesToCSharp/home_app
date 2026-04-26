@@ -10,7 +10,7 @@ export 'package:home_app/features/presets/models/preset.dart';
 class PowerStateTile extends StatefulWidget {
   final MyDevice myDevice;
   final Preset? preset;
-  final Function? onNewValueSet;
+  final Function(bool)? onNewValueSet;
 
   const PowerStateTile({
     required this.myDevice,
@@ -52,10 +52,10 @@ class _PowerStateTileState
         ScaffoldMessenger.of(context),
         newState.error!,
       );
-    } else if (newState.hasData &&
-        newState.data == true &&
+    } else if (!newState.loading &&
+        newState.hasData &&
         widget.onNewValueSet != null) {
-      widget.onNewValueSet!();
+      widget.onNewValueSet!(newState.data!);
     }
   }
 

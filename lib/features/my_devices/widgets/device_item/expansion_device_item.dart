@@ -5,16 +5,18 @@ import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dar
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/bloc/device_item_bloc.dart';
+import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
+export 'package:home_app/features/presets/preset/models/preset_action.dart';
 export 'package:home_app/features/presets/models/preset.dart';
 
 class ExpansionDeviceItem extends StatefulWidget {
   final MyDevice myDevice;
   final bool requestRefreshStatus;
-  final Function(MyDevice)? onSave;
+  final Function(MyDevice, PresetAction)? onSave;
   final Preset? preset;
 
   const ExpansionDeviceItem({
@@ -79,9 +81,20 @@ class _ExpansionDeviceItemState
                       PowerStateTile(
                         myDevice: state.data!,
                         preset: widget.preset,
-                        onNewValueSet: () {
+                        onNewValueSet: (newValue) {
                           NavigationService.pop();
-                          // TODO: Update the list.
+                          if (widget.onSave != null) {
+                            widget.onSave!(
+                              myDevice,
+                              PresetAction(
+                                id: 0,
+                                presetId: widget.preset!.id,
+                                deviceId: myDevice.id,
+                                instructionName: InstructionName.power,
+                                instructionValue: newValue ? 1 : 0,
+                              ),
+                            );
+                          }
                         },
                       ),
                     if (state.data!.device!.nodeDeviceStatus.hasMotorState)
