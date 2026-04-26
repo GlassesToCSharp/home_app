@@ -32,7 +32,7 @@ class _DevicePageState extends State<DevicePage> {
       // LED colour
       LedColorTile(device: _device),
       // Neon Brightness
-      NeonBrightnessTile(device: _device),
+      //NeonBrightnessTile(device: _device),
     ];
 
     return Scaffold(

@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
 import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
-import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';

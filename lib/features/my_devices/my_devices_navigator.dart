@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_app/features/my_devices/models/my_device.dart';
 import 'package:home_app/features/my_devices/my_devices_page.dart';
-import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/services/navigation_service/base_navigator.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';

@@ -82,7 +82,6 @@ class _ExpansionDeviceItemState
                         myDevice: state.data!,
                         preset: widget.preset,
                         onNewValueSet: (newValue) {
-                          NavigationService.pop();
                           if (widget.onSave != null) {
                             widget.onSave!(
                               myDevice,
@@ -109,7 +108,25 @@ class _ExpansionDeviceItemState
                         .nodeDeviceStatus
                         .hasNeonBrightnessState)
                       // Neon Brightness
-                      NeonBrightnessTile(device: state.data!.device!),
+                      NeonBrightnessTile(
+                        myDevice: state.data!,
+                        preset: widget.preset,
+                        onNewValueSet: (newValue) {
+                          NavigationService.pop();
+                          if (widget.onSave != null) {
+                            widget.onSave!(
+                              myDevice,
+                              PresetAction(
+                                id: 0,
+                                presetId: widget.preset!.id,
+                                deviceId: myDevice.id,
+                                instructionName: InstructionName.neonBrightness,
+                                instructionValue: newValue,
+                              ),
+                            );
+                          }
+                        },
+                      ),
                   ],
           ),
         ),

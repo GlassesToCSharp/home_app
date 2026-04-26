@@ -4,13 +4,20 @@ import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/ne
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
+export 'package:home_app/features/presets/models/preset.dart';
+export 'package:home_app/features/my_devices/models/my_device.dart';
+
 class NeonBrightnessTileDialog extends StatefulWidget {
   final int brightness;
-  final String ipAddress;
+  final MyDevice myDevice;
+  final Preset? preset;
+  final Function(int)? onNewValueSet;
 
   const NeonBrightnessTileDialog({
     required this.brightness,
-    required this.ipAddress,
+    required this.myDevice,
+    this.preset,
+    this.onNewValueSet,
   });
 
   @override
@@ -38,8 +45,10 @@ class _NeonBrightnessTileDialogState
   @override
   NeonBrightnessTileDialogBloc createBloc(KiwiContainer di) {
     return NeonBrightnessTileDialogBloc(
-      ipAddress: widget.ipAddress,
+      myDevice: widget.myDevice,
+      preset: widget.preset,
       repository: di.resolve<NodeDeviceRepository>(),
+      dbService: di.resolve<DatabaseService>(),
     );
   }
 
@@ -54,6 +63,9 @@ class _NeonBrightnessTileDialogState
 
     if (newState.hasData && newState.data == true) {
       Navigator.pop<double>(context, _brightness);
+      if (widget.onNewValueSet != null) {
+        widget.onNewValueSet!(_brightness.toInt());
+      }
     }
   }
 
