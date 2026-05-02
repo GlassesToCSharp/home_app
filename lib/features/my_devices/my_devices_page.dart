@@ -5,6 +5,7 @@ import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
+import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
@@ -50,7 +51,12 @@ class _MyDevicesPageState
   void onStateChange(BuildContext context, MyDevicesState newState) {
     super.onStateChange(context, newState);
 
-    if (newState.hasData) {
+    if (newState.hasError) {
+      SnackBarPresenter.presentError(
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
+    } else if (!newState.loading && newState.hasData) {
       setState(() {
         _myDevices.clear();
         _myDevices.addAll(newState.data!);
@@ -63,7 +69,7 @@ class _MyDevicesPageState
     Widget body = const SizedBox();
     if (state.hasError) {
       body = CentralErrorDisplay(message: state.error!, onRetry: _getMyDevices);
-    } else if (state.loading) {
+    } else if (state.loading && (!state.hasData || state.data!.isEmpty)) {
       body = const CentralLoadingIndicator();
     } else if (_myDevices.isEmpty) {
       body = CentralErrorDisplay(
@@ -114,6 +120,16 @@ class _MyDevicesPageState
           );
         },
       );
+
+      if (state.hasData && state.data!.isNotEmpty) {
+        body = RefreshIndicator(
+          onRefresh: () {
+            _getMyDevices();
+            return bloc.stream.firstWhere((s) => !s.loading);
+          },
+          child: body,
+        );
+      }
     }
 
     return Scaffold(
