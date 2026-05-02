@@ -37,9 +37,6 @@ class _MyDevicesPageState
   MyDevicesEvent? get initialEvent => const GetMyDevices();
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   MyDevicesBloc createBloc(KiwiContainer di) {
     return MyDevicesBloc(
       repository: di.resolve<NodeDeviceRepository>(),
