@@ -31,14 +31,14 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   // Table name and ID column are accessed elsewhere for linking DB items.
   static const String tableName = "presetActions";
   static const String colId = "id";
-  static const String _colPresetId = "presetId";
+  static const String colPresetId = "presetId";
   static const String _colDeviceId = "deviceId";
   static const String _colInstructionName = "instructionName";
   static const String _colInstructionValue = "instructionValue";
 
   @JsonKey(name: colId)
   final int id;
-  @JsonKey(name: _colPresetId)
+  @JsonKey(name: colPresetId)
   final int presetId;
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Preset? preset;
@@ -93,13 +93,14 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   static String databaseTableCreation() {
     return "CREATE TABLE IF NOT EXISTS $tableName("
         "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "$_colPresetId INTEGER, "
+        "$colPresetId INTEGER, "
         "$_colDeviceId INTEGER, "
         "$_colInstructionName VARCHAR(255), "
         "$_colInstructionValue INTEGER, "
-        "FOREIGN KEY ($_colPresetId) REFERENCES ${Preset.tableName}(${Preset.colId}, "
-        "FOREIGN KEY ($_colDeviceId) REFERENCES ${MyDevice.tableName}(${MyDevice.colId}, ) "
-        "ON DELETE NO ACTION ON UPDATE NO ACTION)";
+        "FOREIGN KEY ($colPresetId) REFERENCES ${Preset.tableName}(${Preset.colId}) "
+        "ON DELETE CASCADE ON UPDATE NO ACTION, "
+        "FOREIGN KEY ($_colDeviceId) REFERENCES ${MyDevice.tableName}(${MyDevice.colId}) "
+        "ON DELETE CASCADE ON UPDATE NO ACTION)";
   }
 
   Future<PresetAction> withFetchedPreset(DatabaseService dbService) async {

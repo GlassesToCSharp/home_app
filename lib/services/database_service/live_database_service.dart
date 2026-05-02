@@ -18,7 +18,9 @@ class LiveDatabaseService extends DatabaseService {
       join(await getDatabasesPath(), "local_database.db"),
       // As we are using Foreign Keys to link entries between different tables,
       // we need to enable this.
-      onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'),
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) async {
         // Run the CREATE TABLE statement on the database.
