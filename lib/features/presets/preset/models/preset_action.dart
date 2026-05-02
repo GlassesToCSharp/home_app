@@ -150,12 +150,22 @@ class PresetAction extends DatabaseEntry<PresetAction> {
       return dbService.getAll(tableName, PresetAction.fromJson);
     }
 
-    return dbService.getAll(
-      tableName,
-      PresetAction.fromJson,
-      whereClause: whereClause,
-      whereArgs: whereArgs,
-    );
+    return dbService
+        .getAll(
+          tableName,
+          PresetAction.fromJson,
+          whereClause: whereClause,
+          whereArgs: whereArgs,
+        )
+        .then((presetActions) async {
+          for (int i = 0; i < presetActions.length; i++) {
+            final presetAction = await presetActions[i]
+                .withFetchedDevice(dbService)
+                .then((pa) => pa.withFetchedPreset(dbService));
+            presetActions[i] = presetAction;
+          }
+          return presetActions;
+        });
   }
 
   @override

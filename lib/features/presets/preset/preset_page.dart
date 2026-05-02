@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/my_devices/my_devices_navigator.dart';
 import 'package:home_app/features/presets/preset/bloc/preset_bloc.dart';
+import 'package:home_app/features/presets/preset/widgets/action_fab/action_fab.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
+import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
 export 'package:home_app/features/presets/models/preset.dart';
 
@@ -21,6 +23,9 @@ class _PresetPageState
   final _presetActions = <PresetAction>[];
 
   @override
+  PresetEvent? get initialEvent => const RefreshPresetActions();
+
+  @override
   PresetBloc createBloc(KiwiContainer di) {
     return PresetBloc(
       preset: widget.preset,
@@ -32,7 +37,12 @@ class _PresetPageState
   void onStateChange(BuildContext context, PresetState newState) {
     super.onStateChange(context, newState);
 
-    if (newState.hasData) {
+    if (newState.hasError) {
+      SnackBarPresenter.presentError(
+        ScaffoldMessenger.of(context),
+        newState.error!,
+      );
+    } else if (!newState.loading && newState.hasData) {
       setState(() {
         _presetActions.clear();
         _presetActions.addAll(newState.data!);
@@ -74,7 +84,7 @@ class _PresetPageState
                         MyDevicesNavigator(
                           preset: widget.preset,
                           onDeviceSaved: (myDevice, presetAction) =>
-                              bloc.add(AddPresetAction(myDevice, presetAction)),
+                              bloc.add(const RefreshPresetActions()),
                         ),
                       ),
                     ),
@@ -122,10 +132,7 @@ class _PresetPageState
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: null,
-        label: const Text("Action"),
-      ),
+      floatingActionButton: ActionFab(presetActions: state.data),
     );
   }
 }
