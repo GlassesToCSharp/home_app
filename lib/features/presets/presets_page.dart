@@ -21,6 +21,9 @@ class _PresetsPageState
   final _presets = <Preset>[];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   PresetsEvent? get initialEvent => const GetPresets();
 
   @override
