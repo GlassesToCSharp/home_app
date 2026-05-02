@@ -15,10 +15,10 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
-  static const TextStyle optionStyle = TextStyle(
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
-  );
+  // static const TextStyle optionStyle = TextStyle(
+  //   fontSize: 30,
+  //   fontWeight: FontWeight.bold,
+  // );
   static final _navigationItems = [
     BottomNavigationBarItem(
       icon: FaIcon(FontAwesomeIcons.satelliteDish),
@@ -28,15 +28,15 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
       icon: FaIcon(FontAwesomeIcons.folderTree),
       label: "Presets",
     ),
-    BottomNavigationBarItem(
-      icon: FaIcon(FontAwesomeIcons.gear),
-      label: "Settings",
-    ),
+    // BottomNavigationBarItem(
+    //   icon: FaIcon(FontAwesomeIcons.gear),
+    //   label: "Settings",
+    // ),
   ];
   static const _pages = [
     MyDevicesPage(),
     PresetsPage(),
-    Center(child: Text('Index 2: Settings', style: optionStyle)),
+    // Center(child: Text('Index 2: Settings', style: optionStyle)),
   ];
 
   int _selectedIndex = 0;
