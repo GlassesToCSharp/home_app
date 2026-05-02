@@ -11,10 +11,9 @@ class NewColor extends LedColorTileDialogEvent {
   final int red;
   final int green;
   final int blue;
-  final int opacity;
 
   @override
-  List<Object> get props => [...super.props, red, green, blue, opacity];
+  List<Object> get props => [...super.props, red, green, blue];
 
-  const NewColor(this.red, this.green, this.blue, this.opacity);
+  const NewColor(this.red, this.green, this.blue);
 }

@@ -28,19 +28,13 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setLedColor(
-    String ipAddress,
-    int red,
-    int green,
-    int blue,
-    int opacity,
-  ) {
+  Future<void> setLedColor(String ipAddress, int red, int green, int blue) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["led-color"]),
       body: {
         "color":
-            ((opacity & 0xFF) << 24) |
+            ((0xFF & 0xFF) << 24) |
             ((red & 0xFF) << 16) |
             ((green & 0xFF) << 8) |
             (blue & 0xFF),

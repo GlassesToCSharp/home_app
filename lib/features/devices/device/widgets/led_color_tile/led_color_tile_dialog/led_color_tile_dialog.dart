@@ -35,10 +35,11 @@ class _LedColorTileDialogState
           LedColorTileDialogEvent,
           LedColorTileDialogState
         > {
+  static const _constantOpacity = 1.0;
+
   int _red = 0;
   int _green = 0;
   int _blue = 0;
-  double _opacity = 1.0;
 
   bool _haveValuesChanged = false;
 
@@ -49,7 +50,6 @@ class _LedColorTileDialogState
     _red = widget.color.red;
     _green = widget.color.green;
     _blue = widget.color.blue;
-    _opacity = widget.color.opacity / 255;
   }
 
   @override
@@ -74,12 +74,7 @@ class _LedColorTileDialogState
     if (newState.hasData && newState.data == true) {
       Navigator.pop<NodeDeviceLedColor>(
         context,
-        NodeDeviceLedColor(
-          red: _red,
-          green: _green,
-          blue: _blue,
-          opacity: (_opacity * 255).toInt(),
-        ),
+        NodeDeviceLedColor(red: _red, green: _green, blue: _blue),
       );
       if (widget.onNewValueSet != null) {
         widget.onNewValueSet!((_red << 16) + (_green << 8) + _blue);
@@ -95,8 +90,8 @@ class _LedColorTileDialogState
         mainAxisSize: MainAxisSize.min,
         children: [
           ColorPicker(
-            pickerColor: Color.fromRGBO(_red, _green, _blue, _opacity),
-            enableAlpha: true,
+            pickerColor: Color.fromRGBO(_red, _green, _blue, _constantOpacity),
+            enableAlpha: false,
             displayThumbColor: true,
             labelTypes: const [],
             onColorChanged: (value) {
@@ -104,7 +99,6 @@ class _LedColorTileDialogState
                 _red = (value.r * 255.0).round().clamp(0, 255);
                 _green = (value.g * 255.0).round().clamp(0, 255);
                 _blue = (value.b * 255.0).round().clamp(0, 255);
-                _opacity = value.a;
                 _haveValuesChanged = true;
               });
             },
@@ -123,9 +117,7 @@ class _LedColorTileDialogState
               // Positive action
               TextButton(
                 onPressed: _haveValuesChanged
-                    ? () => bloc.add(
-                        NewColor(_red, _green, _blue, (_opacity * 255).toInt()),
-                      )
+                    ? () => bloc.add(NewColor(_red, _green, _blue))
                     : null,
                 child: const Text("Save"),
               ),

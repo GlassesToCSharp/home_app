@@ -44,7 +44,6 @@ class LedColorTileDialogBloc
           event.red,
           event.green,
           event.blue,
-          event.opacity,
         );
       } else {
         final presetAction = PresetAction(

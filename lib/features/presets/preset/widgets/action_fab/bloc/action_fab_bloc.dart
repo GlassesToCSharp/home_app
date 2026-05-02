@@ -36,7 +36,6 @@ class ActionFabBloc extends Bloc<ActionFabEvent, ActionFabState> {
         final ipAddress = pa.device!.ipAddress;
         switch (pa.instructionName) {
           case InstructionName.ledColor:
-            // (event.red << 16) + (event.green << 8) + event.blue
             final red = (pa.instructionValue >> 16) & 0xFF;
             final green = (pa.instructionValue >> 8) & 0xFF;
             final blue = pa.instructionValue & 0xFF;
@@ -45,7 +44,6 @@ class ActionFabBloc extends Bloc<ActionFabEvent, ActionFabState> {
               red,
               green,
               blue,
-              255,
             );
 
           case InstructionName.neonBrightness:
