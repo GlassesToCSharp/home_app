@@ -71,9 +71,9 @@ class NodeDeviceStatus extends Equatable {
     );
   }
 
-  static NodeDeviceLedColor _intToLedColor(dynamic color) {
+  static NodeDeviceLedColor? _intToLedColor(dynamic color) {
     if (color is! int) {
-      throw "Invalid colour object set in JSON";
+      return null;
     }
 
     return NodeDeviceLedColor(
