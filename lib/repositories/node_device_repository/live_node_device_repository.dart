@@ -33,7 +33,7 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["led-color"]),
       body: {
-        "color":
+        "led-color":
             ((0xFF & 0xFF) << 24) |
             ((red & 0xFF) << 16) |
             ((green & 0xFF) << 8) |
