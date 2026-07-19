@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:home_app/features/my_devices/models/my_device.dart';
@@ -59,7 +61,9 @@ class DeviceItemBloc extends Bloc<DeviceItemEvent, DeviceItemState> {
           ),
         ),
       );
-    } on ClientException catch (_) {
+    } on ClientException {
+      emit(DeviceItemState.error("Could not reach device"));
+    } on SocketException {
       emit(DeviceItemState.error("Could not reach device"));
     } catch (e) {
       emit(DeviceItemState.error(e.toString()));

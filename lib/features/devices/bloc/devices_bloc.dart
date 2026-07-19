@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:home_app/features/devices/models/device.dart';
@@ -46,7 +48,11 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> with DeviceUtils {
           Future(() async {
             try {
               return await repository.getDeviceStatus(nodeDevice.ipAddress);
-            } on ClientException catch (_) {
+            } on ClientException {
+              return NodeDeviceStatus.empty().copyWith(
+                name: "[E] Failed to connect to device",
+              );
+            } on SocketException {
               return NodeDeviceStatus.empty().copyWith(
                 name: "[E] Failed to connect to device",
               );
