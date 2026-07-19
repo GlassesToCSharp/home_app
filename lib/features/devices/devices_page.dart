@@ -7,6 +7,7 @@ import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
+import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -80,6 +81,14 @@ class _DevicesPageState
                 context,
               ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               subtitle: Text(device.ipAddress),
+              leading: SignalStrengthIndicator.sector(
+                value: deviceNode.signal,
+                size: 16,
+                // Underestimate the RSSI range for better calibration
+                maxValue: -30,
+                minValue: -80,
+                barCount: 4,
+              ),
               // Show what features are available for each device
               trailing: device.isNodeDevice
                   ? Row(

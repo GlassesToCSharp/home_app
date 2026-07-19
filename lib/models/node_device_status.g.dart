@@ -10,6 +10,7 @@ NodeDeviceStatus _$NodeDeviceStatusFromJson(Map<String, dynamic> json) =>
     NodeDeviceStatus(
       id: json['id'] as String,
       name: json['name'] as String,
+      signal: (json['signal'] as num).toInt(),
       power: json['power'] as bool?,
       neonBrightness: (json['neon-brightness'] as num?)?.toInt(),
       ledColor: NodeDeviceStatus._intToLedColor(json['led-color']),

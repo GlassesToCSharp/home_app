@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile.dart';
 import 'package:home_app/features/devices/device/widgets/motor_control_tile/motor_control_tile.dart';
 import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dart';
@@ -8,6 +9,7 @@ import 'package:home_app/features/my_devices/widgets/device_item/bloc/device_ite
 import 'package:home_app/features/presets/preset/models/preset_action.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
+import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
 export 'package:home_app/features/presets/preset/models/preset_action.dart';
@@ -39,6 +41,8 @@ class _ExpansionDeviceItemState
           DeviceItemEvent,
           DeviceItemState
         > {
+  static const _iconSize = 16.0;
+
   MyDevice get myDevice => widget.myDevice;
 
   @override
@@ -69,7 +73,73 @@ class _ExpansionDeviceItemState
               ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(myDevice.ipAddress),
-            controlAffinity: ListTileControlAffinity.leading,
+            leading: SignalStrengthIndicator.sector(
+              value: state.data?.device?.nodeDeviceStatus.signal ?? -100,
+              size: 16,
+              // Underestimate the RSSI range for better calibration
+              maxValue: -30,
+              minValue: -80,
+              barCount: 4,
+            ),
+            // Show what features are available for each device
+            trailing: state.data?.device?.isNodeDevice == true
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (state
+                              .data!
+                              .device!
+                              .nodeDeviceStatus
+                              .hasPowerState)
+                            const FaIcon(
+                              FontAwesomeIcons.boltLightning,
+                              color: Colors.amber,
+                              size: _iconSize,
+                            ),
+                          if (state
+                              .data!
+                              .device!
+                              .nodeDeviceStatus
+                              .hasNeonBrightnessState)
+                            const FaIcon(
+                              FontAwesomeIcons.solidLightbulb,
+                              color: Colors.amber,
+                              size: _iconSize,
+                            ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (state
+                              .data!
+                              .device!
+                              .nodeDeviceStatus
+                              .hasLedColorState)
+                            const FaIcon(
+                              FontAwesomeIcons.palette,
+                              color: Colors.red,
+                              size: _iconSize,
+                            ),
+                          if (state
+                              .data!
+                              .device!
+                              .nodeDeviceStatus
+                              .hasMotorState)
+                            const FaIcon(
+                              FontAwesomeIcons.gear,
+                              color: Colors.blueGrey,
+                              size: _iconSize,
+                            ),
+                        ],
+                      ),
+                    ],
+                  )
+                : null,
+            controlAffinity: ListTileControlAffinity.trailing,
             children: state.data == null
                 ? <Widget>[]
                 : <Widget>[

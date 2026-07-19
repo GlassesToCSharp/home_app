@@ -760,6 +760,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  signal_strength_indicator:
+    dependency: "direct main"
+    description:
+      name: signal_strength_indicator
+      sha256: "84e0746a6981649d5759a4c2231dcd79f088524bf75d51f0d0d9de4ce20032b2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -10,6 +10,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
       final device = NodeDeviceStatus(
         id: Random().nextBool() ? getRandomString(3) : "",
         name: "DUMMY ${Random().nextInt(1000)}",
+        signal: 0 - Random().nextInt(120),
         ledColor: Random().nextBool()
             ? NodeDeviceLedColor(
                 red: Random().nextInt(256),
