@@ -7,6 +7,7 @@ import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/connectivity_service/connectivity_service.dart';
 import 'package:home_app/services/database_service/database_service.dart';
+import 'package:http/http.dart';
 
 export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 export 'package:home_app/services/connectivity_service/connectivity_service.dart';
@@ -45,6 +46,10 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> with DeviceUtils {
           Future(() async {
             try {
               return await repository.getDeviceStatus(nodeDevice.ipAddress);
+            } on ClientException catch (_) {
+              return NodeDeviceStatus.empty().copyWith(
+                name: "[E] Failed to connect to device",
+              );
             } catch (e) {
               // If retrieving the device status fails, enter empty null device
               // status.

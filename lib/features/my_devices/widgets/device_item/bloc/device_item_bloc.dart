@@ -4,6 +4,7 @@ import 'package:home_app/features/my_devices/models/my_device.dart';
 import 'package:home_app/models/base_state.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/database_service/database_service.dart';
+import 'package:http/http.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
 export 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
@@ -58,6 +59,8 @@ class DeviceItemBloc extends Bloc<DeviceItemEvent, DeviceItemState> {
           ),
         ),
       );
+    } on ClientException catch (_) {
+      emit(DeviceItemState.error("Could not reach device"));
     } catch (e) {
       emit(DeviceItemState.error(e.toString()));
     }
