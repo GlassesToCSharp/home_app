@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
@@ -31,7 +33,7 @@ class _MyDevicesPageState
           MyDevicesEvent,
           MyDevicesState
         > {
-  final _myDevices = <MyDevice>[];
+  int _refreshIdentifier = 0;
 
   @override
   MyDevicesEvent? get initialEvent => const GetMyDevices();
@@ -53,11 +55,6 @@ class _MyDevicesPageState
         ScaffoldMessenger.of(context),
         newState.error!,
       );
-    } else if (!newState.loading && newState.hasData) {
-      setState(() {
-        _myDevices.clear();
-        _myDevices.addAll(newState.data!);
-      });
     }
   }
 
@@ -68,22 +65,25 @@ class _MyDevicesPageState
       body = CentralErrorDisplay(message: state.error!, onRetry: _getMyDevices);
     } else if (state.loading && (!state.hasData || state.data!.isEmpty)) {
       body = const CentralLoadingIndicator();
-    } else if (_myDevices.isEmpty) {
+    } else if (state.data?.isEmpty == true) {
       body = CentralErrorDisplay(
         message: "No devices found",
         onRetry: _getMyDevices,
       );
     } else {
-      final deviceCount = _myDevices.length;
+      final deviceCount = state.data!.length;
+      if (!state.loading && !state.hasError) {
+        _refreshIdentifier = Random().nextInt(10000);
+      }
       body = ListView.builder(
         itemCount: deviceCount,
         itemBuilder: (_, index) {
           if (index >= deviceCount) {
             return const SizedBox();
           }
-          final myDevice = _myDevices[index];
+          final myDevice = state.data![index];
           return Dismissible(
-            key: Key(_myDevices[index].deviceId),
+            key: Key("${state.data![index].deviceId} $_refreshIdentifier"),
             background: Container(
               color: Colors.red[700],
               child: const Align(
@@ -97,7 +97,7 @@ class _MyDevicesPageState
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) {
               if (direction == DismissDirection.endToStart) {
-                bloc.add(RemoveFromMyDevices(_myDevices[index]));
+                bloc.add(RemoveFromMyDevices(state.data![index]));
                 return Future.value(true);
               }
 
