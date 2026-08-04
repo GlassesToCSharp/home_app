@@ -29,3 +29,7 @@ class RemovePresetAction extends PresetEvent {
 
   const RemovePresetAction(this.presetAction);
 }
+
+class ExecuteActions extends PresetEvent {
+  const ExecuteActions();
+}

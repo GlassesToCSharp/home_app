@@ -26,6 +26,8 @@ enum InstructionName {
   motorPosition,
 }
 
+enum PresetActionState { idle, executing, failed, success }
+
 @JsonSerializable()
 class PresetAction extends DatabaseEntry<PresetAction> {
   // Table name and ID column are accessed elsewhere for linking DB items.
@@ -50,6 +52,8 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   final InstructionName instructionName;
   @JsonKey(name: _colInstructionValue)
   final int instructionValue;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final PresetActionState presetActionState;
 
   @override
   List<Object?> get props => [
@@ -60,6 +64,7 @@ class PresetAction extends DatabaseEntry<PresetAction> {
     device,
     instructionName,
     instructionValue,
+    presetActionState,
   ];
 
   const PresetAction({
@@ -70,6 +75,7 @@ class PresetAction extends DatabaseEntry<PresetAction> {
     this.device,
     required this.instructionName,
     required this.instructionValue,
+    this.presetActionState = PresetActionState.idle,
   });
 
   @override
@@ -87,6 +93,25 @@ class PresetAction extends DatabaseEntry<PresetAction> {
       // Doesn't matter the value here.
       instructionName: InstructionName.ledColor,
       instructionValue: 0,
+    );
+  }
+
+  // Empty instance for using the "getAll" method.
+  PresetAction copyWith({
+    int? id,
+    int? presetId,
+    int? deviceId,
+    InstructionName? instructionName,
+    int? instructionValue,
+    PresetActionState? presetActionState,
+  }) {
+    return PresetAction(
+      id: id ?? this.id,
+      presetId: presetId ?? this.presetId,
+      deviceId: deviceId ?? this.deviceId,
+      instructionName: instructionName ?? this.instructionName,
+      instructionValue: instructionValue ?? this.instructionValue,
+      presetActionState: presetActionState ?? this.presetActionState,
     );
   }
 

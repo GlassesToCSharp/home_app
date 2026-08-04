@@ -30,6 +30,7 @@ class _PresetPageState
     return PresetBloc(
       preset: widget.preset,
       dbService: di.resolve<DatabaseService>(),
+      repository: di.resolve<NodeDeviceRepository>(),
     );
   }
 
@@ -105,14 +106,16 @@ class _PresetPageState
                 ),
               ),
               direction: DismissDirection.endToStart,
-              confirmDismiss: (direction) {
-                if (direction == DismissDirection.endToStart) {
-                  bloc.add(RemovePresetAction(presetAction));
-                  return Future.value(true);
-                }
+              confirmDismiss: state.loading
+                  ? null
+                  : (direction) {
+                      if (direction == DismissDirection.endToStart) {
+                        bloc.add(RemovePresetAction(presetAction));
+                        return Future.value(true);
+                      }
 
-                return Future.value(false);
-              },
+                      return Future.value(false);
+                    },
               child: Card(
                 child: ListTile(
                   onTap: null,
@@ -123,13 +126,35 @@ class _PresetPageState
                   subtitle: Text(
                     "${presetAction.instructionName.name} = ${presetAction.instructionValue}",
                   ),
+                  trailing: _getWidgetStateForAction(presetAction),
                 ),
               ),
             );
           },
         ),
       ),
-      floatingActionButton: ActionFab(presetActions: state.data),
+      floatingActionButton: state.loading
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => bloc.add(const ExecuteActions()),
+              label: const Text("Action"),
+            ),
     );
+  }
+
+  Widget _getWidgetStateForAction(PresetAction pa) {
+    switch (pa.presetActionState) {
+      case PresetActionState.idle:
+        return const SizedBox();
+
+      case PresetActionState.executing:
+        return const CircularProgressIndicator();
+
+      case PresetActionState.failed:
+        return FaIcon(FontAwesomeIcons.x, color: Colors.red);
+
+      case PresetActionState.success:
+        return FaIcon(FontAwesomeIcons.check, color: Colors.green);
+    }
   }
 }
