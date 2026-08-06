@@ -35,8 +35,8 @@ class MockDatabaseService extends DatabaseService {
   Future<List<T>> getAll<T>(
     String tableName,
     T Function(Map<String, Object?>) converter, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   }) async {
     if (!isInitialised) {
       await initialiseDatabase();
@@ -45,7 +45,15 @@ class MockDatabaseService extends DatabaseService {
     return await Future.delayed(
       _mockDelay,
       () => _dbDictionary[tableName]!,
-    ).then((listResult) => listResult.map(converter).toList());
+    ).then((listResult) {
+      List<Map<String, Object?>> result = List.from(listResult);
+      if (whereColIdName != null) {
+        result = result
+            .where((item) => item[whereColIdName] == whereColIdValue)
+            .toList();
+      }
+      return result.map(converter).toList();
+    });
   }
 
   @override

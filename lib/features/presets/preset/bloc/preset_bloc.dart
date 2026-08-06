@@ -37,8 +37,8 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
     try {
       final presetActions = await PresetAction.instance().getAll(
         dbService,
-        whereClause: "${PresetAction.colPresetId} = ?",
-        whereArgs: [preset.id],
+        whereColIdName: PresetAction.colPresetId,
+        whereColIdValue: preset.id,
       );
 
       emit(PresetState.data(presetActions));

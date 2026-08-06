@@ -169,10 +169,10 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   @override
   Future<List<PresetAction>> getAll(
     DatabaseService dbService, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   }) {
-    if (whereClause == null) {
+    if (whereColIdName == null) {
       return dbService.getAll(tableName, PresetAction.fromJson);
     }
 
@@ -180,8 +180,8 @@ class PresetAction extends DatabaseEntry<PresetAction> {
         .getAll(
           tableName,
           PresetAction.fromJson,
-          whereClause: whereClause,
-          whereArgs: whereArgs,
+          whereColIdName: whereColIdName,
+          whereColIdValue: whereColIdValue,
         )
         .then((presetActions) async {
           for (int i = 0; i < presetActions.length; i++) {
@@ -204,8 +204,8 @@ class PresetAction extends DatabaseEntry<PresetAction> {
         .getAll(
           tableName,
           PresetAction.fromJson,
-          whereClause: "$columnIdentifier = ?",
-          whereArgs: [id],
+          whereColIdName: columnIdentifier,
+          whereColIdValue: id,
         )
         .then((presetActions) {
           switch (presetActions.length) {

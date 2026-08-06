@@ -63,23 +63,23 @@ class LiveDatabaseService extends DatabaseService {
   Future<List<T>> getAll<T>(
     String tableName,
     T Function(Map<String, Object?>) converter, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   }) async {
     if (!isInitialised) {
       await initialiseDatabase();
     }
 
-    if ((whereClause != null && whereArgs == null) ||
-        (whereClause == null && whereArgs != null)) {
+    if ((whereColIdName != null && whereColIdValue == null) ||
+        (whereColIdName == null && whereColIdValue != null)) {
       throw "If 'where' arguments are passed, both the clause and the arguments must not be null.";
     }
 
     // Query the table for all objects. {SELECT * FROM tableName}
     final result = await _db!.query(
       tableName,
-      where: whereClause,
-      whereArgs: whereArgs,
+      where: "$whereColIdName = ?",
+      whereArgs: [whereColIdValue],
     );
 
     // Convert the List<Map<String, Object?> into a List<T>.

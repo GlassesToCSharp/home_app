@@ -9,8 +9,8 @@ abstract class DatabaseEntry<T> extends Equatable {
   Future<T> insert(DatabaseService dbService);
   Future<List<T>> getAll(
     DatabaseService dbService, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   });
   Future<T> getById(
     DatabaseService dbService,

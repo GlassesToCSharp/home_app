@@ -52,14 +52,14 @@ class Preset extends DatabaseEntry<Preset> {
   @override
   Future<List<Preset>> getAll(
     DatabaseService dbService, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   }) {
     return dbService.getAll(
       tableName,
       Preset.fromJson,
-      whereClause: whereClause,
-      whereArgs: whereArgs,
+      whereColIdName: whereColIdName,
+      whereColIdValue: whereColIdValue,
     );
   }
 
@@ -73,8 +73,8 @@ class Preset extends DatabaseEntry<Preset> {
         .getAll(
           tableName,
           Preset.fromJson,
-          whereClause: "$columnIdentifier = ?",
-          whereArgs: [id],
+          whereColIdName: columnIdentifier,
+          whereColIdValue: id,
         )
         .then((presets) {
           switch (presets.length) {

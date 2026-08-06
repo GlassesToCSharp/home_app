@@ -126,14 +126,14 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   @override
   Future<List<MyDevice>> getAll(
     DatabaseService dbService, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   }) {
     return dbService.getAll(
       tableName,
       MyDevice.fromJson,
-      whereClause: whereClause,
-      whereArgs: whereArgs,
+      whereColIdName: whereColIdName,
+      whereColIdValue: whereColIdValue,
     );
   }
 
@@ -147,8 +147,8 @@ class MyDevice extends DatabaseEntry<MyDevice> {
         .getAll(
           tableName,
           MyDevice.fromJson,
-          whereClause: "$columnIdentifier = ?",
-          whereArgs: [id],
+          whereColIdName: columnIdentifier,
+          whereColIdValue: id,
         )
         .then((myDevices) {
           switch (myDevices.length) {

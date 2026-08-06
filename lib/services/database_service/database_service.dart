@@ -23,8 +23,8 @@ abstract class DatabaseService {
   Future<List<T>> getAll<T>(
     String tableName,
     T Function(Map<String, Object?>) converter, {
-    String? whereClause,
-    List<Object?>? whereArgs,
+    String? whereColIdName,
+    int? whereColIdValue,
   });
   Future<int> update(
     String tableName,
