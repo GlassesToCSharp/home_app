@@ -102,22 +102,26 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
 
     // Each PresetAction needs to reset its state to "idle".
     for (int i = 0; i < presetActions.length; i++) {
-      presetActions.replaceRange(i, i, [
-        presetActions[i].copyWith(
-          presetActionState: PresetActionState.executing,
-        ),
-      ]);
+      if (presetActions[i].presetActionState != PresetActionState.idle) {
+        presetActions.replaceRange(i, i + 1, [
+          await presetActions[i].copyWith(
+            dbService,
+            presetActionState: PresetActionState.idle,
+          ),
+        ]);
+      }
     }
-    emit(PresetState.loading(data: presetActions));
+    emit(PresetState.loading(data: List<PresetAction>.from(presetActions)));
 
     // Now reset, we can update each PresetAction sequentially.
     for (int i = 0; i < presetActions.length; i++) {
       // Each PresetAction needs to update its state before and after execution.
-      PresetAction pa = presetActions[i].copyWith(
+      PresetAction pa = await presetActions[i].copyWith(
+        dbService,
         presetActionState: PresetActionState.executing,
       );
-      presetActions.replaceRange(i, i, [pa]);
-      emit(PresetState.loading(data: presetActions));
+      presetActions.replaceRange(i, i + 1, [pa]);
+      emit(PresetState.loading(data: List<PresetAction>.from(presetActions)));
       final ipAddress = pa.device!.ipAddress;
       try {
         switch (pa.instructionName) {
@@ -159,17 +163,28 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
             await repository.setMotorSpeed(ipAddress, pa.instructionValue);
             break;
         }
-        pa = pa.copyWith(presetActionState: PresetActionState.success);
+        pa = await pa.copyWith(
+          dbService,
+          presetActionState: PresetActionState.success,
+        );
       } catch (e) {
-        pa = pa.copyWith(presetActionState: PresetActionState.failed);
+        pa = await pa.copyWith(
+          dbService,
+          presetActionState: PresetActionState.failed,
+        );
         errors.add(e.toString());
       }
-      presetActions.replaceRange(i, i, [pa]);
+      presetActions.replaceRange(i, i + 1, [pa]);
     }
     if (errors.isEmpty) {
-      emit(PresetState.data(presetActions));
+      emit(PresetState.data(List<PresetAction>.from(presetActions)));
     } else {
-      emit(PresetState.error(errors.first, data: presetActions));
+      emit(
+        PresetState.error(
+          errors.first,
+          data: List<PresetAction>.from(presetActions),
+        ),
+      );
     }
   }
 }

@@ -97,18 +97,29 @@ class PresetAction extends DatabaseEntry<PresetAction> {
   }
 
   // Empty instance for using the "getAll" method.
-  PresetAction copyWith({
+  Future<PresetAction> copyWith(
+    DatabaseService dbService, {
     int? id,
     int? presetId,
     int? deviceId,
     InstructionName? instructionName,
     int? instructionValue,
     PresetActionState? presetActionState,
-  }) {
+  }) async {
+    MyDevice? device;
+    if (deviceId != null && deviceId != this.deviceId) {
+      device = await MyDevice.instance().getById(dbService, deviceId);
+    }
+    Preset? preset;
+    if (presetId != null && presetId != this.presetId) {
+      preset = await Preset.instance().getById(dbService, presetId);
+    }
     return PresetAction(
       id: id ?? this.id,
       presetId: presetId ?? this.presetId,
+      preset: preset ?? this.preset,
       deviceId: deviceId ?? this.deviceId,
+      device: device ?? this.device,
       instructionName: instructionName ?? this.instructionName,
       instructionValue: instructionValue ?? this.instructionValue,
       presetActionState: presetActionState ?? this.presetActionState,

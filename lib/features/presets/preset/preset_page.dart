@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/my_devices/my_devices_navigator.dart';
 import 'package:home_app/features/presets/preset/bloc/preset_bloc.dart';
-import 'package:home_app/features/presets/preset/widgets/action_fab/action_fab.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
@@ -20,7 +19,7 @@ class PresetPage extends StatefulWidget {
 
 class _PresetPageState
     extends BlocState<PresetPage, PresetBloc, PresetEvent, PresetState> {
-  final _presetActions = <PresetAction>[];
+  final _refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   PresetEvent? get initialEvent => const RefreshPresetActions();
@@ -43,16 +42,13 @@ class _PresetPageState
         ScaffoldMessenger.of(context),
         newState.error!,
       );
-    } else if (!newState.loading && newState.hasData) {
-      setState(() {
-        _presetActions.clear();
-        _presetActions.addAll(newState.data!);
-      });
     }
   }
 
   @override
   Widget buildState(BuildContext context, PresetState state) {
+    debugPrint("State = $state");
+    final presetActions = state.data ?? [];
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.preset.name),
@@ -62,22 +58,21 @@ class _PresetPageState
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
-            onPressed: state.loading
-                ? null
-                : () => bloc.add(const RefreshPresetActions()),
+            onPressed: state.loading ? null : _refreshPresetActions,
           ),
         ],
       ),
       body: RefreshIndicator(
+        key: _refreshKey,
         onRefresh: () {
-          bloc.add(const RefreshPresetActions());
+          _refreshPresetActions();
           return bloc.stream.firstWhere((s) => !s.loading);
         },
         child: ListView.builder(
           // Add 1 to display the "Add Action" button
-          itemCount: _presetActions.length + 1,
+          itemCount: presetActions.length + 1,
           itemBuilder: (_, index) {
-            if (index == _presetActions.length) {
+            if (index == presetActions.length) {
               return Center(
                 child: ElevatedButton.icon(
                   icon: FaIcon(FontAwesomeIcons.plus),
@@ -92,7 +87,7 @@ class _PresetPageState
                 ),
               );
             }
-            final presetAction = _presetActions[index];
+            final presetAction = presetActions[index];
             return Dismissible(
               key: Key(presetAction.id.toString()),
               background: Container(
@@ -140,6 +135,11 @@ class _PresetPageState
               label: const Text("Action"),
             ),
     );
+  }
+
+  void _refreshPresetActions() {
+    _refreshKey.currentState?.show();
+    bloc.add(const RefreshPresetActions());
   }
 
   Widget _getWidgetStateForAction(PresetAction pa) {
