@@ -111,7 +111,7 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setPowerState(String ipAddress, bool enable) {
+  Future<void> setPowerState(String ipAddress, bool enable, bool featureState) {
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(power: enable);

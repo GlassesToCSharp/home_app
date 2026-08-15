@@ -152,6 +152,7 @@ class _ExpansionDeviceItemState
                         widget.isConfiguring)
                       // Power state
                       PowerStateTile(
+                        isConfiguring: widget.isConfiguring,
                         myDevice: state.data!,
                         preset: widget.preset,
                         onNewValueSet: (newValue) {

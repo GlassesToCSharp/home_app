@@ -145,6 +145,7 @@ class PresetBloc extends Bloc<PresetEvent, PresetState> {
             await repository.setPowerState(
               ipAddress,
               pa.instructionValue == 1 ? true : false,
+              true,
             );
             break;
 

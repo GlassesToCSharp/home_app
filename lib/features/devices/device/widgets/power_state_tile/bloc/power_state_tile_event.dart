@@ -9,6 +9,10 @@ abstract class PowerStateTileEvent extends Equatable {
 
 class NewPowerState extends PowerStateTileEvent {
   final bool newState;
+  final bool featureState;
 
-  const NewPowerState(this.newState);
+  @override
+  List<Object> get props => [super.props, newState, featureState];
+
+  const NewPowerState({required this.newState, required this.featureState});
 }

@@ -46,6 +46,7 @@ class PowerStateTileBloc
         await repository.setPowerState(
           myDevice.device!.ipAddress,
           event.newState,
+          event.featureState,
         );
       } else {
         final presetAction = PresetAction(

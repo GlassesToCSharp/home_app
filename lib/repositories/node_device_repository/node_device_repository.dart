@@ -14,7 +14,7 @@ abstract class NodeDeviceRepository {
   Future<void> setDeviceName(String ipAddress, String newName);
   Future<void> setLedColor(String ipAddress, int red, int green, int blue);
   Future<void> setNeonBrightness(String ipAddress, int brightness);
-  Future<void> setPowerState(String ipAddress, bool enable);
+  Future<void> setPowerState(String ipAddress, bool enable, bool featureState);
   Future<void> setMotorSpeed(String ipAddress, int speed);
   Future<void> setMotorPosition(String ipAddress, int position);
   Future<void> setMotorAcceleration(String ipAddress, int acceleration);

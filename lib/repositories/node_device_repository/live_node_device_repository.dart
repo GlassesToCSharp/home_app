@@ -79,12 +79,20 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setPowerState(String ipAddress, bool enable) {
+  Future<void> setPowerState(String ipAddress, bool enable, bool featureState) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["power"]),
-      body: {"state": enable},
+      body: _parseWithFeatureState({"state": enable}, featureState),
     );
+  }
+
+  Map<String, dynamic> _parseWithFeatureState(
+    Map<String, dynamic> data,
+    bool featureState,
+  ) {
+    data["feature_status"] = featureState;
+    return data;
   }
 
   String _createUrl(List<String> path) {

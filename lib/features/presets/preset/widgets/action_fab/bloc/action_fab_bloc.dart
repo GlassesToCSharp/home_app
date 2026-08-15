@@ -53,6 +53,7 @@ class ActionFabBloc extends Bloc<ActionFabEvent, ActionFabState> {
             return repository.setPowerState(
               ipAddress,
               pa.instructionValue == 1 ? true : false,
+              true,
             );
 
           case InstructionName.motorAcceleration:
