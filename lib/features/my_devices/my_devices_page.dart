@@ -34,6 +34,9 @@ class _MyDevicesPageState
           MyDevicesState
         > {
   int _refreshIdentifier = 0;
+  int _permissionCounter = 0;
+
+  bool get _isConfiguring => _permissionCounter > 5;
 
   @override
   MyDevicesEvent? get initialEvent => const GetMyDevices();
@@ -131,8 +134,29 @@ class _MyDevicesPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My devices"),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: GestureDetector(
+          onTap: () {
+            debugPrint("Permission counter = $_permissionCounter");
+            if (_isConfiguring) {
+              // No need to do anything. Already in the required state.
+              return;
+            } else if (_permissionCounter == 5) {
+              // Run setState to refresh to screen. No bloc needed.
+              setState(() {});
+            }
+
+            _permissionCounter++;
+          },
+          onLongPress: () {
+            setState(() {
+              _permissionCounter = 0;
+            });
+          },
+          child: const Text("My devices"),
+        ),
+        backgroundColor: _isConfiguring
+            ? Theme.of(context).hoverColor
+            : Theme.of(context).primaryColor,
         scrolledUnderElevation: 8,
         shadowColor: Colors.grey,
         actions: [
