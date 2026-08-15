@@ -20,12 +20,14 @@ class ExpansionDeviceItem extends StatefulWidget {
   final bool requestRefreshStatus;
   final Function(MyDevice, PresetAction)? onSave;
   final Preset? preset;
+  final bool isConfiguring;
 
   const ExpansionDeviceItem({
     required this.myDevice,
     this.requestRefreshStatus = false,
     this.onSave,
     this.preset,
+    this.isConfiguring = false,
     super.key,
   });
 
@@ -146,7 +148,8 @@ class _ExpansionDeviceItemState
                     if (widget.preset == null)
                       // Device name
                       NameTile(device: state.data!.device!),
-                    if (state.data!.device!.nodeDeviceStatus.hasPowerState)
+                    if (state.data!.device!.nodeDeviceStatus.hasPowerState ||
+                        widget.isConfiguring)
                       // Power state
                       PowerStateTile(
                         myDevice: state.data!,
@@ -167,10 +170,12 @@ class _ExpansionDeviceItemState
                           }
                         },
                       ),
-                    if (state.data!.device!.nodeDeviceStatus.hasMotorState)
+                    if (state.data!.device!.nodeDeviceStatus.hasMotorState ||
+                        widget.isConfiguring)
                       // Motor control
                       MotorControlTile(device: state.data!.device!),
-                    if (state.data!.device!.nodeDeviceStatus.hasLedColorState)
+                    if (state.data!.device!.nodeDeviceStatus.hasLedColorState ||
+                        widget.isConfiguring)
                       // LED colour
                       LedColorTile(
                         myDevice: state.data!,
@@ -192,10 +197,11 @@ class _ExpansionDeviceItemState
                         },
                       ),
                     if (state
-                        .data!
-                        .device!
-                        .nodeDeviceStatus
-                        .hasNeonBrightnessState)
+                            .data!
+                            .device!
+                            .nodeDeviceStatus
+                            .hasNeonBrightnessState ||
+                        widget.isConfiguring)
                       // Neon Brightness
                       NeonBrightnessTile(
                         myDevice: state.data!,

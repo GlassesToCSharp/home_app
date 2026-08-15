@@ -34,10 +34,6 @@ class _MotorControlTileState extends State<MotorControlTile> with DeviceHelper {
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasMotorControl) {
-      return const SizedBox();
-    }
-
     return ListTile(
       title: const Text("Motor"),
       trailing: Column(

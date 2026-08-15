@@ -33,10 +33,6 @@ class _LedColorTileState extends State<LedColorTile> with DeviceHelper {
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasLedControl) {
-      return const SizedBox();
-    }
-
     return ListTile(
       title: const Text("LED Colour"),
       trailing: Row(

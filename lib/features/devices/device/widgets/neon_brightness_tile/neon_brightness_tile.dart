@@ -40,10 +40,6 @@ class _NeonBrightnessTileState extends State<NeonBrightnessTile>
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasBrightness) {
-      return const SizedBox();
-    }
-
     return ListTile(
       title: const Text("Neon brightness"),
       trailing: Text("${convert8BitToPercent(_brightness)}%"),

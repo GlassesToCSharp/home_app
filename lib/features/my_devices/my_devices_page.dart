@@ -110,6 +110,7 @@ class _MyDevicesPageState
               myDevice: myDevice,
               preset: widget.preset,
               onSave: widget.onDeviceSaved,
+              isConfiguring: _isConfiguring,
               requestRefreshStatus: ![
                 myDevice.device?.nodeDeviceStatus.hasLedColorState,
                 myDevice.device?.nodeDeviceStatus.hasMotorState,

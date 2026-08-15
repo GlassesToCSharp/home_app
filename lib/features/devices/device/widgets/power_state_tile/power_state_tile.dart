@@ -60,14 +60,6 @@ class _PowerStateTileState
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (!_hasPowerState) {
-      return const SizedBox();
-    }
-    return super.build(context);
-  }
-
-  @override
   Widget buildState(BuildContext context, PowerStateTileState state) {
     return SwitchListTile(
       title: const Text("Power"),
