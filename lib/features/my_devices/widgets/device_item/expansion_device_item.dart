@@ -180,6 +180,7 @@ class _ExpansionDeviceItemState
                       // LED colour
                       LedColorTile(
                         myDevice: state.data!,
+                        isConfiguring: widget.isConfiguring,
                         preset: widget.preset,
                         onNewValueSet: (newValue) {
                           NavigationService.pop();

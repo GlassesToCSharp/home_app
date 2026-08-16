@@ -56,7 +56,13 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setLedColor(String ipAddress, int red, int green, int blue) {
+  Future<void> setLedColor(
+    String ipAddress,
+    int red,
+    int green,
+    int blue, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(
@@ -111,7 +117,11 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setPowerState(String ipAddress, bool enable, bool featureState) {
+  Future<void> setPowerState(
+    String ipAddress,
+    bool enable, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(power: enable);

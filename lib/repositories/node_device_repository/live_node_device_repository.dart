@@ -28,17 +28,23 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setLedColor(String ipAddress, int red, int green, int blue) {
+  Future<void> setLedColor(
+    String ipAddress,
+    int red,
+    int green,
+    int blue, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["led-color"]),
-      body: {
+      body: _parseWithFeatureState({
         "led-color":
             ((0xFF & 0xFF) << 24) |
             ((red & 0xFF) << 16) |
             ((green & 0xFF) << 8) |
             (blue & 0xFF),
-      },
+      }, featureState),
     );
   }
 
@@ -79,7 +85,11 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setPowerState(String ipAddress, bool enable, bool featureState) {
+  Future<void> setPowerState(
+    String ipAddress,
+    bool enable, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["power"]),
@@ -89,9 +99,11 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
 
   Map<String, dynamic> _parseWithFeatureState(
     Map<String, dynamic> data,
-    bool featureState,
+    bool? featureState,
   ) {
-    data["feature_status"] = featureState;
+    if (featureState != null) {
+      data["feature_status"] = featureState;
+    }
     return data;
   }
 

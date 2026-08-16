@@ -12,7 +12,7 @@ class NewPowerState extends PowerStateTileEvent {
   final bool featureState;
 
   @override
-  List<Object> get props => [super.props, newState, featureState];
+  List<Object> get props => [...super.props, newState, featureState];
 
   const NewPowerState({required this.newState, required this.featureState});
 }
