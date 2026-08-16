@@ -174,7 +174,10 @@ class _ExpansionDeviceItemState
                     if (state.data!.device!.nodeDeviceStatus.hasMotorState ||
                         widget.isConfiguring)
                       // Motor control
-                      MotorControlTile(device: state.data!.device!),
+                      MotorControlTile(
+                        device: state.data!,
+                        isConfiguring: widget.isConfiguring,
+                      ),
                     if (state.data!.device!.nodeDeviceStatus.hasLedColorState ||
                         widget.isConfiguring)
                       // LED colour

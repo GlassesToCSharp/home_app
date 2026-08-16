@@ -25,7 +25,15 @@ abstract class NodeDeviceRepository {
     bool enable, [
     bool? featureState,
   ]);
-  Future<void> setMotorSpeed(String ipAddress, int speed);
-  Future<void> setMotorPosition(String ipAddress, int position);
-  Future<void> setMotorAcceleration(String ipAddress, int acceleration);
+  Future<void> setMotorSpeed(String ipAddress, int speed, [bool? featureState]);
+  Future<void> setMotorPosition(
+    String ipAddress,
+    int position, [
+    bool? featureState,
+  ]);
+  Future<void> setMotorAcceleration(
+    String ipAddress,
+    int acceleration, [
+    bool? featureState,
+  ]);
 }

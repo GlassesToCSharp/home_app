@@ -58,29 +58,43 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
+  Future<void> setMotorAcceleration(
+    String ipAddress,
+    int acceleration, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "acceleration"]),
-      body: {"acceleration": acceleration},
+      body: _parseWithFeatureState({
+        "acceleration": acceleration,
+      }, featureState),
     );
   }
 
   @override
-  Future<void> setMotorPosition(String ipAddress, int position) {
+  Future<void> setMotorPosition(
+    String ipAddress,
+    int position, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "position"]),
-      body: {"position": position},
+      body: _parseWithFeatureState({"position": position}, featureState),
     );
   }
 
   @override
-  Future<void> setMotorSpeed(String ipAddress, int speed) {
+  Future<void> setMotorSpeed(
+    String ipAddress,
+    int speed, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["motor", "speed"]),
-      body: {"speed": speed},
+      body: _parseWithFeatureState({"speed": speed}, featureState),
     );
   }
 

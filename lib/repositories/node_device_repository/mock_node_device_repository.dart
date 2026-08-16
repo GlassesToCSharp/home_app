@@ -82,36 +82,55 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setMotorAcceleration(String ipAddress, int acceleration) {
+  Future<void> setMotorAcceleration(
+    String ipAddress,
+    int acceleration, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(
-      motor: _deviceList[ipAddress]!.motor!.copyWith(
-        acceleration: acceleration,
-      ),
+    final motor = NodeDeviceMotor(
+      speed: _deviceList[ipAddress]!.motor?.speed ?? 0,
+      position: _deviceList[ipAddress]!.motor?.position ?? 0,
+      acceleration: _deviceList[ipAddress]!.motor?.acceleration ?? acceleration,
     );
+    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
 
   @override
-  Future<void> setMotorPosition(String ipAddress, int position) {
+  Future<void> setMotorPosition(
+    String ipAddress,
+    int position, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(
-      motor: _deviceList[ipAddress]!.motor!.copyWith(position: position),
+    final motor = NodeDeviceMotor(
+      speed: _deviceList[ipAddress]!.motor?.speed ?? 0,
+      position: _deviceList[ipAddress]!.motor?.position ?? position,
+      acceleration: _deviceList[ipAddress]!.motor?.speed ?? 0,
     );
+    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
 
   @override
-  Future<void> setMotorSpeed(String ipAddress, int speed) {
+  Future<void> setMotorSpeed(
+    String ipAddress,
+    int speed, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(
-      motor: _deviceList[ipAddress]!.motor!.copyWith(speed: speed),
+    final motor = NodeDeviceMotor(
+      speed: _deviceList[ipAddress]!.motor?.speed ?? speed,
+      position: _deviceList[ipAddress]!.motor?.position ?? 0,
+      acceleration: _deviceList[ipAddress]!.motor?.speed ?? 0,
     );
+    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
