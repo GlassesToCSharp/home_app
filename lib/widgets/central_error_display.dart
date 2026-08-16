@@ -4,8 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class CentralErrorDisplay extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
+  final TextStyle? textStyle;
 
-  const CentralErrorDisplay({required this.message, required this.onRetry});
+  const CentralErrorDisplay({
+    required this.message,
+    required this.onRetry,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,10 @@ class CentralErrorDisplay extends StatelessWidget {
         children: [
           const FaIcon(FontAwesomeIcons.circleExclamation, size: 32),
           const SizedBox(height: 10),
-          Text(message, style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            message,
+            style: textStyle ?? Theme.of(context).textTheme.bodyMedium,
+          ),
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: onRetry,

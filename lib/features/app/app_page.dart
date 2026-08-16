@@ -62,6 +62,9 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     if (state.hasError) {
       return CentralErrorDisplay(
         message: state.error!,
+        textStyle: Theme.of(
+          context,
+        ).textTheme.bodyMedium!.copyWith(color: Colors.white),
         onRetry: () => bloc.add(const LoadApp()),
       );
     }
