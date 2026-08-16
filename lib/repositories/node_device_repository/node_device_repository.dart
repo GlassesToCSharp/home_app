@@ -19,7 +19,11 @@ abstract class NodeDeviceRepository {
     int blue, [
     bool? featureState,
   ]);
-  Future<void> setNeonBrightness(String ipAddress, int brightness);
+  Future<void> setNeonBrightness(
+    String ipAddress,
+    int brightness, [
+    bool? featureState,
+  ]);
   Future<void> setPowerState(
     String ipAddress,
     bool enable, [

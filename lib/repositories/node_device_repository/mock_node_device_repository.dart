@@ -73,7 +73,11 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   }
 
   @override
-  Future<void> setNeonBrightness(String ipAddress, int brightness) {
+  Future<void> setNeonBrightness(
+    String ipAddress,
+    int brightness, [
+    bool? featureState,
+  ]) {
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(neonBrightness: brightness);

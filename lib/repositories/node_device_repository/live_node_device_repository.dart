@@ -49,11 +49,17 @@ class LiveNodeDeviceRepository extends NodeDeviceRepository {
   }
 
   @override
-  Future<void> setNeonBrightness(String ipAddress, int brightness) {
+  Future<void> setNeonBrightness(
+    String ipAddress,
+    int brightness, [
+    bool? featureState,
+  ]) {
     return HttpService.post(
       hostIpUrl: ipAddress,
       endpoint: _createUrl(["neon-brightness"]),
-      body: {"neon-brightness": brightness},
+      body: _parseWithFeatureState({
+        "neon-brightness": brightness,
+      }, featureState),
     );
   }
 

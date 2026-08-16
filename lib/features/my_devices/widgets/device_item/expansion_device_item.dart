@@ -210,6 +210,7 @@ class _ExpansionDeviceItemState
                       // Neon Brightness
                       NeonBrightnessTile(
                         myDevice: state.data!,
+                        isConfiguring: widget.isConfiguring,
                         preset: widget.preset,
                         onNewValueSet: (newValue) {
                           NavigationService.pop();
