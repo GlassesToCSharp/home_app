@@ -17,7 +17,7 @@ class LiveConnectivityService extends ConnectivityService {
 
   @override
   Future<List<Device>> scanForDevices() async {
-    const int port = 4210; // TODO: make this configurable?
+    const int port = 4210; // TODO: make this configurable
     final devices = <Device>[];
 
     // Bind to any available port
@@ -27,7 +27,8 @@ class LiveConnectivityService extends ConnectivityService {
 
     socket.send(
       utf8.encode("DISCOVER_NODEMCU"),
-      InternetAddress("255.255.255.255"),
+      // TODO: make this configurable
+      InternetAddress("192.168.1.255"),
       port,
     );
 
