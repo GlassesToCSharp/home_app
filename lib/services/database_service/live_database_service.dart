@@ -75,12 +75,20 @@ class LiveDatabaseService extends DatabaseService {
       throw "If 'where' arguments are passed, both the clause and the arguments must not be null.";
     }
 
+    final result = <Map<String, Object?>>[];
+
     // Query the table for all objects. {SELECT * FROM tableName}
-    final result = await _db!.query(
-      tableName,
-      where: "$whereColIdName = ?",
-      whereArgs: [whereColIdValue],
-    );
+    if (whereColIdName == null) {
+      result.addAll(await _db!.query(tableName));
+    } else {
+      result.addAll(
+        await _db!.query(
+          tableName,
+          where: "$whereColIdName = ?",
+          whereArgs: [whereColIdValue],
+        ),
+      );
+    }
 
     // Convert the List<Map<String, Object?> into a List<T>.
     return result.map(converter).toList();
