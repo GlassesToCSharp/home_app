@@ -10,12 +10,24 @@ class LiveDatabaseService extends DatabaseService {
 
   @override
   Future<void> initialiseDatabase() async {
+    if (Platform.isLinux || Platform.isWindows) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+    // Set the path to the database. Note: Using the `join` function from the
+    // `path` package is best practice to ensure the path is correctly
+    // constructed for each platform.
+    String dbPath = "";
+    try {
+      dbPath = await getDatabasesPath();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    final fullDbPath = join(dbPath, "local_database.db");
+
     // Open the database and store the reference.
     _db = await openDatabase(
-      // Set the path to the database. Note: Using the `join` function from the
-      // `path` package is best practice to ensure the path is correctly
-      // constructed for each platform.
-      join(await getDatabasesPath(), "local_database.db"),
+      fullDbPath,
       // As we are using Foreign Keys to link entries between different tables,
       // we need to enable this.
       onConfigure: (db) async {
