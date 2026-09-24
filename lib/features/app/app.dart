@@ -4,7 +4,28 @@ import 'package:home_app/services/injection/dependency_injection.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  final _lightTheme = ThemeData(
+    brightness: Brightness.light,
+    primaryColor: Colors.blue,
+    scaffoldBackgroundColor: Colors.white,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+      titleTextStyle: TextStyle(color: Colors.white, fontSize: 18),
+    ),
+    textTheme: TextTheme(bodySmall: TextStyle(color: Colors.black)),
+  );
+  final _darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: Colors.amber,
+    scaffoldBackgroundColor: Colors.black,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.amber,
+      titleTextStyle: TextStyle(color: Colors.black, fontSize: 18),
+    ),
+    textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
+  );
+
+  App({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -13,18 +34,19 @@ class App extends StatelessWidget {
       title: 'Home App',
       navigatorKey: NavigationService.navigatorKey,
       onGenerateRoute: NavigationService.generateRoute,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(),
-        progressIndicatorTheme: Theme.of(context).progressIndicatorTheme,
-        elevatedButtonTheme: Theme.of(context).elevatedButtonTheme,
-        scaffoldBackgroundColor: Colors.grey[100],
-        bottomNavigationBarTheme: Theme.of(context)
-            .bottomNavigationBarTheme
-            .copyWith(backgroundColor: Colors.grey[300]),
-      ),
-      home: const DependencyInjection(
-        child: AppPage(),
-      ),
+      theme: _lightTheme,
+      darkTheme: _darkTheme,
+      themeMode: ThemeMode.system,
+      // ThemeData(
+      //   colorScheme: ColorScheme.fromSwatch(),
+      //   progressIndicatorTheme: Theme.of(context).progressIndicatorTheme,
+      //   elevatedButtonTheme: Theme.of(context).elevatedButtonTheme,
+      //   scaffoldBackgroundColor: Colors.grey[100],
+      //   bottomNavigationBarTheme: Theme.of(
+      //     context,
+      //   ).bottomNavigationBarTheme.copyWith(backgroundColor: Colors.grey[300]),
+      // ),
+      home: const DependencyInjection(child: AppPage()),
     );
   }
 }
