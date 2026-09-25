@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/app/bloc/app_bloc.dart';
+import 'package:home_app/features/home/home_page.dart';
 import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/features/presets/presets_page.dart';
 import 'package:home_app/models/bloc_state.dart';
@@ -72,6 +73,8 @@ class _AppPageState extends BlocState<AppPage, AppBloc, AppEvent, AppState> {
     if (state.loading) {
       return const CentralLoadingIndicator();
     }
+
+    return HomePage();
 
     return Scaffold(
       body: PageView(
