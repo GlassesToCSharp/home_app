@@ -17,8 +17,8 @@ Future<void> main() async {
   // );
   const windowOptions = WindowOptions(
     // fullScreen: true,
-    // The size of the RasPi pixels
-    size: Size(1280, 720),
+    // The size of the RasPi display 7" (pixels / scale factor).
+    size: Size(1280 / 2.265, 720 / 2.265),
     // Hide the window bar
     titleBarStyle: TitleBarStyle.hidden,
     center: true, // Optional: center the window before going fullscreen
