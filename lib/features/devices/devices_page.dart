@@ -29,10 +29,13 @@ class _DevicesPageState
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
-  Timer? _timer;
+  late Timer _timer;
 
   @override
   DevicesEvent? get initialEvent => const ScanForDevices();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -189,7 +192,7 @@ class _DevicesPageState
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
