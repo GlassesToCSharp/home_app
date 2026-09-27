@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
@@ -22,10 +24,25 @@ class DevicesPage extends StatefulWidget {
 
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
+  static const _maxGridSize = 150.0;
   static const _iconSize = 16.0;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  Timer? _timer;
 
   @override
   DevicesEvent? get initialEvent => const ScanForDevices();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(
+      const Duration(seconds: 120),
+      (_) => _refreshInterface(),
+    );
+  }
 
   @override
   DevicesBloc createBloc(KiwiContainer di) {
@@ -38,126 +55,150 @@ class _DevicesPageState
 
   @override
   Widget buildState(BuildContext context, DevicesState state) {
-    Widget body = const SizedBox();
     if (state.hasError) {
-      body = CentralErrorDisplay(
+      return CentralErrorDisplay(
         message: state.error!,
         onRetry: _scanForDevices,
       );
-    } else if (state.loading) {
-      body = const CentralLoadingIndicator();
+    } else if (state.loading && !state.hasData) {
+      return const CentralLoadingIndicator();
     } else if (!state.hasData) {
-      body = CentralErrorDisplay(
+      return CentralErrorDisplay(
         message: "No devices found",
         onRetry: _scanForDevices,
       );
     } else {
       final devices = state.data!;
-      final deviceCount = state.data!.length;
-      body = ListView.builder(
-        itemCount: deviceCount,
-        itemBuilder: (_, index) {
-          if (index >= deviceCount) {
-            return const SizedBox();
-          }
-          final device = devices[index];
-          final deviceNode = device.nodeDeviceStatus;
-          return Card(
-            child: ListTile(
-              onTap: () {
-                if (!device.isNodeDevice) {
-                  SnackBarPresenter.presentError(
-                    ScaffoldMessenger.of(context),
-                    "Cannot add a non-Node device",
-                  );
-                  return;
-                }
+      final screenWidth = MediaQuery.of(context).size.width;
+      int gridCrossCount = (screenWidth / _maxGridSize).floor();
+      if (gridCrossCount == 0) {
+        gridCrossCount = 3;
+      }
 
-                widget.onDeviceSelected(device);
-                NavigationService.pop();
-              },
-              title: Text(device.name),
-              titleTextStyle: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-              subtitle: Text(device.ipAddress),
-              leading: SignalStrengthIndicator.sector(
-                value: deviceNode.signal,
-                size: 16,
-                // Underestimate the RSSI range for better calibration
-                maxValue: -30,
-                minValue: -80,
-                barCount: 4,
-              ),
-              // Show what features are available for each device
-              trailing: device.isNodeDevice
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
+      return RefreshIndicator.adaptive(
+        key: _refreshIndicatorKey,
+        onRefresh: () async {
+          _scanForDevices();
+          await bloc.stream.firstWhere((s) => !s.loading);
+        },
+        child: GridView.count(
+          crossAxisCount: gridCrossCount,
+          children: devices.map((device) {
+            final icons = <Widget>[];
+            if (device.nodeDeviceStatus.hasPowerState) {
+              icons.add(
+                const FaIcon(
+                  FontAwesomeIcons.boltLightning,
+                  color: Colors.amber,
+                  size: _iconSize,
+                ),
+              );
+            }
+            if (device.nodeDeviceStatus.hasNeonBrightnessState) {
+              icons.add(
+                const FaIcon(
+                  FontAwesomeIcons.solidLightbulb,
+                  color: Colors.amber,
+                  size: _iconSize,
+                ),
+              );
+            }
+            if (device.nodeDeviceStatus.hasLedColorState) {
+              icons.add(
+                const FaIcon(
+                  FontAwesomeIcons.palette,
+                  color: Colors.red,
+                  size: _iconSize,
+                ),
+              );
+            }
+            if (device.nodeDeviceStatus.hasMotorState) {
+              icons.add(
+                const FaIcon(
+                  FontAwesomeIcons.gear,
+                  color: Colors.blueGrey,
+                  size: _iconSize,
+                ),
+              );
+            }
+            if (icons.isEmpty) {
+              icons.add(const SizedBox(height: _iconSize));
+            }
+            return SizedBox(
+              height: _maxGridSize.toDouble(),
+              width: _maxGridSize.toDouble(),
+              child: Card(
+                child: InkWell(
+                  onTap: () {},
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsetsGeometry.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (deviceNode.hasPowerState)
-                              const FaIcon(
-                                FontAwesomeIcons.boltLightning,
-                                color: Colors.amber,
-                                size: _iconSize,
-                              ),
-                            if (deviceNode.hasNeonBrightnessState)
-                              const FaIcon(
-                                FontAwesomeIcons.solidLightbulb,
-                                color: Colors.amber,
-                                size: _iconSize,
-                              ),
-                          ],
+                        //Name - Favourite
+                        //Icon
+                        //Things
+                        Text(device.name),
+                        Expanded(
+                          child: Center(
+                            child: FaIcon(FontAwesomeIcons.circleExclamation),
+                          ),
                         ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (deviceNode.hasLedColorState)
-                              const FaIcon(
-                                FontAwesomeIcons.palette,
-                                color: Colors.red,
-                                size: _iconSize,
+                            SignalStrengthIndicator.sector(
+                              // Match icon button's margin/padding
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 12,
                               ),
-                            if (deviceNode.hasMotorState)
-                              const FaIcon(
-                                FontAwesomeIcons.gear,
-                                color: Colors.blueGrey,
-                                size: _iconSize,
+                              value: device.nodeDeviceStatus.signal,
+                              size: 20,
+                              // Underestimate the RSSI range for better calibration
+                              maxValue: -30,
+                              minValue: -80,
+                              barCount: 4,
+                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: icons,
                               ),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: FaIcon(FontAwesomeIcons.heart),
+                            ),
                           ],
                         ),
                       ],
-                    )
-                  : null,
-            ),
-          );
-        },
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
       );
     }
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Network devices"),
-        backgroundColor: Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
-        actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
-            onPressed: state.loading ? null : _scanForDevices,
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [Expanded(child: body)],
-      ),
-    );
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void _scanForDevices() {
     bloc.add(const ScanForDevices());
+  }
+
+  void _refreshInterface() {
+    // Show refresh indicator programmatically on command.
+    _refreshIndicatorKey.currentState?.show();
   }
 }

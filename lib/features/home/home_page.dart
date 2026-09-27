@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:home_app/features/devices/devices_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,7 +11,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const _maxGridSize = 100.0;
-  final _testData = List.generate(100, (i) => i);
   bool _isShowingPresets = true;
 
   @override
@@ -20,7 +20,6 @@ class _HomePageState extends State<HomePage> {
     if (gridCrossCount == 0) {
       gridCrossCount = 3;
     }
-    debugPrint("Cross Count: $gridCrossCount");
 
     return Scaffold(
       body: Center(
@@ -50,39 +49,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              // Padding(
-              //   padding: const EdgeInsetsGeometry.all(20),
-              //   child: Container(
-              //     width: _maxGridSize,
-              //     constraints: BoxConstraints(maxWidth: _maxGridSize),
-              //     height: _maxGridSize,
-              //     color: Colors.red,
-              //   ),
-              // ),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: gridCrossCount,
-                  children: _testData
-                      .map(
-                        (index) => SizedBox(
-                          height: _maxGridSize.toDouble(),
-                          width: _maxGridSize.toDouble(),
-                          child: Card(
-                            child: InkWell(
-                              onTap: () {},
-                              // TODO: Fix the corner radius
-                              child: Center(
-                                child: Text(
-                                  "${_isShowingPresets ? "Preset" : "Device"} $index",
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
+              Expanded(child: DevicesPage(onDeviceSelected: (d) {})),
             ],
           ),
         ),

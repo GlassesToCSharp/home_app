@@ -27,7 +27,7 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> with DeviceUtils {
     required this.repository,
     required this.connectivityService,
     required this.dbService,
-  }) : super(const DevicesState.idle(data: <Device>[])) {
+  }) : super(const DevicesState.loading()) {
     on<ScanForDevices>(_handleScanForDevicesEvent);
   }
 
@@ -35,7 +35,7 @@ class DevicesBloc extends Bloc<DevicesEvent, DevicesState> with DeviceUtils {
     ScanForDevices event,
     Emitter<DevicesState> emit,
   ) async {
-    emit(const DevicesState.loading());
+    emit(DevicesState.loading(data: state.data));
 
     try {
       // For each device, check whether it is the NodeMCU that we want. If it
