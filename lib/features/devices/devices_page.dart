@@ -58,15 +58,16 @@ class _DevicesPageState
 
   @override
   Widget buildState(BuildContext context, DevicesState state) {
+    Widget body = const SizedBox();
     if (state.hasError) {
-      return CentralErrorDisplay(
+      body = CentralErrorDisplay(
         message: state.error!,
         onRetry: _scanForDevices,
       );
     } else if (state.loading && !state.hasData) {
-      return const CentralLoadingIndicator();
+      body = const CentralLoadingIndicator();
     } else if (!state.hasData) {
-      return CentralErrorDisplay(
+      body = CentralErrorDisplay(
         message: "No devices found",
         onRetry: _scanForDevices,
       );
@@ -78,7 +79,7 @@ class _DevicesPageState
         gridCrossCount = 3;
       }
 
-      return RefreshIndicator.adaptive(
+      body = RefreshIndicator.adaptive(
         key: _refreshIndicatorKey,
         onRefresh: () async {
           _scanForDevices();
@@ -150,7 +151,11 @@ class _DevicesPageState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(device.name),
+                        Text(
+                          device.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.fade,
+                        ),
                         Expanded(
                           child: Center(
                             // TODO: Update icon depending on what's registered.
@@ -196,6 +201,22 @@ class _DevicesPageState
         ),
       );
     }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Network devices"),
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+            onPressed: state.loading ? null : _scanForDevices,
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [Expanded(child: body)],
+      ),
+    );
   }
 
   @override

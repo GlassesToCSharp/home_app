@@ -17,19 +17,22 @@ class App extends StatelessWidget {
   final _darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.amber,
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: Colors.grey[800],
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.amber,
-      titleTextStyle: TextStyle(color: Colors.black, fontSize: 18),
+      backgroundColor: Colors.grey[800],
+      elevation: 8,
+      shadowColor: Colors.black,
+      titleTextStyle: TextStyle(color: Colors.white),
+      toolbarHeight: 36,
     ),
     cardTheme: CardThemeData(
-      color: Colors.black,
+      color: Colors.grey[800],
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.blueGrey, width: 3),
+        side: BorderSide(color: Colors.white, width: 3),
         borderRadius: BorderRadius.circular(12),
       ),
     ),
-    iconTheme: IconThemeData(color: Colors.blueGrey),
+    iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
   );
 

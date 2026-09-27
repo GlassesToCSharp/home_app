@@ -131,18 +131,18 @@ class _PresetsPageState
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Presets"),
-        backgroundColor: Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
-        actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
-            onPressed: state.loading ? null : _getPresets,
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Presets"),
+      //   backgroundColor: Theme.of(context).primaryColor,
+      //   scrolledUnderElevation: 8,
+      //   shadowColor: Colors.grey,
+      //   actions: [
+      //     IconButton(
+      //       icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
+      //       onPressed: state.loading ? null : _getPresets,
+      //     ),
+      //   ],
+      // ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [Expanded(child: body)],

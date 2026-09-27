@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_page.dart';
+import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/features/presets/presets_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,9 +15,9 @@ class _HomePageState extends State<HomePage> {
   static const _maxGridSize = 100.0;
 
   // Pages should be pre-initialised, so load them in a list.
-  final _pages = <Widget>[DevicesPage(onDeviceSelected: (_) {}), PresetsPage()];
+  final _pages = <Widget>[MyDevicesPage(), PresetsPage()];
   bool _isShowingPresets = true;
-  int _selectedPageIndex = 0;
+  int _selectedPageIndex = 1;
   late PageController _pageController;
 
   @override
@@ -35,69 +36,40 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Home - ${_isShowingPresets ? "Presets" : "My Devices"}"),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.gear,
+              color: Theme.of(context).iconTheme.color,
+            ),
+          ),
+        ],
+      ),
       body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Home - ${_isShowingPresets ? "Presets" : "Devices"}",
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isShowingPresets = !_isShowingPresets;
-                      });
-                    },
-                    icon: FaIcon(
-                      _isShowingPresets
-                          ? FontAwesomeIcons.list
-                          : FontAwesomeIcons.ellipsisVertical,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: FaIcon(FontAwesomeIcons.gear),
-                  ),
-                ],
-              ),
+            Positioned.fill(
+              child: PageView(controller: _pageController, children: _pages),
             ),
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: PageView(
-                      controller: _pageController,
-                      children: _pages,
-                    ),
-                  ),
-                  if (_isShowingPresets)
-                    Positioned.directional(
-                      textDirection: TextDirection.ltr,
-                      start: 10.0,
-                      top: 0.0,
-                      bottom: 0.0,
-                      child: _buildNavigationButton(FontAwesomeIcons.microchip),
-                    ),
-                  if (!_isShowingPresets)
-                    Positioned.directional(
-                      textDirection: TextDirection.ltr,
-                      end: 10.0,
-                      top: 0.0,
-                      bottom: 0.0,
-                      child: _buildNavigationButton(
-                        FontAwesomeIcons.houseLaptop,
-                      ),
-                    ),
-                ],
+            if (_isShowingPresets)
+              Positioned.directional(
+                textDirection: TextDirection.ltr,
+                start: 10.0,
+                top: 0.0,
+                bottom: 0.0,
+                child: _buildNavigationButton(FontAwesomeIcons.microchip),
               ),
-            ),
-            // Expanded(child: _isShowingPresets ? _pages[1] : _pages[0]),
+            if (!_isShowingPresets)
+              Positioned.directional(
+                textDirection: TextDirection.ltr,
+                end: 10.0,
+                top: 0.0,
+                bottom: 0.0,
+                child: _buildNavigationButton(FontAwesomeIcons.houseLaptop),
+              ),
           ],
         ),
       ),
