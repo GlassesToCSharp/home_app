@@ -132,23 +132,31 @@ class _DevicesPageState
               width: _maxGridSize.toDouble(),
               child: Card(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (!device.isNodeDevice) {
+                      SnackBarPresenter.presentError(
+                        ScaffoldMessenger.of(context),
+                        "Cannot add a non-Node device",
+                      );
+                      return;
+                    }
+
+                    widget.onDeviceSelected(device);
+                    NavigationService.pop();
+                  },
                   borderRadius: BorderRadius.circular(12),
                   child: Padding(
                     padding: const EdgeInsetsGeometry.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        //Name - Favourite
-                        //Icon
-                        //Things
                         Text(device.name),
                         Expanded(
                           child: Center(
+                            // TODO: Update icon depending on what's registered.
                             child: FaIcon(FontAwesomeIcons.circleExclamation),
                           ),
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
