@@ -51,9 +51,10 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
 
       final statusCallsResults = await Future.wait(statusCalls);
       for (int i = 0; i < statusCallsResults.length; i++) {
-        myDevices[i].withDevice(
-          myDevices[i].toDevice().withDeviceStatus(statusCallsResults[i]),
+        final deviceStatus = myDevices[i].toDevice().withDeviceStatus(
+          statusCallsResults[i],
         );
+        myDevices[i] = myDevices[i].withDevice(deviceStatus);
       }
 
       emit(MyDevicesState.data(myDevices));

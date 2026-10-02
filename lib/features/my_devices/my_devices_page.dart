@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -46,11 +47,23 @@ class _MyDevicesPageState
 
   bool get _isConfiguring => _permissionCounter > 5;
 
+  late Timer _timer;
+
   @override
   MyDevicesEvent? get initialEvent => const GetMyDevices();
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(
+      const Duration(seconds: 120),
+      (_) => _refreshInterface(),
+    );
+  }
 
   @override
   MyDevicesBloc createBloc(KiwiContainer di) {
@@ -240,10 +253,15 @@ class _MyDevicesPageState
     bloc.add(const GetMyDevices());
   }
 
+  void _refreshInterface() {
+    // Show refresh indicator programmatically on command.
+    _refreshIndicatorKey.currentState?.show();
+  }
+
   List<Widget> _mapDevicesToWidgets(List<MyDevice> devices) {
     return devices.map((device) {
       if (device.device == null) {
-        return const SizedBox();
+        return CustomListItem(onTap: () {}, children: [Text("Unknown device")]);
       }
       return DeviceItem(device: device.device!, onTap: (_) {});
     }).toList();
