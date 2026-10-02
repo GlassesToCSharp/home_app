@@ -29,13 +29,27 @@ class DependencyInjection extends StatelessWidget {
       LiveNodeDeviceRepository(),
     );
     _addInstance<ConnectivityService>(
-      const MockConnectivityService(),
+      MockConnectivityService(),
       LiveConnectivityService(),
     );
     _addInstance<DatabaseService>(MockDatabaseService(), LiveDatabaseService());
     _addInstance<StorageService>(LocalStorage(), SafeStorage());
 
+    _addDefinitiveInstance<ScaffoldDeviceBloc>(
+      ScaffoldDeviceBloc(
+        repository: _container.resolve<NodeDeviceRepository>(),
+      ),
+    );
+
     return DependencyInjectorInheritance(container: _container, child: child);
+  }
+
+  void _addDefinitiveInstance<T>(T instance) {
+    try {
+      _container.registerInstance<T>(instance);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   void _addInstance<T>(T mock, T live) {

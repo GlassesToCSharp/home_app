@@ -61,10 +61,8 @@ class _HomePageState extends State<HomePage> {
             Positioned.fill(
               child: MultiBlocProvider(
                 providers: [
-                  BlocProvider(
-                    create: (_) => ScaffoldDeviceBloc(
-                      repository: injector.resolve<NodeDeviceRepository>(),
-                    ),
+                  BlocProvider.value(
+                    value: injector.resolve<ScaffoldDeviceBloc>(),
                   ),
                 ],
                 child: PageView(controller: _pageController, children: _pages),

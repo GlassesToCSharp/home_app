@@ -14,6 +14,8 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
 
   E? get initialEvent => null;
 
+  bool get closeBlocOnDispose => true;
+
   @override
   bool get wantKeepAlive => false;
 
@@ -44,7 +46,9 @@ abstract class BlocState<T extends StatefulWidget, B extends Bloc<E, S>, E, S>
 
   @override
   void dispose() {
-    _bloc?.close();
+    if (closeBlocOnDispose) {
+      _bloc?.close();
+    }
     super.dispose();
   }
 

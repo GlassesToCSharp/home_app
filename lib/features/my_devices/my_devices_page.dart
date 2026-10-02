@@ -9,6 +9,7 @@ import 'package:home_app/features/devices/widgets/device_item/device_item.dart';
 import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
 import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/scaffold_device.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
@@ -205,22 +206,9 @@ class _MyDevicesPageState
       // Open on the left, as the page navigator is on the right.
       drawer: Drawer(
         child: BlocBuilder<ScaffoldDeviceBloc, ScaffoldDeviceState>(
-          builder: (_, scaffoldDeviceState) => Column(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
-                child: Text(
-                  'Drawer Header',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text("Drawer: ${scaffoldDeviceState.data?.ipAddress}"),
-                ),
-              ),
-            ],
-          ),
+          bloc: context.read<ScaffoldDeviceBloc>(),
+          builder: (_, scaffoldDeviceState) =>
+              ScaffoldDevice(myDevice: scaffoldDeviceState.data!),
         ),
       ),
       // appBar: AppBar(
