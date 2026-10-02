@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/bloc/devices_bloc.dart';
-import 'package:home_app/features/devices/models/device.dart';
+import 'package:home_app/features/devices/widgets/device_item/device_item.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
-import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 export 'package:home_app/features/devices/models/device.dart';
 
@@ -24,8 +23,6 @@ class DevicesPage extends StatefulWidget {
 
 class _DevicesPageState
     extends BlocState<DevicesPage, DevicesBloc, DevicesEvent, DevicesState> {
-  static const _maxGridSize = 150.0;
-  static const _iconSize = 16.0;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -74,7 +71,7 @@ class _DevicesPageState
     } else {
       final devices = state.data!;
       final screenWidth = MediaQuery.of(context).size.width;
-      int gridCrossCount = (screenWidth / _maxGridSize).floor();
+      int gridCrossCount = (screenWidth / DeviceItem.maxItemSize).floor();
       if (gridCrossCount == 0) {
         gridCrossCount = 3;
       }
@@ -88,114 +85,20 @@ class _DevicesPageState
         child: GridView.count(
           crossAxisCount: gridCrossCount,
           children: devices.map((device) {
-            final icons = <Widget>[];
-            if (device.nodeDeviceStatus.hasPowerState) {
-              icons.add(
-                const FaIcon(
-                  FontAwesomeIcons.boltLightning,
-                  color: Colors.amber,
-                  size: _iconSize,
-                ),
-              );
-            }
-            if (device.nodeDeviceStatus.hasNeonBrightnessState) {
-              icons.add(
-                const FaIcon(
-                  FontAwesomeIcons.solidLightbulb,
-                  color: Colors.amber,
-                  size: _iconSize,
-                ),
-              );
-            }
-            if (device.nodeDeviceStatus.hasLedColorState) {
-              icons.add(
-                const FaIcon(
-                  FontAwesomeIcons.palette,
-                  color: Colors.red,
-                  size: _iconSize,
-                ),
-              );
-            }
-            if (device.nodeDeviceStatus.hasMotorState) {
-              icons.add(
-                const FaIcon(
-                  FontAwesomeIcons.gear,
-                  color: Colors.blueGrey,
-                  size: _iconSize,
-                ),
-              );
-            }
-            if (icons.isEmpty) {
-              icons.add(const SizedBox(height: _iconSize));
-            }
-            return SizedBox(
-              height: _maxGridSize.toDouble(),
-              width: _maxGridSize.toDouble(),
-              child: Card(
-                child: InkWell(
-                  onTap: () {
-                    if (!device.isNodeDevice) {
-                      SnackBarPresenter.presentError(
-                        ScaffoldMessenger.of(context),
-                        "Cannot add a non-Node device",
-                      );
-                      return;
-                    }
+            return DeviceItem(
+              device: device,
+              onTap: (device) {
+                if (!device.isNodeDevice) {
+                  SnackBarPresenter.presentError(
+                    ScaffoldMessenger.of(context),
+                    "Cannot add a non-Node device",
+                  );
+                  return;
+                }
 
-                    widget.onDeviceSelected(device);
-                    NavigationService.pop();
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsetsGeometry.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          device.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.fade,
-                        ),
-                        Expanded(
-                          child: Center(
-                            // TODO: Update icon depending on what's registered.
-                            child: FaIcon(FontAwesomeIcons.circleExclamation),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SignalStrengthIndicator.sector(
-                              // Match icon button's margin/padding
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 12,
-                              ),
-                              value: device.nodeDeviceStatus.signal,
-                              size: 20,
-                              // Underestimate the RSSI range for better calibration
-                              maxValue: -30,
-                              minValue: -80,
-                              barCount: 4,
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: icons,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: FaIcon(FontAwesomeIcons.heart),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                widget.onDeviceSelected(device);
+                NavigationService.pop();
+              },
             );
           }).toList(),
         ),

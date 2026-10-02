@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
+import 'package:home_app/features/devices/widgets/device_item/device_item.dart';
 import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
 import 'package:home_app/models/bloc_state.dart';
@@ -254,110 +255,10 @@ class _MyDevicesPageState
 
   List<Widget> _mapDevicesToWidgets(List<MyDevice> devices) {
     return devices.map((device) {
-      final icons = <Widget>[];
-      if (device.device?.nodeDeviceStatus.hasPowerState == true) {
-        icons.add(
-          const FaIcon(
-            FontAwesomeIcons.boltLightning,
-            color: Colors.amber,
-            size: _iconSize,
-          ),
-        );
+      if (device.device == null) {
+        return const SizedBox();
       }
-      if (device.device?.nodeDeviceStatus.hasNeonBrightnessState == true) {
-        icons.add(
-          const FaIcon(
-            FontAwesomeIcons.solidLightbulb,
-            color: Colors.amber,
-            size: _iconSize,
-          ),
-        );
-      }
-      if (device.device?.nodeDeviceStatus.hasLedColorState == true) {
-        icons.add(
-          const FaIcon(
-            FontAwesomeIcons.palette,
-            color: Colors.red,
-            size: _iconSize,
-          ),
-        );
-      }
-      if (device.device?.nodeDeviceStatus.hasMotorState == true) {
-        icons.add(
-          const FaIcon(
-            FontAwesomeIcons.gear,
-            color: Colors.blueGrey,
-            size: _iconSize,
-          ),
-        );
-      }
-      if (icons.isEmpty) {
-        icons.add(const SizedBox(height: _iconSize));
-      }
-      return SizedBox(
-        height: _maxGridSize.toDouble(),
-        width: _maxGridSize.toDouble(),
-        child: Card(
-          child: InkWell(
-            onTap: () {
-              if (device.device == null) {
-                SnackBarPresenter.presentError(
-                  ScaffoldMessenger.of(context),
-                  "Cannot add a non-Node device",
-                );
-                return;
-              }
-
-              //widget.onDeviceSelected(device);
-              // NavigationService.pop();
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsetsGeometry.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(device.name),
-                  Expanded(
-                    child: Center(
-                      // TODO: Update icon depending on what's registered.
-                      child: FaIcon(FontAwesomeIcons.circleExclamation),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SignalStrengthIndicator.sector(
-                        // Match icon button's margin/padding
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 12,
-                        ),
-                        value: device.device?.nodeDeviceStatus.signal ?? 0,
-                        size: 20,
-                        // Underestimate the RSSI range for better calibration
-                        maxValue: -30,
-                        minValue: -80,
-                        barCount: 4,
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: icons,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: FaIcon(FontAwesomeIcons.heart),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+      return DeviceItem(device: device.device!, onTap: (_) {});
     }).toList();
   }
 }
