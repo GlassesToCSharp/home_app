@@ -11,6 +11,7 @@ import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
+import 'package:home_app/widgets/custom_list_item.dart';
 import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
@@ -107,37 +108,22 @@ class _MyDevicesPageState
           childAspectRatio: 1.5,
           children: [
             ..._mapDevicesToWidgets(devices),
-            SizedBox(
-              height: _maxGridSize.toDouble(),
-              width: _maxGridSize.toDouble(),
-              child: Card(
-                child: InkWell(
-                  onTap: () {
-                    NavigationService.navigateTo(
-                      DevicesNavigator(
-                        onDeviceSelected: (device) =>
-                            bloc.add(AddToMyDevices(device)),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsetsGeometry.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Add device"),
-                        Expanded(
-                          child: Center(
-                            child: FaIcon(FontAwesomeIcons.circlePlus),
-                          ),
-                        ),
-                        SizedBox(height: 40), // Default 24 size + 8 margin
-                      ],
-                    ),
+            CustomListItem(
+              onTap: () {
+                NavigationService.navigateTo(
+                  DevicesNavigator(
+                    onDeviceSelected: (device) =>
+                        bloc.add(AddToMyDevices(device)),
                   ),
+                );
+              },
+              children: [
+                Text("Add device"),
+                Expanded(
+                  child: Center(child: FaIcon(FontAwesomeIcons.circlePlus)),
                 ),
-              ),
+                SizedBox(height: 40), // Default 24 size + 8 margin
+              ],
             ),
           ],
         ),

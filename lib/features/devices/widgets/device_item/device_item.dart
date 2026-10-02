@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/device/device_navigator.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/bloc/device_item_bloc.dart';
+import 'package:home_app/widgets/custom_list_item.dart';
 import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 export 'package:home_app/features/my_devices/models/my_device.dart';
@@ -41,59 +42,47 @@ class DeviceItem extends StatelessWidget {
     if (icons.isEmpty) {
       icons.add(const SizedBox(height: _iconSize));
     }
-    return SizedBox(
-      height: maxSize,
-      width: maxSize,
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            onTap(device);
-            // NavigationService.pop();
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsetsGeometry.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(device.name),
-                Expanded(child: Center(child: FaIcon(icon))),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    device.nodeDeviceStatus.signal == 0
-                        ? FaIcon(
-                            FontAwesomeIcons.circleExclamation,
-                            color: Colors.amber,
-                          )
-                        : SignalStrengthIndicator.sector(
-                            // Match icon button's margin/padding
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12,
-                            ),
-                            value: device.nodeDeviceStatus.signal,
-                            size: 20,
-                            // Underestimate the RSSI range for better calibration
-                            maxValue: -30,
-                            minValue: -80,
-                            barCount: 4,
-                          ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: icons,
-                      ),
+
+    return CustomListItem(
+      onTap: () {
+        onTap(device);
+        // NavigationService.pop();
+      },
+      children: [
+        Text(device.name),
+        Expanded(child: Center(child: FaIcon(icon))),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            device.nodeDeviceStatus.signal == 0
+                ? FaIcon(
+                    FontAwesomeIcons.circleExclamation,
+                    color: Colors.amber,
+                  )
+                : SignalStrengthIndicator.sector(
+                    // Match icon button's margin/padding
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
                     ),
-                  ],
-                ),
-              ],
+                    value: device.nodeDeviceStatus.signal,
+                    size: 20,
+                    // Underestimate the RSSI range for better calibration
+                    maxValue: -30,
+                    minValue: -80,
+                    barCount: 4,
+                  ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: icons,
+              ),
             ),
-          ),
+          ],
         ),
-      ),
+      ],
     );
   }
 

@@ -12,6 +12,7 @@ import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
+import 'package:home_app/widgets/custom_list_item.dart';
 
 class PresetsPage extends StatefulWidget {
   const PresetsPage();
@@ -81,38 +82,23 @@ class _PresetsPageState
           childAspectRatio: 2,
           children: [
             ..._mapPresetsToWidgets(devices),
-            SizedBox(
-              height: DeviceItem.maxItemSize,
-              width: DeviceItem.maxItemSize,
-              child: Card(
-                child: InkWell(
-                  onTap: () async {
-                    await showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return NameEntryDialog(
-                          onSubmit: (name) => bloc.add(CreatePreset(name)),
-                        );
-                      },
+            CustomListItem(
+              onTap: () async {
+                await showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return NameEntryDialog(
+                      onSubmit: (name) => bloc.add(CreatePreset(name)),
                     );
                   },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsetsGeometry.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Add device"),
-                        Expanded(
-                          child: Center(
-                            child: FaIcon(FontAwesomeIcons.circlePlus),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                );
+              },
+              children: [
+                Text("Create new preset"),
+                Expanded(
+                  child: Center(child: FaIcon(FontAwesomeIcons.circlePlus)),
                 ),
-              ),
+              ],
             ),
           ],
         ),
