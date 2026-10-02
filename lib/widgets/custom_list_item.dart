@@ -4,6 +4,7 @@ class CustomListItem extends StatelessWidget {
   static const maxItemSize = 150.0;
 
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   final double maxSize;
   final List<Widget> children;
 
@@ -11,6 +12,7 @@ class CustomListItem extends StatelessWidget {
     required this.onTap,
     required this.children,
     this.maxSize = maxItemSize,
+    this.onLongPress,
     super.key,
   });
 
@@ -22,6 +24,7 @@ class CustomListItem extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: onTap,
+          onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsetsGeometry.all(8),
