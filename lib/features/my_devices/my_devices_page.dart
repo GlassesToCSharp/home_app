@@ -104,6 +104,7 @@ class _MyDevicesPageState
         },
         child: GridView.count(
           crossAxisCount: gridCrossCount,
+          childAspectRatio: 1.5,
           children: [
             ..._mapDevicesToWidgets(devices),
             SizedBox(
