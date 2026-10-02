@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_navigator.dart';
 import 'package:home_app/features/devices/widgets/device_item/device_item.dart';
 import 'package:home_app/features/my_devices/bloc/my_devices_bloc.dart';
 import 'package:home_app/features/my_devices/widgets/device_item/expansion_device_item.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
@@ -41,6 +43,7 @@ class _MyDevicesPageState
   static const _iconSize = 16.0;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _refreshIdentifier = 0;
   int _permissionCounter = 0;
@@ -198,6 +201,28 @@ class _MyDevicesPageState
     }
 
     return Scaffold(
+      key: _scaffoldKey,
+      // Open on the left, as the page navigator is on the right.
+      drawer: Drawer(
+        child: BlocBuilder<ScaffoldDeviceBloc, ScaffoldDeviceState>(
+          builder: (_, scaffoldDeviceState) => Column(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text(
+                  'Drawer Header',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text("Drawer: ${scaffoldDeviceState.data?.ipAddress}"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       // appBar: AppBar(
       //   title: GestureDetector(
       //     onTap: () {
@@ -263,7 +288,13 @@ class _MyDevicesPageState
       if (device.device == null) {
         return CustomListItem(onTap: () {}, children: [Text("Unknown device")]);
       }
-      return DeviceItem(device: device.device!, onTap: (_) {});
+      return DeviceItem(
+        device: device.device!,
+        onTap: (_) {
+          context.read<ScaffoldDeviceBloc>().add(LoadDevice(device));
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      );
     }).toList();
   }
 }

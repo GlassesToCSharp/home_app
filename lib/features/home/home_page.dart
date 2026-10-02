@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/devices_page.dart';
 import 'package:home_app/features/my_devices/my_devices_page.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
 import 'package:home_app/features/presets/presets_page.dart';
+import 'package:home_app/services/injection/dependency_injection.dart';
+import 'package:kiwi/kiwi.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,6 +39,9 @@ class _HomePageState extends State<HomePage> {
       gridCrossCount = 3;
     }
 
+    final injector =
+        DependencyInjectorInheritance.of(context)?.container ?? KiwiContainer();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Home - ${_isShowingPresets ? "Presets" : "My Devices"}"),
@@ -52,7 +59,16 @@ class _HomePageState extends State<HomePage> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: PageView(controller: _pageController, children: _pages),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) => ScaffoldDeviceBloc(
+                      repository: injector.resolve<NodeDeviceRepository>(),
+                    ),
+                  ),
+                ],
+                child: PageView(controller: _pageController, children: _pages),
+              ),
             ),
             if (_isShowingPresets)
               Positioned.directional(
