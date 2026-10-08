@@ -107,6 +107,31 @@ class LiveDatabaseService extends DatabaseService {
   }
 
   @override
+  Future<List<T>> getWhere<T, U>(
+    String tableName,
+    T Function(Map<String, Object?>) converter,
+    String whereColName,
+    U whereColValue,
+  ) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
+    final result = <Map<String, Object?>>[];
+
+    result.addAll(
+      await _db!.query(
+        tableName,
+        where: "$whereColName = ?",
+        whereArgs: [whereColValue],
+      ),
+    );
+
+    // Convert the List<Map<String, Object?> into a List<T>.
+    return result.map(converter).toList();
+  }
+
+  @override
   Future<int> update(
     String tableName,
     Map<String, Object?> model, [

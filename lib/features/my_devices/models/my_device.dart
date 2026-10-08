@@ -112,15 +112,16 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   }
 
   @override
-  Future<MyDevice> insert(DatabaseService dbService) {
+  Future<MyDevice> insert(DatabaseService dbService) async {
+    final items = await getWhere(dbService, _colDeviceId, deviceId);
+    if (items.isNotEmpty) {
+      throw "Device with the same ID already exists. Device not saved.";
+    }
+
     final entry = toJson();
     entry.remove(colId);
-    return dbService
-        .insert(tableName, entry)
-        .then(
-          (newDbObject) =>
-              MyDevice.fromJson(newDbObject).copyWith(device: device),
-        );
+    final newDbObject = await dbService.insert(tableName, entry);
+    return MyDevice.fromJson(newDbObject).copyWith(device: device);
   }
 
   @override
@@ -134,6 +135,19 @@ class MyDevice extends DatabaseEntry<MyDevice> {
       MyDevice.fromJson,
       whereColIdName: whereColIdName,
       whereColIdValue: whereColIdValue,
+    );
+  }
+
+  Future<List<MyDevice>> getWhere<T>(
+    DatabaseService dbService,
+    String whereColName,
+    T whereColValue,
+  ) {
+    return dbService.getWhere(
+      tableName,
+      MyDevice.fromJson,
+      whereColName,
+      whereColValue,
     );
   }
 

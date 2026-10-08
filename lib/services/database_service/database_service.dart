@@ -27,6 +27,12 @@ abstract class DatabaseService {
     String? whereColIdName,
     int? whereColIdValue,
   });
+  Future<List<T>> getWhere<T, U>(
+    String tableName,
+    T Function(Map<String, Object?>) converter,
+    String whereColName,
+    U whereColValue,
+  );
   Future<int> update(
     String tableName,
     Map<String, Object?> model, [

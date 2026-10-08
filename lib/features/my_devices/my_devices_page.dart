@@ -92,10 +92,10 @@ class _MyDevicesPageState
   @override
   Widget buildState(BuildContext context, MyDevicesState state) {
     Widget body = const SizedBox();
-    if (state.hasError) {
-      return CentralErrorDisplay(message: state.error!, onRetry: _getMyDevices);
+    if (state.data?.isEmpty == true && state.hasError) {
+      body = CentralErrorDisplay(message: state.error!, onRetry: _getMyDevices);
     } else if (state.loading && (!state.hasData || state.data!.isEmpty)) {
-      return const CentralLoadingIndicator();
+      body = const CentralLoadingIndicator();
       // } else if (state.data?.isEmpty == true) {
       //   return CentralErrorDisplay(
       //     message: "No saved devices found",
@@ -116,9 +116,9 @@ class _MyDevicesPageState
 
       body = RefreshIndicator.adaptive(
         key: _refreshIndicatorKey,
-        onRefresh: () async {
-          _getMyDevices();
-          await bloc.stream.firstWhere((s) => !s.loading);
+        onRefresh: () {
+          // _getMyDevices();
+          return bloc.stream.firstWhere((s) => !s.loading);
         },
         child: GridView.count(
           crossAxisCount: gridCrossCount,
@@ -129,8 +129,10 @@ class _MyDevicesPageState
               onTap: () {
                 NavigationService.navigateTo(
                   DevicesNavigator(
-                    onDeviceSelected: (device) =>
-                        bloc.add(AddToMyDevices(device)),
+                    onDeviceSelected: (device) {
+                      _refreshIndicatorKey.currentState?.show();
+                      bloc.add(AddToMyDevices(device));
+                    },
                   ),
                 );
               },

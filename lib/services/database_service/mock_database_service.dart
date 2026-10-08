@@ -57,6 +57,30 @@ class MockDatabaseService extends DatabaseService {
   }
 
   @override
+  Future<List<T>> getWhere<T, U>(
+    String tableName,
+    T Function(Map<String, Object?>) converter,
+    String? whereColName,
+    U? whereColValue,
+  ) async {
+    if (!isInitialised) {
+      await initialiseDatabase();
+    }
+
+    return await Future.delayed(
+      _mockDelay,
+      () => _dbDictionary[tableName]!,
+    ).then((listResult) {
+      List<Map<String, Object?>> result = List.from(listResult);
+      result = result
+          .where((item) => item[whereColName] == whereColValue)
+          .toList();
+
+      return result.map(converter).toList();
+    });
+  }
+
+  @override
   Future<int> update(
     String tableName,
     Map<String, Object?> model, [
