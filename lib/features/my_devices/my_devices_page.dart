@@ -116,10 +116,7 @@ class _MyDevicesPageState
 
       body = RefreshIndicator.adaptive(
         key: _refreshIndicatorKey,
-        onRefresh: () {
-          // _getMyDevices();
-          return bloc.stream.firstWhere((s) => !s.loading);
-        },
+        onRefresh: () => bloc.stream.firstWhere((s) => !s.loading),
         child: GridView.count(
           crossAxisCount: gridCrossCount,
           childAspectRatio: 1.5,
@@ -271,6 +268,7 @@ class _MyDevicesPageState
   void _refreshInterface() {
     // Show refresh indicator programmatically on command.
     _refreshIndicatorKey.currentState?.show();
+    _getMyDevices();
   }
 
   List<Widget> _mapDevicesToWidgets(List<MyDevice> devices) {
