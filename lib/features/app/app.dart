@@ -25,6 +25,10 @@ class App extends StatelessWidget {
       titleTextStyle: TextStyle(color: Colors.white),
       toolbarHeight: 36,
     ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: Colors.white,
+      linearTrackColor: Colors.white,
+    ),
     cardTheme: CardThemeData(
       color: Colors.grey[800],
       shape: RoundedRectangleBorder(
@@ -34,6 +38,31 @@ class App extends StatelessWidget {
     ),
     iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
+    dialogTheme: DialogThemeData(
+      titleTextStyle: TextStyle(color: Colors.white, fontSize: 26),
+      backgroundColor: Colors.grey[800],
+      iconColor: Colors.white,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        iconColor: Colors.white,
+        overlayColor: Colors.white,
+      ),
+    ),
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Colors.white,
+      selectionColor: Colors.grey,
+      selectionHandleColor: Colors.grey,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      hoverColor: Colors.grey,
+      iconColor: Colors.white,
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+      ),
+      counterStyle: TextStyle(color: Colors.white),
+    ),
   );
 
   App({Key? key}) : super(key: key);
