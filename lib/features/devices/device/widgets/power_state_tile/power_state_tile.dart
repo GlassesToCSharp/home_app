@@ -86,10 +86,6 @@ class _PowerStateTileState
       ),
       child: SwitchListTile(
         title: const Text("Power"),
-        activeThumbColor: Colors.grey[100],
-        activeTrackColor: Theme.of(context).primaryColor,
-        inactiveThumbColor: Colors.grey[700],
-        inactiveTrackColor: Colors.grey[350],
         value: _hasPowerState ? state.data! : false,
         onChanged: _hasPowerState && !state.loading
             ? (newValue) => bloc.add(

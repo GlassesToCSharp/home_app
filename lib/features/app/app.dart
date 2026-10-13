@@ -40,6 +40,20 @@ class App extends StatelessWidget {
       thumbColor: Colors.white,
       activeTrackColor: Colors.white,
     ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white; // Active color
+        }
+        return Colors.grey[300]; // Inactive color
+      }),
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.grey; // Active track color
+        }
+        return Colors.grey[800]; // Inactive track color
+      }),
+    ),
     iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
     dialogTheme: DialogThemeData(
