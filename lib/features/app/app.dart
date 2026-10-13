@@ -36,6 +36,10 @@ class App extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
     ),
+    sliderTheme: SliderThemeData(
+      thumbColor: Colors.white,
+      activeTrackColor: Colors.white,
+    ),
     iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
     dialogTheme: DialogThemeData(
