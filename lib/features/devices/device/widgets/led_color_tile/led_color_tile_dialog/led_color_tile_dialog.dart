@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile_dialog/bloc/led_color_tile_dialog_bloc.dart';
+import 'package:home_app/features/devices/device/widgets/led_color_tile/led_color_tile_dialog/color_pickers/hsv_color_picker.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
 
@@ -85,24 +85,68 @@ class _LedColorTileDialogState
   @override
   Widget buildState(BuildContext context, LedColorTileDialogState state) {
     return AlertDialog(
-      title: const Text("New colour"),
+      // title: const Text("New colour"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          ColorPicker(
-            pickerColor: Color.fromRGBO(_red, _green, _blue, _constantOpacity),
-            enableAlpha: false,
-            displayThumbColor: true,
-            labelTypes: const [],
-            onColorChanged: (value) {
-              setState(() {
-                _red = (value.r * 255.0).round().clamp(0, 255);
-                _green = (value.g * 255.0).round().clamp(0, 255);
-                _blue = (value.b * 255.0).round().clamp(0, 255);
-                _haveValuesChanged = true;
-              });
-            },
+          // PresetColorPicker(
+          //   color: Color.fromRGBO(_red, _green, _blue, _constantOpacity),
+          //   onChanged: (value) {
+          //     setState(() {
+          //       _red = (value.r * 255.0).round().clamp(0, 255);
+          //       _green = (value.g * 255.0).round().clamp(0, 255);
+          //       _blue = (value.b * 255.0).round().clamp(0, 255);
+          //       _haveValuesChanged = true;
+          //     });
+          //   },
+          // ),
+          // Divider(color: Colors.white),
+          SizedBox(
+            width: 260,
+            child: HsvColorPicker(
+              color: HSVColor.fromColor(
+                Color.fromRGBO(_red, _green, _blue, _constantOpacity),
+              ),
+              onChanged: (hsvValue) {
+                final value = hsvValue.toColor();
+                setState(() {
+                  _red = (value.r * 255.0).round().clamp(0, 255);
+                  _green = (value.g * 255.0).round().clamp(0, 255);
+                  _blue = (value.b * 255.0).round().clamp(0, 255);
+                  _haveValuesChanged = true;
+                });
+              },
+            ),
           ),
+          // ColorPicker(
+          //   color: Color.fromRGBO(_red, _green, _blue, _constantOpacity),
+          //   title: null,
+
+          //   onColorChanged: (value) {
+          //     setState(() {
+          //       _red = (value.r * 255.0).round().clamp(0, 255);
+          //       _green = (value.g * 255.0).round().clamp(0, 255);
+          //       _blue = (value.b * 255.0).round().clamp(0, 255);
+          //       _haveValuesChanged = true;
+          //     });
+          //   },
+          // ),
+
+          // ColorPicker(
+          //   pickerColor: Color.fromRGBO(_red, _green, _blue, _constantOpacity),
+          //   enableAlpha: false,
+          //   displayThumbColor: true,
+          //   labelTypes: const [],
+          //   onColorChanged: (value) {
+          //     setState(() {
+          //       _red = (value.r * 255.0).round().clamp(0, 255);
+          //       _green = (value.g * 255.0).round().clamp(0, 255);
+          //       _blue = (value.b * 255.0).round().clamp(0, 255);
+          //       _haveValuesChanged = true;
+          //     });
+          //   },
+          // ),
         ],
       ),
       actions: state.loading
