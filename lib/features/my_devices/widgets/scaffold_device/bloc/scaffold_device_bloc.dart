@@ -22,11 +22,19 @@ class ScaffoldDeviceBloc
     LoadDevice event,
     Emitter<ScaffoldDeviceState> emit,
   ) async {
-    emit(const ScaffoldDeviceState.loading());
+    emit(ScaffoldDeviceState.loading(data: event.myDevice));
 
     try {
-      // Just load the data?
-      emit(ScaffoldDeviceState.data(event.myDevice));
+      final nodeDevice = await repository.getDeviceStatus(
+        event.myDevice.ipAddress,
+      );
+      final device = event.myDevice.copyWith(
+        device: Device(
+          ipAddress: event.myDevice.ipAddress,
+          nodeDeviceStatus: nodeDevice,
+        ),
+      );
+      emit(ScaffoldDeviceState.data(device));
     } catch (e) {
       emit(ScaffoldDeviceState.error(e.toString(), data: state.data));
     }
