@@ -57,10 +57,7 @@ class _MyDevicesPageState
   void initState() {
     super.initState();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 120),
-      (_) => _refreshInterface(),
-    );
+    _startTimer();
   }
 
   @override
@@ -191,6 +188,16 @@ class _MyDevicesPageState
 
     return Scaffold(
       key: _scaffoldKey,
+      onDrawerChanged: (isOpen) {
+        // When the drawer opens, stop the timer. When it closes, restart the
+        // timer and refresh the page.
+        if (isOpen) {
+          _timer.cancel();
+        } else {
+          _startTimer();
+          _refreshInterface();
+        }
+      },
       // Open on the left, as the page navigator is on the right.
       drawer: Drawer(
         child: BlocBuilder<ScaffoldDeviceBloc, ScaffoldDeviceState>(
@@ -254,6 +261,13 @@ class _MyDevicesPageState
 
   void _getMyDevices() {
     bloc.add(const GetMyDevices());
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(
+      const Duration(seconds: 120),
+      (_) => _refreshInterface(),
+    );
   }
 
   void _refreshInterface() {
