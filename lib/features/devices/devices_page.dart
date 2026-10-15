@@ -84,6 +84,7 @@ class _DevicesPageState
         },
         child: GridView.count(
           crossAxisCount: gridCrossCount,
+          childAspectRatio: 1.5,
           children: devices.map((device) {
             return DeviceItem(
               device: device,

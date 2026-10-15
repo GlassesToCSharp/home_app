@@ -50,37 +50,26 @@ class DeviceItem extends StatelessWidget {
       },
       children: [
         Text(device.name),
-        Expanded(child: Center(child: FaIcon(icon))),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            device.nodeDeviceStatus.signal == 0
-                ? FaIcon(
-                    FontAwesomeIcons.circleExclamation,
-                    color: Colors.amber,
-                  )
-                : SignalStrengthIndicator.sector(
-                    // Match icon button's margin/padding
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    value: device.nodeDeviceStatus.signal,
-                    size: 20,
-                    // Underestimate the RSSI range for better calibration
-                    maxValue: -30,
-                    minValue: -80,
-                    barCount: 4,
-                  ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: icons,
-              ),
+        Expanded(
+          child: Center(
+            child: SignalStrengthIndicator.sector(
+              // Match icon button's margin/padding
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              value: device.nodeDeviceStatus.signal,
+              size: 20,
+              // Underestimate the RSSI range for better calibration
+              maxValue: -30,
+              minValue: -80,
+              barCount: 4,
             ),
-          ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: icons,
+          ),
         ),
       ],
     );
