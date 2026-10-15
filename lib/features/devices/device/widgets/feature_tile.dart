@@ -40,10 +40,6 @@ class _FeatureTileState extends State<FeatureTile> {
 
     return SwitchListTile(
       title: Text(widget.title),
-      activeThumbColor: Colors.grey[100],
-      activeTrackColor: Theme.of(context).primaryColor,
-      inactiveThumbColor: Colors.grey[700],
-      inactiveTrackColor: Colors.grey[350],
       value: _featureState,
       onChanged: !widget.isLoading
           ? (newState) {
