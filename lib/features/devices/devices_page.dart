@@ -130,6 +130,7 @@ class _DevicesPageState
   }
 
   void _scanForDevices() {
+    _refreshIndicatorKey.currentState?.show();
     bloc.add(const ScanForDevices());
   }
 
