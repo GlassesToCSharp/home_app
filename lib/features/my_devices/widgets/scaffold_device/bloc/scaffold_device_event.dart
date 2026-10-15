@@ -15,3 +15,12 @@ class LoadDevice extends ScaffoldDeviceEvent {
 
   const LoadDevice(this.myDevice);
 }
+
+class RemoveDevice extends ScaffoldDeviceEvent {
+  final MyDevice myDevice;
+
+  @override
+  List<Object> get props => [...super.props, myDevice];
+
+  const RemoveDevice(this.myDevice);
+}

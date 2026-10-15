@@ -8,13 +8,20 @@ import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/ne
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
 import 'package:home_app/models/bloc_state.dart';
+import 'package:home_app/services/dialogs/quick_dialogs.dart';
+import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
 
 class ScaffoldDevice extends StatefulWidget {
   final MyDevice myDevice;
+  final VoidCallback onRemoveDevice;
 
-  const ScaffoldDevice({required this.myDevice, super.key});
+  const ScaffoldDevice({
+    required this.myDevice,
+    required this.onRemoveDevice,
+    super.key,
+  });
 
   @override
   State<ScaffoldDevice> createState() => _ScaffoldDeviceState();
@@ -89,6 +96,28 @@ class _ScaffoldDeviceState
               myDevice: state.data!,
               isConfiguring: _isConfiguring,
             ),
+
+          Center(
+            child: TextButton.icon(
+              onPressed: () async {
+                final remove = await QuickDialogs.confirmationDialogAsync(
+                  context,
+                  title: "Remove device?",
+                  message: "Remove the device from your device list?",
+                  positiveButtonText: "Yes",
+                  negativeButtonText: "No",
+                );
+                if (remove == true && state.data != null) {
+                  bloc.add(RemoveDevice(state.data!));
+                  await bloc.stream.firstWhere((s) => !s.loading);
+                  NavigationService.pop();
+                  widget.onRemoveDevice();
+                }
+              },
+              label: Text("Remove"),
+              icon: FaIcon(FontAwesomeIcons.trash),
+            ),
+          ),
         ],
       );
     }

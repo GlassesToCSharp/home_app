@@ -38,6 +38,7 @@ class DependencyInjection extends StatelessWidget {
     _addDefinitiveInstance<ScaffoldDeviceBloc>(
       ScaffoldDeviceBloc(
         repository: _container.resolve<NodeDeviceRepository>(),
+        dbService: _container.resolve<DatabaseService>(),
       ),
     );
 

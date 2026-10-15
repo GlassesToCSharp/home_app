@@ -206,8 +206,10 @@ class _MyDevicesPageState
       drawer: Drawer(
         child: BlocBuilder<ScaffoldDeviceBloc, ScaffoldDeviceState>(
           bloc: context.read<ScaffoldDeviceBloc>(),
-          builder: (_, scaffoldDeviceState) =>
-              ScaffoldDevice(myDevice: scaffoldDeviceState.data!),
+          builder: (_, scaffoldDeviceState) => ScaffoldDevice(
+            myDevice: scaffoldDeviceState.data!,
+            onRemoveDevice: _refreshInterface,
+          ),
         ),
       ),
       // appBar: AppBar(
