@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Stack(
+          alignment: Alignment.center,
           children: [
             Positioned.fill(
               child: MultiBlocProvider(
@@ -71,16 +72,12 @@ class _HomePageState extends State<HomePage> {
               Positioned.directional(
                 textDirection: TextDirection.ltr,
                 start: 10.0,
-                top: 0.0,
-                bottom: 0.0,
                 child: _buildNavigationButton(FontAwesomeIcons.microchip),
               ),
             if (!_isShowingPresets)
               Positioned.directional(
                 textDirection: TextDirection.ltr,
                 end: 10.0,
-                top: 0.0,
-                bottom: 0.0,
                 child: _buildNavigationButton(FontAwesomeIcons.houseLaptop),
               ),
           ],
@@ -111,7 +108,10 @@ class _HomePageState extends State<HomePage> {
           side: BorderSide(color: Theme.of(context).iconTheme.color!, width: 3),
         ), // Optional: makes it circular
       ),
-      child: FaIcon(icon, color: Theme.of(context).iconTheme.color),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: FaIcon(icon, color: Theme.of(context).iconTheme.color),
+      ),
     );
   }
 }
