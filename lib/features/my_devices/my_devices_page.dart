@@ -41,15 +41,9 @@ class _MyDevicesPageState
           MyDevicesState
         > {
   static const _maxGridSize = 150.0;
-  static const _iconSize = 16.0;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  int _refreshIdentifier = 0;
-  int _permissionCounter = 0;
-
-  bool get _isConfiguring => _permissionCounter > 5;
 
   late Timer _timer;
 
@@ -102,11 +96,6 @@ class _MyDevicesPageState
       //     onRetry: _getMyDevices,
       //   );
     } else {
-      final deviceCount = state.data!.length;
-      if (!state.loading && !state.hasError) {
-        _refreshIdentifier = Random().nextInt(10000);
-      }
-
       final devices = state.data!;
       final screenWidth = MediaQuery.of(context).size.width;
       int gridCrossCount = (screenWidth / _maxGridSize).floor();
