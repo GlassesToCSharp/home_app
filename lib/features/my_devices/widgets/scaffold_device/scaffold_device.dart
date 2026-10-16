@@ -7,11 +7,13 @@ import 'package:home_app/features/devices/device/widgets/name_tile/name_tile.dar
 import 'package:home_app/features/devices/device/widgets/neon_brightness_tile/neon_brightness_tile.dart';
 import 'package:home_app/features/devices/device/widgets/power_state_tile/power_state_tile.dart';
 import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/widgets/device_name_tile_dialog/device_name_tile_dialog.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/dialogs/quick_dialogs.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/widgets/central_error_display.dart';
 import 'package:home_app/widgets/central_loading_indicator.dart';
+import 'package:home_app/widgets/scaffold_header_tile/scaffold_header_tile.dart';
 
 class ScaffoldDevice extends StatefulWidget {
   final MyDevice myDevice;
@@ -67,7 +69,12 @@ class _ScaffoldDeviceState
                 _isConfiguring = !_isConfiguring;
               });
             },
-            child: NameTile(device: state.data!.device!),
+            child: ScaffoldHeaderTile(
+              title: state.data!.name,
+              edittingDialog: (_) =>
+                  DeviceNameTileDialog(device: state.data!.device!),
+              onSuccess: () => bloc.add(initialEvent!),
+            ),
           ),
           Divider(),
           // NameTile(device: state.data!.device!),
