@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
+import 'package:home_app/features/presets/widgets/scaffold_preset/bloc/scaffold_preset_bloc.dart';
 import 'package:home_app/repositories/node_device_repository/node_device_repository.dart';
 import 'package:home_app/services/connectivity_service/connectivity_service.dart';
 import 'package:home_app/services/database_service/database_service.dart';
@@ -37,6 +39,12 @@ class DependencyInjection extends StatelessWidget {
 
     _addDefinitiveInstance<ScaffoldDeviceBloc>(
       ScaffoldDeviceBloc(
+        repository: _container.resolve<NodeDeviceRepository>(),
+        dbService: _container.resolve<DatabaseService>(),
+      ),
+    );
+    _addDefinitiveInstance<ScaffoldPresetBloc>(
+      ScaffoldPresetBloc(
         repository: _container.resolve<NodeDeviceRepository>(),
         dbService: _container.resolve<DatabaseService>(),
       ),

@@ -1,12 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/devices/widgets/device_item/device_item.dart';
+import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
 import 'package:home_app/features/presets/bloc/presets_bloc.dart';
 import 'package:home_app/features/presets/preset/preset_navigator.dart';
 import 'package:home_app/features/presets/widgets/name_entry_dialog.dart';
 import 'package:home_app/features/presets/widgets/preset_item/preset_item.dart';
+import 'package:home_app/features/presets/widgets/scaffold_preset/bloc/scaffold_preset_bloc.dart';
+import 'package:home_app/features/presets/widgets/scaffold_preset/scaffold_preset.dart';
 import 'package:home_app/models/bloc_state.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 import 'package:home_app/services/snackbar_presenter/snackbar_presenter.dart';
@@ -25,6 +29,7 @@ class _PresetsPageState
     extends BlocState<PresetsPage, PresetsBloc, PresetsEvent, PresetsState> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _presets = <Preset>[];
 
@@ -103,77 +108,27 @@ class _PresetsPageState
           ],
         ),
       );
-
-      // body = ListView.builder(
-      //   itemCount: _presets.length,
-      //   itemBuilder: (_, index) {
-      //     if (index >= _presets.length) {
-      //       return const SizedBox();
-      //     }
-      //     final preset = _presets[index];
-      //     return Dismissible(
-      //       key: Key(_presets[index].id.toString()),
-      //       background: Container(
-      //         color: Colors.red[700],
-      //         child: const Align(
-      //           alignment: Alignment.centerRight,
-      //           child: Padding(
-      //             padding: EdgeInsets.only(right: 16),
-      //             child: FaIcon(FontAwesomeIcons.trash, color: Colors.white),
-      //           ),
-      //         ),
-      //       ),
-      //       direction: DismissDirection.endToStart,
-      //       confirmDismiss: (direction) {
-      //         if (direction == DismissDirection.endToStart) {
-      //           bloc.add(RemovePreset(preset));
-      //           return Future.value(true);
-      //         }
-
-      //         return Future.value(false);
-      //       },
-      //       child: Card(
-      //         child: ListTile(
-      //           onTap: () =>
-      //               NavigationService.navigateTo(PresetNavigator(preset)),
-      //           title: Text(preset.name),
-      //           titleTextStyle: Theme.of(
-      //             context,
-      //           ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-      //           trailing: IconButton(
-      //             icon: const FaIcon(FontAwesomeIcons.pen, size: 16),
-      //             onPressed: () async {
-      //               await showDialog<String>(
-      //                 context: context,
-      //                 builder: (BuildContext context) {
-      //                   return NameEntryDialog(
-      //                     initialName: preset.name,
-      //                     onSubmit: (newName) => bloc.add(
-      //                       UpdatePreset(Preset(id: preset.id, name: newName)),
-      //                     ),
-      //                   );
-      //                 },
-      //               );
-      //             },
-      //           ),
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // );
-
-      // if (state.hasData && state.data!.isNotEmpty) {
-      //   body = RefreshIndicator(
-      //     onRefresh: () {
-      //       _getPresets();
-      //       return bloc.stream.firstWhere((s) => !s.loading);
-      //     },
-      //     child: body,
-      //   );
-      // }
     }
 
     return Scaffold(
+      key: _scaffoldKey,
+      onEndDrawerChanged: (isOpen) {
+        // When the drawer opens, stop the timer. When it closes, restart the
+        // timer and refresh the page.
+        if (!isOpen) {
+          _refreshInterface();
+        }
+      },
+      // Open on the left, as the page navigator is on the right.
+      endDrawer: Drawer(
+        child: BlocBuilder<ScaffoldPresetBloc, ScaffoldPresetState>(
+          bloc: context.read<ScaffoldPresetBloc>(),
+          builder: (_, scaffoldPresetState) => ScaffoldPreset(
+            preset: scaffoldPresetState.data!,
+            onRemovePreset: _refreshInterface,
+          ),
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [Expanded(child: body)],
@@ -185,12 +140,20 @@ class _PresetsPageState
     bloc.add(const GetPresets());
   }
 
+  void _refreshInterface() {
+    // Show refresh indicator programmatically on command.
+    _refreshIndicatorKey.currentState?.show();
+    _getPresets();
+  }
+
   List<Widget> _mapPresetsToWidgets(List<Preset> presets) {
     return presets.map((preset) {
       return PresetItem(
         preset: preset,
-        onTap: (preset) =>
-            NavigationService.navigateTo(PresetNavigator(preset)),
+        onTap: (preset) {
+          context.read<ScaffoldPresetBloc>().add(LoadPreset(preset));
+          _scaffoldKey.currentState?.openEndDrawer();
+        },
       );
     }).toList();
   }

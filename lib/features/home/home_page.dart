@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:home_app/features/my_devices/my_devices_page.dart';
 import 'package:home_app/features/my_devices/widgets/scaffold_device/bloc/scaffold_device_bloc.dart';
 import 'package:home_app/features/presets/presets_page.dart';
+import 'package:home_app/features/presets/widgets/scaffold_preset/bloc/scaffold_preset_bloc.dart';
 import 'package:home_app/services/injection/dependency_injection.dart';
 import 'package:kiwi/kiwi.dart';
 
@@ -63,6 +64,9 @@ class _HomePageState extends State<HomePage> {
                 providers: [
                   BlocProvider.value(
                     value: injector.resolve<ScaffoldDeviceBloc>(),
+                  ),
+                  BlocProvider.value(
+                    value: injector.resolve<ScaffoldPresetBloc>(),
                   ),
                 ],
                 child: PageView(controller: _pageController, children: _pages),

@@ -47,14 +47,10 @@ class _PresetPageState
 
   @override
   Widget buildState(BuildContext context, PresetState state) {
-    debugPrint("State = $state");
     final presetActions = state.data ?? [];
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.preset.name),
-        backgroundColor: Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
