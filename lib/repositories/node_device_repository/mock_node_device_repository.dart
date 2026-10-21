@@ -66,7 +66,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
     _checkIpAddressExists(ipAddress);
 
     final device = _deviceList[ipAddress]!.copyWith(
-      ledColor: NodeDeviceLedColor(red: red, green: green, blue: blue),
+      ledColor: featureState == true
+          ? NodeDeviceLedColor(red: red, green: green, blue: blue)
+          : null,
     );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
@@ -80,7 +82,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   ]) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(neonBrightness: brightness);
+    final device = _deviceList[ipAddress]!.copyWith(
+      neonBrightness: featureState == true ? brightness : null,
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -98,7 +102,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
       position: _deviceList[ipAddress]!.motor?.position ?? 0,
       acceleration: _deviceList[ipAddress]!.motor?.acceleration ?? acceleration,
     );
-    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
+    final device = _deviceList[ipAddress]!.copyWith(
+      motor: featureState == true ? motor : null,
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -116,7 +122,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
       position: _deviceList[ipAddress]!.motor?.position ?? position,
       acceleration: _deviceList[ipAddress]!.motor?.speed ?? 0,
     );
-    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
+    final device = _deviceList[ipAddress]!.copyWith(
+      motor: featureState == true ? motor : null,
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -134,7 +142,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
       position: _deviceList[ipAddress]!.motor?.position ?? 0,
       acceleration: _deviceList[ipAddress]!.motor?.speed ?? 0,
     );
-    final device = _deviceList[ipAddress]!.copyWith(motor: motor);
+    final device = _deviceList[ipAddress]!.copyWith(
+      motor: featureState == true ? motor : null,
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
@@ -147,7 +157,9 @@ class MockNodeDeviceRepository extends NodeDeviceRepository
   ]) {
     _checkIpAddressExists(ipAddress);
 
-    final device = _deviceList[ipAddress]!.copyWith(power: enable);
+    final device = _deviceList[ipAddress]!.copyWith(
+      power: featureState == true ? enable : null,
+    );
     _deviceList[ipAddress] = device;
     return returnDelayed(null);
   }
