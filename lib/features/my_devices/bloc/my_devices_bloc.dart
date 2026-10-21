@@ -55,6 +55,10 @@ class MyDevicesBloc extends Bloc<MyDevicesEvent, MyDevicesState>
           statusCallsResults[i],
         );
         myDevices[i] = myDevices[i].withDevice(deviceStatus);
+        // TODO: Update local DB with latest changes.
+        await myDevices[i].udpate(
+          dbService,
+        ); // Not enough for DB update. Need to update individual values as well.
       }
 
       emit(MyDevicesState.data(myDevices));

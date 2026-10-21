@@ -31,8 +31,8 @@ class ScaffoldDeviceBloc
       final nodeDevice = await repository.getDeviceStatus(
         event.myDevice.ipAddress,
       );
-      final device = event.myDevice.copyWith(
-        device: Device(
+      final device = event.myDevice.withDevice(
+        Device(
           ipAddress: event.myDevice.ipAddress,
           nodeDeviceStatus: nodeDevice,
         ),

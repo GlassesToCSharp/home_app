@@ -55,7 +55,7 @@ class _ScaffoldDeviceState
     if (state.hasError) {
       return CentralErrorDisplay(
         message: state.error!,
-        onRetry: () => bloc.add(LoadDevice(widget.myDevice)),
+        onRetry: () => bloc.add(initialEvent!),
       );
     } else if (state.loading) {
       return CentralLoadingIndicator();

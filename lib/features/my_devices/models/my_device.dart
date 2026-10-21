@@ -74,9 +74,9 @@ class MyDevice extends DatabaseEntry<MyDevice> {
   MyDevice withDevice(Device device) {
     return MyDevice(
       id: id,
-      deviceId: deviceId,
-      name: name,
-      ipAddress: ipAddress,
+      deviceId: device.nodeDeviceStatus.id,
+      name: device.name,
+      ipAddress: device.ipAddress,
       device: device,
     );
   }
