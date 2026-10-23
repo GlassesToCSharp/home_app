@@ -52,9 +52,6 @@ class _PresetPageState
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.preset.name),
-        backgroundColor: Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowsRotate),

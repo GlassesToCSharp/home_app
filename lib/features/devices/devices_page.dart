@@ -140,9 +140,6 @@ class _DevicesPageState
     return Scaffold(
       appBar: AppBar(
         title: const Text("Network devices"),
-        backgroundColor: Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowsRotate),

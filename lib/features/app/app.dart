@@ -4,7 +4,18 @@ import 'package:home_app/services/injection/dependency_injection.dart';
 import 'package:home_app/services/navigation_service/navigation_service.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  final _lightTheme = ThemeData(
+    brightness: Brightness.light,
+    primaryColor: Colors.blue,
+    scaffoldBackgroundColor: Colors.white,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+      titleTextStyle: TextStyle(color: Colors.white, fontSize: 18),
+    ),
+    textTheme: TextTheme(bodySmall: TextStyle(color: Colors.black)),
+  );
+
+  App({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -13,17 +24,88 @@ class App extends StatelessWidget {
       title: 'Home App',
       navigatorKey: NavigationService.navigatorKey,
       onGenerateRoute: NavigationService.generateRoute,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(),
-        progressIndicatorTheme: Theme.of(context).progressIndicatorTheme,
-        elevatedButtonTheme: Theme.of(context).elevatedButtonTheme,
-        scaffoldBackgroundColor: Colors.grey[100],
-        bottomNavigationBarTheme: Theme.of(context)
-            .bottomNavigationBarTheme
-            .copyWith(backgroundColor: Colors.grey[300]),
+      theme: _lightTheme,
+      darkTheme: _getDarkMode(context),
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSwatch(),
+      //   progressIndicatorTheme: Theme.of(context).progressIndicatorTheme,
+      //   elevatedButtonTheme: Theme.of(context).elevatedButtonTheme,
+      //   scaffoldBackgroundColor: Colors.grey[100],
+      //   bottomNavigationBarTheme: Theme.of(context)
+      //       .bottomNavigationBarTheme
+      //       .copyWith(backgroundColor: Colors.grey[300]),
+      // ),
+      home: const DependencyInjection(child: AppPage()),
+    );
+  }
+
+  ThemeData _getDarkMode(BuildContext context) {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: Colors.amber,
+      scaffoldBackgroundColor: Colors.grey[800],
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.grey[800],
+        elevation: 8,
+        shadowColor: Colors.black,
       ),
-      home: const DependencyInjection(
-        child: AppPage(),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: Colors.white,
+        linearTrackColor: Colors.white,
+      ),
+      cardTheme: CardThemeData(
+        color: Colors.grey[800],
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.white, width: 3),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      sliderTheme: SliderThemeData(
+        thumbColor: Colors.white,
+        activeTrackColor: Colors.white,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white; // Active color
+          }
+          return Colors.grey[300]; // Inactive color
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.grey; // Active track color
+          }
+          return Colors.grey[800]; // Inactive track color
+        }),
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
+      textTheme: TextTheme(bodySmall: TextStyle(color: Colors.white)),
+      dialogTheme: DialogThemeData(
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 26),
+        backgroundColor: Colors.grey[800],
+        iconColor: Colors.white,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
+          iconColor: Colors.white,
+          overlayColor: Colors.white,
+        ),
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.white,
+        selectionColor: Colors.grey,
+        selectionHandleColor: Colors.grey,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        hoverColor: Colors.grey,
+        iconColor: Colors.white,
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        counterStyle: TextStyle(color: Colors.white),
       ),
     );
   }

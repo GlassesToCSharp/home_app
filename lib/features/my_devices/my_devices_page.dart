@@ -157,9 +157,7 @@ class _MyDevicesPageState
         ),
         backgroundColor: _isConfiguring
             ? Theme.of(context).hoverColor
-            : Theme.of(context).primaryColor,
-        scrolledUnderElevation: 8,
-        shadowColor: Colors.grey,
+            : Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
