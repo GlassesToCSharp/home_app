@@ -11,12 +11,14 @@ class PresetItem extends StatefulWidget {
 
   final Preset preset;
   final Function(Preset) onTap;
+  final Function(Preset) onLongPress;
   final FaIconData icon;
   final double maxSize;
 
   const PresetItem({
     required this.preset,
     required this.onTap,
+    required this.onLongPress,
     this.icon = FontAwesomeIcons.circleExclamation,
     this.maxSize = maxItemSize,
     super.key,
@@ -33,6 +35,9 @@ class _PresetItemState extends State<PresetItem> {
       onTap: () {
         widget.onTap(widget.preset);
         // NavigationService.pop();
+      },
+      onLongPress: () {
+        widget.onLongPress(widget.preset);
       },
       children: [
         Text(widget.preset.name),

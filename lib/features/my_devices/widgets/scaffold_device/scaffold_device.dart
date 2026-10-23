@@ -47,7 +47,7 @@ class _ScaffoldDeviceState
 
   @override
   ScaffoldDeviceBloc createBloc(KiwiContainer di) {
-    return context.read<ScaffoldDeviceBloc>();
+    return di.resolve<ScaffoldDeviceBloc>();
   }
 
   @override

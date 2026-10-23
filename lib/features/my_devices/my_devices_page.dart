@@ -23,8 +23,13 @@ export 'package:home_app/features/presets/preset/models/preset_action.dart';
 class MyDevicesPage extends StatefulWidget {
   final Function(MyDevice, PresetAction)? onDeviceSaved;
   final Preset? preset;
+  final bool includeAppBar;
 
-  const MyDevicesPage({this.onDeviceSaved, this.preset});
+  const MyDevicesPage({
+    this.onDeviceSaved,
+    this.preset,
+    this.includeAppBar = false,
+  });
 
   @override
   State<MyDevicesPage> createState() => _MyDevicesPageState();
@@ -44,6 +49,7 @@ class _MyDevicesPageState
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   late Timer _timer;
+  ScaffoldDeviceBloc? _scaffoldDeviceBloc;
 
   @override
   MyDevicesEvent? get initialEvent => const GetMyDevices();
@@ -60,6 +66,7 @@ class _MyDevicesPageState
 
   @override
   MyDevicesBloc createBloc(KiwiContainer di) {
+    _scaffoldDeviceBloc = di.resolve<ScaffoldDeviceBloc>();
     return MyDevicesBloc(
       repository: di.resolve<NodeDeviceRepository>(),
       dbService: di.resolve<DatabaseService>(),
@@ -127,6 +134,7 @@ class _MyDevicesPageState
 
     return Scaffold(
       key: _scaffoldKey,
+      appBar: widget.includeAppBar ? AppBar(title: Text("My Devices")) : null,
       onDrawerChanged: (isOpen) {
         // When the drawer opens, stop the timer. When it closes, restart the
         // timer and refresh the page.
@@ -140,7 +148,7 @@ class _MyDevicesPageState
       // Open on the left, as the page navigator is on the right.
       drawer: Drawer(
         child: BlocBuilder<ScaffoldDeviceBloc, ScaffoldDeviceState>(
-          bloc: context.read<ScaffoldDeviceBloc>(),
+          bloc: _scaffoldDeviceBloc,
           builder: (_, scaffoldDeviceState) => ScaffoldDevice(
             myDevice: scaffoldDeviceState.data!,
             onRemoveDevice: _refreshInterface,
@@ -179,7 +187,7 @@ class _MyDevicesPageState
       return DeviceItem(
         device: device.device!,
         onTap: (_) {
-          context.read<ScaffoldDeviceBloc>().add(LoadDevice(device));
+          _scaffoldDeviceBloc!.add(LoadDevice(device));
           _scaffoldKey.currentState?.openDrawer();
         },
       );

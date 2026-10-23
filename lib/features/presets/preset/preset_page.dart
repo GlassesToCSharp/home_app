@@ -78,6 +78,7 @@ class _PresetPageState
                       preset: widget.preset,
                       onDeviceSaved: (myDevice, presetAction) =>
                           bloc.add(const RefreshPresetActions()),
+                      includeAppBar: true,
                     ),
                   ),
                 ),

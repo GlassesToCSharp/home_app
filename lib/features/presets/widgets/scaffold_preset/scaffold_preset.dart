@@ -66,7 +66,20 @@ class _ScaffoldPresetState
 
           Divider(),
 
+          // TODO: Set the icon
+          ListTile(
+            title: Text("Icon"),
+            trailing: FaIcon(FontAwesomeIcons.circleExclamation),
+          ),
           Expanded(child: ScaffoldPresetActions(preset: state.data!)),
+          // ListTile(
+          //   title: Text("Actions"),
+          //   trailing: FaIcon(FontAwesomeIcons.arrowRight),
+          //   onTap: () {
+          //     NavigationService.navigateTo(PresetNavigator(state.data!));
+          //   },
+          // ),
+          const Spacer(),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

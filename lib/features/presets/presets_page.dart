@@ -151,6 +151,9 @@ class _PresetsPageState
       return PresetItem(
         preset: preset,
         onTap: (preset) {
+          // TODO: Action preset actions
+        },
+        onLongPress: (preset) {
           context.read<ScaffoldPresetBloc>().add(LoadPreset(preset));
           _scaffoldKey.currentState?.openEndDrawer();
         },
